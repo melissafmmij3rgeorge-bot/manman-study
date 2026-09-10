@@ -1,0 +1,15 @@
+{
+  "name": "满满大闯关",
+  "short_name": "满满大闯关",
+  "description": "满满的小学学习伙伴：数学、语文、英语",
+  "start_url": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#4A90E2",
+  "theme_color": "#4A90E2",
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "icon-1024.png", "sizes": "1024x1024", "type": "image/png" }
+  ]
+}
