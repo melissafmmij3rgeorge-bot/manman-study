@@ -345,6 +345,11 @@
         </div>
         <div class="track-emoji" id="trackBEmoji" data-page-node-id="bxlqNZK5bUrnYPNnzliBoV">🧠</div>
       </div>
+      <div class="btn-row" style="margin-top:10px;flex-wrap:wrap;" id="toolRow">
+        <button class="btn ghost" id="btnToolDict">✍️ 听写</button>
+        <button class="btn ghost" id="btnToolSprint">⚡ 口算</button>
+        <button class="btn ghost" id="btnToolWrong">📕 错题本</button>
+      </div>
       <div class="center" data-page-node-id="58tKfh12IRUvEhX5TGHQME">
         <p class="hint" id="homeHint" style="margin:6px 24px;" data-page-node-id="3kgHJdnVodHCVbqDKC0tBH"></p>
         <div class="btn-row" data-page-node-id="XPo9UfZOaGRLz0j3yyDb3x">
@@ -512,6 +517,33 @@
       </div>
     </div>
   </section>
+
+  <!-- 听写模式 -->
+  <section id="screen-dictation">
+    <div style="flex:1;display:flex;flex-direction:column;justify-content:center;">
+      <div class="center"><div class="big">✍️ 听写模式</div></div>
+      <div id="dictStage" style="width:100%;"></div>
+      <div class="btn-row"><button class="btn ghost" id="btnDictHome">回首页</button></div>
+    </div>
+  </section>
+
+  <!-- 口算速练 -->
+  <section id="screen-sprint">
+    <div style="flex:1;display:flex;flex-direction:column;justify-content:center;">
+      <div class="center"><div class="big">⚡ 口算速练</div></div>
+      <div id="sprintStage" style="width:100%;"></div>
+      <div class="btn-row"><button class="btn ghost" id="btnSprintHome">回首页</button></div>
+    </div>
+  </section>
+
+  <!-- 错题本 -->
+  <section id="screen-mistakes">
+    <div style="flex:1;display:flex;flex-direction:column;justify-content:center;">
+      <div class="center"><div class="big">📕 错题本</div></div>
+      <div id="mistStage" style="width:100%;"></div>
+      <div class="btn-row"><button class="btn ghost" id="btnMistHome">回首页</button></div>
+    </div>
+  </section>
 </div>
 
 <script>
@@ -632,6 +664,12 @@
   function candyBoxes(a, b){
     return '<div class="hint">'+a+' 盒，每盒 '+b+' 块</div>'+
       '<div class="visual-row">'+repeat(a,function(i){return candyBox('盒'+(i+1), b);})+'</div>';
+  }
+  function mathUnit(id,name,emoji,unlockWeek,lessonTitle,lessonSpeak,lessonHTML,demos,questions,review,help,exploreHint){
+    return {id:id,name:name,emoji:emoji,category:'math_concept',unlockWeek:unlockWeek,
+      intro:{title:lessonTitle,speak:lessonSpeak,render:function(st){stageHTML(st,lessonHTML);}},
+      demoSteps:demos,practice:{title:name+' · 选一选',render:function(st){stageHTML(st,'<div class="hint">先想清楚，再选择答案。</div>');},questions:questions},
+      makeReviewQ:review,help:help,exploreHint:exploreHint};
   }
   function peopleRow(n){
     return '<div class="people-row">'+repeat(n,function(i){return '<div class="person" style="animation-delay:'+(i*0.03)+'s">👧</div>';})+'</div>';
@@ -889,10 +927,10 @@
       renderInteract(st.interact, function(){
         document.getElementById('btnDemoNext').style.display='';
       });
-      speak(st.speak);
+      speak(st.speak, isEn?'en-US':'zh-CN');
     } else {
       document.getElementById('btnDemoNext').style.display='';
-      speak(st.speak);
+      speak(st.speak, isEn?'en-US':'zh-CN');
     }
     var dots=document.getElementById('demoDots'); dots.innerHTML='';
     for(var i=0;i<steps.length;i++){ var d=document.createElement('div'); d.className='dot'+(i<=demoStep?' on':''); dots.appendChild(d); }
@@ -972,7 +1010,7 @@
       });
       speak(it.prompt, 'en-US');
     }
-    if(it.kind!=='ket_speak') speak(it.prompt);
+    if(it.kind!=='ket_speak') speak(it.prompt, isEn?'en-US':'zh-CN');
   }
   function nextDemo(){
     if(demoStep<curUnit.demoSteps.length-1){ demoStep++; renderDemo(); }
@@ -1011,6 +1049,7 @@
         setTimeout(function(){ practiceQIdx++; if(practiceQIdx<practiceQs.length) renderPracticeQ(); else finishNew(); }, 1100);
       } else {
         o.classList.add('wrong');
+        addWrong({id:'p|'+curUnit.id+'|'+q.q, subject:currentSubject, unitName:curUnit.name, q:q.q, opts:q.opts, ans:q.ans});
         document.getElementById('practiceFeedback').textContent=isEn?'Try again':'再想想';
         document.getElementById('practiceFeedback').className='feedback soft';
         speak(isEn?'Try again':'再想想', isEn?'en-US':'zh-CN');
@@ -1064,6 +1103,7 @@
       } else {
         o.classList.add('wrong');
         markLearned(box.dataset.unitId, false);
+        addWrong({id:'r|'+u.id+'|'+q.q, subject:currentSubject, unitName:u.name, q:q.q, opts:q.opts, ans:q.ans});
         document.getElementById('reviewFeedback').textContent=isEn?'OK, see it tomorrow':'没关系，明天再见它';
         document.getElementById('reviewFeedback').className='feedback soft';
         speak(isEn?'Try again':'没关系', isEn?'en-US':'zh-CN');
@@ -1538,13 +1578,14 @@
         setTimeout(function(){ mindIdx++; renderMindQ(); }, 900);
       } else {
         o.classList.add('wrong');
+        addWrong({id:'m|'+currentSubject+'|'+item.family.id+'|'+q.q, subject:currentSubject, unitName:'思维场·'+item.family.name, q:q.q, opts:q.opts, ans:q.ans});
         document.getElementById('mindFeedback').textContent=isEn?'Try again':'再想想';
         document.getElementById('mindFeedback').className='feedback soft';
         speak(isEn?'Try again':'再想想', isEn?'en-US':'zh-CN');
         setTimeout(function(){ box.dataset.lock=''; o.classList.remove('wrong'); }, 800);
       }
     });
-    showGate('mindGate', q.q+(q._speak?' ('+q._speak+')':''), function(){
+    showGate('mindGate', q.q, function(){
       if(q._speak) speak(q._speak,'en-US');
     });
   }
@@ -1602,6 +1643,9 @@
       else document.getElementById('homeHint').textContent='先做 🅰 '+SUBJECTS[currentSubject].name+' 内容，再玩 🅱 思维场，一共约 8-10 分钟。';
     } else if(!units.length) document.getElementById('homeHint').textContent='本学科单元筹备中，敬请期待。';
     else document.getElementById('homeHint').textContent='今天主做 🅱 思维场，约 5 分钟。';
+    var _wc=0; try{ _wc=wrongCount()+dictWrongWords().length; }catch(e){}
+    var _bw=document.getElementById('btnToolWrong');
+    if(_bw) _bw.textContent=_wc?('📕 错题本 · '+_wc):'📕 错题本';
   }
 
   /* ================= 每日主流程 ================= */
@@ -1726,22 +1770,96 @@
           {q:'🍌香蕉有几个？',opts:[2,3,4,5],ans:3},
           {q:'水果一共多少个？',opts:[8,9,10,12],ans:10}
         ]},
-      makeReviewQ:function(){var fruits=[{e:'🍎',n:'苹果'},{e:'🍌',n:'香蕉'},{e:'🍊',n:'橙子'},{e:'🍇',n:'葡萄'},{e:'🍓',n:'草莓'}];var pick=fruits[rnd(0,fruits.length-1)];var cnt=rnd(2,5);var total=rnd(8,12);return{q:pick.e+pick.n+'有 '+cnt+' 个，水果一共 '+total+' 个，其他水果有几个？',opts:shuffle([total-cnt,total-cnt-1,total-cnt+1,cnt]),ans:total-cnt};},
+      makeReviewQ:function(){var fruits=[{e:'🍎',n:'苹果'},{e:'🍌',n:'香蕉'},{e:'🍊',n:'橙子'},{e:'🍇',n:'葡萄'},{e:'🍓',n:'草莓'}];var pick=fruits[rnd(0,fruits.length-1)];var cnt=rnd(2,5);var total=rnd(8,12);return{q:pick.e+pick.n+'有 '+cnt+' 个，水果一共 '+total+' 个，其他水果有几个？',opts:makeOpts(total-cnt,[total-cnt-1,total-cnt+1,cnt]),ans:total-cnt};},
       help:'分类就是把同类东西放一起。分类标准不同，每组结果不同，但总数永远不变。',
       exploreHint:'换不同的标准重新分'
-    }
-    /* 后续数学单元按学校进度补：
-       sx_u2_5kouju        5 的乘法口诀       W1
-       sx_u2_234kouju      2/3/4 乘法口诀     W2
-       sx_u2_chengjiaku    乘加乘减           W3
-       sx_u2_6kouju        6 乘法口诀         W4
-       sx_u2_wenti         解决问题（乘法）   W5
-       sx_u3_pingjun       平均分             W5
-       sx_u3_chufa         除法               W6
-       sx_u3_qiushang      求商               W7
-       sx_u3_wenti         解决问题（除法）   W8
-       sx_u4_cmgmi         厘米和米           W9
-       sx_u5_789chengchu   7~9 乘除法         W11
+    },
+    mathUnit('sx_u2_chubu','乘法的初步认识','✖️',1,'相同的数连加，可以用乘法算得更快。','今天学习乘法。相同的数一次次加起来，算式太长了，我们可以用乘法一句话算出来。','<div class="hint">4 盒糖，每盒 3 块</div>'+candyBoxes(4,3)+'<div class="formula">3 + 3 + 3 + 3 = 3 × 4 = 12</div>',[
+      {title:'第 1 步：连加太长了',speak:'4 盒糖，每盒 3 块，一块一块加：3 加 3 加 3 加 3，等于 12。算式好长呀！',render:function(st){stageHTML(st,candyBoxes(4,3)+'<div class="formula">3 + 3 + 3 + 3 = 12</div><div class="hint">相同的数连加，写起来太长啦。</div>');},interact:{prompt:'2 + 2 + 2 一共是多少？',kind:'pick',opts:[4,6,8,10],answer:6}},
+      {title:'第 2 步：换成乘法',speak:'4 个 3 相加，可以写成 3 乘 4，等于 12。乘法就是相同加数的简便算法。',render:function(st){stageHTML(st,'<div class="cmp"><div class="pill blue">3 + 3 + 3 + 3</div><div class="vs">→</div><div class="pill coral">3 × 4 = 12</div></div><div class="hint">读作：3 乘 4 等于 12。</div>');},interact:{prompt:'5 + 5 + 5 用乘法怎么表示？',kind:'pick',opts:['5 × 3','5 + 3','3 + 5','5 × 5'],answer:'5 × 3'}},
+      {title:'第 3 步：乘法各部分的名字',speak:'乘号两边的数叫乘数，算出来的结果叫积。记住：加数相同，才能写成乘法。',render:function(st){stageHTML(st,'<div class="formula"><span class="pill blue">3</span> × <span class="pill blue">4</span> = <span class="pill coral">12</span></div><div class="hint">乘数 × 乘数 = 积</div><div class="pill green" style="margin-top:8px;">✓ 加数相同 → 可以写成乘法</div>');},interact:{prompt:'下面哪个算式能直接改写成乘法？',kind:'pick',opts:['2 + 2 + 2 + 2','1 + 2 + 3 + 4','3 + 4 + 5','2 + 3 + 2'],answer:'2 + 2 + 2 + 2'}}
+    ],[{q:'3 + 3 + 3 + 3 用乘法表示是？',opts:['3 × 4','3 + 4','4 + 3','3 × 3'],ans:'3 × 4'},{q:'4 × 2 = ?',opts:[6,8,10,12],ans:8},{q:'4 × 2 = 8 中，8 叫什么？',opts:['积','乘数','和','差'],ans:'积'}],function(){var a=rnd(2,5),n=rnd(2,5),ans=a*n,s='';for(var i=0;i<n;i++){s+=(i?' + ':'')+a;}return{q:s+' = ?（想一想是几个几）',opts:makeOpts(ans,[ans-a,ans+a,a+n]),ans:ans};},'相同加数连加可以写成乘法：加数 × 个数。乘数 × 乘数 = 积。','把连加变成乘法'),
+    {id:'sx_u2_5kouju',name:'5 的乘法口诀',emoji:'✋',category:'math_concept',unlockWeek:1,
+      intro:{title:'一五得五，二五一十 —— 学会 5 的乘法口诀。',speak:'今天学习 5 的乘法口诀。几个 5 连加，就可以用乘法更快地算出来。',render:function(st){stageHTML(st,candyBoxes(5,5)+'<div class="hint" style="margin-top:10px;">5 盒，每盒 5 块，一共 25 块。</div>');}},
+      demoSteps:[
+        {title:'第 1 步：5 个一组',speak:'一五得五，就是 1 个 5 等于 5。二五一十，就是 2 个 5 等于 10。',render:function(st){stageHTML(st,candyBoxes(2,5)+'<div class="formula">5 × 2 = 10</div>');},interact:{prompt:'🍬 2 个 5 一共是多少？',kind:'pick',opts:[5,8,10,12],answer:10}},
+        {title:'第 2 步：继续数 5',speak:'三五十五，四五二十，五五二十五。每多一组，就多 5 个。',render:function(st){stageHTML(st,'<div class="formula">5 × 1 = 5<br>5 × 2 = 10<br>5 × 3 = 15<br>5 × 4 = 20<br>5 × 5 = 25</div><div class="hint">乘数每增加 1，积就增加 5。</div>');},interact:{prompt:'5 × 4 等于多少？',kind:'pick',opts:[15,20,25,30],answer:20}},
+        {title:'第 3 步：口诀来帮忙',speak:'看到 5 乘几，就想几五。比如 5 乘 3，就想三五十五。',render:function(st){stageHTML(st,'<div class="cmp"><div class="pill blue">5 × 3</div><div class="vs">→</div><div class="pill coral">三五十五</div><div class="vs">→</div><div class="pill green">15</div></div>');},interact:{prompt:'「五五」后面是什么？',kind:'pick',opts:['得五','一十','十五','二十五'],answer:'二十五'}}
+      ],
+      practice:{title:'5 的乘法口诀 · 选一选',render:function(st){stageHTML(st,'<div class="hint">一只手有 5 根手指</div><div style="font-size:54px;text-align:center;">🖐️ 🖐️ 🖐️</div>');},
+        questions:[{q:'5 × 2 = ?',opts:[5,10,15,20],ans:10},{q:'5 × 3 = ?',opts:[10,15,20,25],ans:15},{q:'5 × 5 = ?',opts:[15,20,25,30],ans:25}]},
+      makeReviewQ:function(){var b=rnd(1,5),ans=5*b;return{q:'5 × '+b+' = ?',opts:makeOpts(ans,[ans-5,ans+5, b]),ans:ans};},
+      help:'5 的口诀：一五得五，二五一十，三五十五，四五二十，五五二十五。',exploreHint:'点两个数字，试试乘法'
+    },
+    {id:'sx_u2_234kouju',name:'2、3、4 的乘法口诀',emoji:'🔢',category:'math_concept',unlockWeek:2,
+      intro:{title:'2、3、4 的乘法口诀 —— 让连加变快。',speak:'今天把相同的数连加，变成乘法。2、3、4 的口诀会让我们算得又快又准。',render:function(st){stageHTML(st,'<div class="formula">2 × 4 = 8<br>3 × 4 = 12<br>4 × 4 = 16</div><div class="hint">乘法就是相同加数的简便写法。</div>');}},
+      demoSteps:[
+        {title:'第 1 步：2 的口诀',speak:'二二得四，二三得六，二四得八。2 个一组，数起来很整齐。',render:function(st){stageHTML(st,candyBoxes(4,2)+'<div class="formula">2 × 4 = 8</div>');},interact:{prompt:'2 × 3 等于多少？',kind:'pick',opts:[4,6,8,9],answer:6}},
+        {title:'第 2 步：3 的口诀',speak:'三三得九，三四十二。3 个一组，四组就是 12。',render:function(st){stageHTML(st,candyBoxes(4,3)+'<div class="formula">3 × 4 = 12</div>');},interact:{prompt:'3 × 4 等于多少？',kind:'pick',opts:[7,9,12,14],answer:12}},
+        {title:'第 3 步：4 的口诀',speak:'四四十六。4 个一组，4 组就是 16。',render:function(st){stageHTML(st,candyBoxes(4,4)+'<div class="formula">4 × 4 = 16</div>');},interact:{prompt:'4 × 4 等于多少？',kind:'pick',opts:[12,14,16,20],answer:16}}
+      ],
+      practice:{title:'2、3、4 的口诀 · 选一选',render:function(st){stageHTML(st,'<div class="hint">相同的数相加，可以用乘法表示。</div><div class="formula">3 + 3 + 3 + 3 = 3 × 4</div>');},
+        questions:[{q:'2 × 4 = ?',opts:[6,8,10,12],ans:8},{q:'3 × 3 = ?',opts:[6,8,9,12],ans:9},{q:'4 × 3 = ?',opts:[8,10,12,16],ans:12}]},
+      makeReviewQ:function(){var a=rnd(2,4),b=rnd(2,4),ans=a*b;return{q:a+' × '+b+' = ?',opts:makeOpts(ans,[ans-a,ans+a,ans+2]),ans:ans};},
+      help:'口诀提示：二三得六、二四得八、三三得九、三四十二、四四十六。',exploreHint:'点两个数字看乘积'
+    },
+    {id:'sx_u2_chengjiaku',name:'乘加乘减',emoji:'➕',category:'math_concept',unlockWeek:3,
+      intro:{title:'先乘后加减 —— 乘加乘减要有顺序。',speak:'算乘加乘减时，先算乘法，再算加法或减法。',render:function(st){stageHTML(st,'<div class="formula">3 × 4 + 2<br><span class="hint">先算 3 × 4，再加 2</span></div>');}},
+      demoSteps:[
+        {title:'第 1 步：看图列式',speak:'3 组，每组 4 个，再多 2 个，就是 3 乘 4 加 2。',render:function(st){stageHTML(st,candyBoxes(3,4)+'<div class="hint">另外还有 🍬🍬 2 个</div><div class="formula">3 × 4 + 2 = 14</div>');},interact:{prompt:'3 × 4 + 2 = ?',kind:'pick',opts:[12,14,16,18],answer:14}},
+        {title:'第 2 步：先乘法',speak:'先算乘法：2 乘 5 等于 10，再加 3，等于 13。',render:function(st){stageHTML(st,'<div class="formula"><span class="pill coral">2 × 5</span> + 3<br>↓<br>10 + 3 = 13</div>');},interact:{prompt:'2 × 5 + 3 = ?',kind:'pick',opts:[10,12,13,15],answer:13}},
+        {title:'第 3 步：乘减',speak:'乘减也一样，先算乘法。4 乘 3 等于 12，减去 2 等于 10。',render:function(st){stageHTML(st,'<div class="formula">4 × 3 − 2<br>= 12 − 2<br>= 10</div>');},interact:{prompt:'4 × 3 − 2 = ?',kind:'pick',opts:[8,10,12,14],answer:10}}
+      ],
+      practice:{title:'乘加乘减 · 先算乘法',render:function(st){stageHTML(st,'<div class="hint">小口诀：先乘后加减。</div><div class="formula">乘法 → 加法 / 减法</div>');},
+        questions:[{q:'3 × 2 + 1 = ?',opts:[6,7,8,9],ans:7},{q:'2 × 4 + 3 = ?',opts:[9,10,11,12],ans:11},{q:'3 × 3 − 2 = ?',opts:[5,7,9,11],ans:7}]},
+      makeReviewQ:function(){var a=rnd(2,4),b=rnd(2,5),c=rnd(1,3),minus=Math.random()<.5,ans=a*b+(minus?-c:c);return{q:a+' × '+b+(minus?' − ':' + ')+c+' = ?',opts:makeOpts(ans,[a*b,ans+2,ans-2]),ans:ans};},
+      help:'乘加乘减要先算乘法，再算加法或减法。',exploreHint:'试试先算乘法再加减'
+    },
+    mathUnit('sx_u2_6kouju','6 的乘法口诀','🎲',4,'一六得六，六六三十六 —— 学会 6 的乘法口诀。','今天学习 6 的乘法口诀。6 个一组，数起来也很整齐，一句一句把它记住。','<div class="formula">一六得六 · 二六十二 · 三六十八<br>四六二十四 · 五六三十 · 六六三十六</div>',[
+      {title:'第 1 步：6 的口诀（上）',speak:'一六得六，二六十二，三六十八。每多一组，就多 6 个。',render:function(st){stageHTML(st,candyBoxes(3,6)+'<div class="formula">6 × 1 = 6<br>6 × 2 = 12<br>6 × 3 = 18</div>');},interact:{prompt:'6 × 2 = ?',kind:'pick',opts:[8,10,12,14],answer:12}},
+      {title:'第 2 步：6 的口诀（下）',speak:'四六二十四，五六三十，六六三十六。',render:function(st){stageHTML(st,'<div class="formula">6 × 4 = 24<br>6 × 5 = 30<br>6 × 6 = 36</div><div class="hint">乘数每增加 1，积就增加 6。</div>');},interact:{prompt:'6 × 5 = ?',kind:'pick',opts:[24,25,30,36],answer:30}},
+      {title:'第 3 步：口诀来帮忙',speak:'看到 6 乘几，就想几六。比如 6 乘 4，就想四六二十四。',render:function(st){stageHTML(st,'<div class="cmp"><div class="pill blue">6 × 4</div><div class="vs">→</div><div class="pill coral">四六二十四</div><div class="vs">→</div><div class="pill green">24</div></div>');},interact:{prompt:'「六六」后面是什么？',kind:'pick',opts:['二十四','三十','三十六','四十'],answer:'三十六'}}
+    ],[{q:'6 × 3 = ?',opts:[12,16,18,24],ans:18},{q:'6 × 4 = ?',opts:[18,20,24,28],ans:24},{q:'6 × 6 = ?',opts:[30,32,36,42],ans:36}],function(){var b=rnd(1,6),ans=6*b;return{q:'6 × '+b+' = ?',opts:makeOpts(ans,[ans-6,ans+6,b]),ans:ans};},'6 的口诀：一六得六、二六十二、三六十八、四六二十四、五六三十、六六三十六。','数一数 6 个一组'),
+    mathUnit('sx_u2_wenti','乘法解决问题','🎁',5,'用乘法解决"一共多少"的问题。','遇到"每份有几个、有几份，一共多少"的问题，就用乘法来解决。','<div class="formula">一辆小车坐 6 人，3 辆坐多少人？<br>6 × 3 = 18（人）</div>',[
+      {title:'第 1 步：找每份数和份数',speak:'一辆坐 6 人，这是每份数；3 辆车，这是份数。找到它们，问题就清楚啦。',render:function(st){stageHTML(st,'<div class="cmp"><div class="pill blue">每份 6 人</div><div class="vs">×</div><div class="pill blue">3 份</div><div class="vs">=</div><div class="pill coral">18 人</div></div>');},interact:{prompt:'每盒 5 块饼干，4 盒一共多少块？',kind:'pick',opts:[9,15,20,25],answer:20}},
+      {title:'第 2 步：用口诀列算式',speak:'6 乘 3，想口诀三六十八，等于 18 人。',render:function(st){stageHTML(st,'<div class="formula">6 × 3 = 18（人）<br><span class="hint">口诀：三六十八</span></div>');},interact:{prompt:'每本书 4 元，买 3 本一共多少元？',kind:'pick',opts:[7,10,12,16],answer:12}},
+      {title:'第 3 步：检查别忘了单位',speak:'算完检查一下：18 除以 3 等于 6，每辆车 6 人，没错。别忘了写单位"人"。',render:function(st){stageHTML(st,'<div class="formula">6 × 3 = 18（人）✓<br><span class="hint">检查：18 ÷ 3 = 6，对啦</span></div><div class="pill green" style="margin-top:8px;">✓ 答句要带单位</div>');},interact:{prompt:'一排坐 5 人，6 排一共坐多少人？',kind:'pick',opts:[11,25,30,35],answer:30}}
+    ],[{q:'每盒 6 支彩笔，5 盒一共多少支？',opts:[11,24,30,35],ans:30},{q:'一辆车 4 个轮子，6 辆车多少个轮子？',opts:[10,18,24,28],ans:24},{q:'每本书 4 元，买 6 本一共多少元？',opts:[10,18,24,28],ans:24}],function(){var per=rnd(2,6),n=rnd(2,6),ans=per*n;return{q:'每份 '+per+' 个，'+n+' 份一共多少个？',opts:makeOpts(ans,[per+n,ans-per,ans+per]),ans:ans};},'求一共多少：每份数 × 份数 = 总数，答完别忘了单位。','找一找身边的乘法'),
+    mathUnit('sx_u3_pingjun','平均分','🍪',5,'每份分得同样多 —— 这就是平均分。','今天学平均分。分东西的时候，每份分得同样多，就叫平均分。',shareCookies(12,3,4)+'<div class="formula">12 块饼干，平均分给 3 人，每人 4 块</div>',[
+      {title:'第 1 步：什么是平均分',speak:'8 块饼干分给 4 个人，每人 2 块，每份同样多，这就是平均分。',render:function(st){stageHTML(st,shareCookies(8,4,2)+'<div class="hint">每份都是 2 块，同样多 ✓</div>');},interact:{prompt:'8 块饼干平均分给 4 人，每人几块？',kind:'pick',opts:[1,2,3,4],answer:2}},
+      {title:'第 2 步：两种分法',speak:'可以平均分成几份，求每份几个；也可以每几个一份，求能分几份。',render:function(st){stageHTML(st,'<div class="cmp"><div class="pill blue">15 个橘子 · 平均分 3 份</div><div class="vs">→</div><div class="pill coral">每份 5 个</div></div><div class="cmp"><div class="pill blue">15 个橘子 · 每 5 个一份</div><div class="vs">→</div><div class="pill coral">分 3 份</div></div>');},interact:{prompt:'10 个气球，每 2 个一束，能分成几束？',kind:'pick',opts:[3,4,5,6],answer:5}},
+      {title:'第 3 步：判断是不是平均分',speak:'关键看每份是不是同样多。每份同样多才是平均分，不一样多就不是。',render:function(st){stageHTML(st,'<div class="pill green">✓ 每份都是 3 个 —— 平均分</div><div class="pill coral" style="margin-top:8px;">✗ 3 个、4 个、5 个 —— 不是</div>');},interact:{prompt:'下面哪种是平均分？',kind:'pick',opts:['每份都是 3 个','3 个、4 个、5 个','2 个、6 个','1 个、3 个'],answer:'每份都是 3 个'}}
+    ],[{q:'12 支铅笔平均分给 3 人，每人几支？',opts:[3,4,5,6],ans:4},{q:'9 个苹果，每 3 个放一盘，放几盘？',opts:[2,3,4,6],ans:3},{q:'6 朵花平均插在 2 个瓶子里，每瓶几朵？',opts:[2,3,4,6],ans:3}],function(){var per=rnd(2,6),n=rnd(2,6),total=per*n;if(Math.random()<.5)return{q:total+' 个物品平均分成 '+n+' 份，每份几个？',opts:makeOpts(per,[per+1,per-1,per+2]),ans:per};return{q:total+' 个物品，每 '+per+' 个一份，能分几份？',opts:makeOpts(n,[n+1,n-1,n+2]),ans:n};},'平均分就是每份分得同样多。总数、份数、每份数，知道两个就能求第三个。','摆一摆，分一分'),
+    mathUnit('sx_u3_chufa','除法的初步认识','➗',6,'平均分可以用除法来算。','今天认识除法。平均分的问题，可以写成除法算式，一眼就能看清楚。','<div class="formula">12 ÷ 3 = 4<br><span class="hint">读作：12 除以 3 等于 4</span></div>',[
+      {title:'第 1 步：平均分写成除法',speak:'12 个橘子平均放进 3 个盘子，就是 12 除以 3 等于 4，每盘 4 个。',render:function(st){stageHTML(st,'<div class="cmp"><div class="pill blue">12 个橘子 · 3 个盘子</div><div class="vs">→</div><div class="pill coral">12 ÷ 3 = 4（个）</div></div>');},interact:{prompt:'15 块饼干平均分给 5 人，算式是？',kind:'pick',opts:['15 ÷ 5','5 ÷ 15','15 × 5','15 + 5'],answer:'15 ÷ 5'}},
+      {title:'第 2 步：除法各部分的名字',speak:'除号前面的叫被除数，除号后面的叫除数，算出来的结果叫商。',render:function(st){stageHTML(st,'<div class="formula"><span class="pill blue">12</span> ÷ <span class="pill blue">3</span> = <span class="pill coral">4</span></div><div class="hint">被除数 ÷ 除数 = 商</div>');},interact:{prompt:'12 ÷ 3 = 4 中，3 叫什么？',kind:'pick',opts:['除数','被除数','商','积'],answer:'除数'}},
+      {title:'第 3 步：每几个一份也用除法',speak:'每 4 个装一箱，20 个球能装几箱？也是除法：20 除以 4 等于 5 箱。',render:function(st){stageHTML(st,'<div class="formula">20 个球 · 每 4 个一箱<br>20 ÷ 4 = 5（箱）</div>');},interact:{prompt:'20 ÷ 4 = ?',kind:'pick',opts:[3,4,5,6],answer:5}}
+    ],[{q:'10 ÷ 2 = ?',opts:[3,4,5,6],ans:5},{q:'18 ÷ 6 = ?',opts:[2,3,4,6],ans:3},{q:'12 ÷ 4 = ?',opts:[2,3,4,5],ans:3}],function(){var n=rnd(2,6),per=rnd(2,6),total=n*per;return{q:total+' ÷ '+n+' = ?',opts:makeOpts(per,[per+1,per-1,per+2]),ans:per};},'平均分可以用除法：被除数 ÷ 除数 = 商，"÷"读作"除以"。','分一分，写除法'),
+    mathUnit('sx_u3_qiushang','用 2~6 的口诀求商','🔑',7,'想乘法口诀，就能算除法。','今天学用口诀求商。除法算不出来的时候，倒着想一句乘法口诀，答案就出来了。','<div class="formula">3 × 4 = 12<br>12 ÷ 3 = 4　　12 ÷ 4 = 3<br><span class="hint">口诀：三四十二</span></div>',[
+      {title:'第 1 步：想口诀求商',speak:'12 除以 3 等于几？想：三几十二？三四十二，所以商是 4。',render:function(st){stageHTML(st,'<div class="cmp"><div class="pill blue">12 ÷ 3 = ?</div><div class="vs">→</div><div class="pill coral">三（四）十二</div><div class="vs">→</div><div class="pill green">4</div></div>');},interact:{prompt:'12 ÷ 3 = ？想：三几十二？',kind:'pick',opts:[2,3,4,6],answer:4}},
+      {title:'第 2 步：一句口诀两道除法',speak:'二四得八，既能算 8 除以 2 等于 4，也能算 8 除以 4 等于 2。',render:function(st){stageHTML(st,'<div class="cmp"><div class="pill blue">二四得八</div><div class="vs">→</div><div class="pill coral">8 ÷ 2 = 4</div></div><div class="cmp"><div class="pill blue">二四得八</div><div class="vs">→</div><div class="pill coral">8 ÷ 4 = 2</div></div>');},interact:{prompt:'8 ÷ 4 = ?',kind:'pick',opts:[2,3,4,6],answer:2}},
+      {title:'第 3 步：乘除互相检查',speak:'算完除法，可以用乘法检查：4 乘 3 等于 12，所以 12 除以 4 等于 3，没错。',render:function(st){stageHTML(st,'<div class="formula">4 × 3 = 12 ✓<br>所以 12 ÷ 4 = 3</div><div class="pill green" style="margin-top:8px;">✓ 乘法和除法是好朋友</div>');},interact:{prompt:'6 ÷ 2 = ?',kind:'pick',opts:[2,3,4,5],answer:3}}
+    ],[{q:'12 ÷ 6 = ?',opts:[2,3,4,6],ans:2},{q:'15 ÷ 5 = ?',opts:[2,3,4,5],ans:3},{q:'18 ÷ 3 = ?',opts:[4,5,6,7],ans:6}],function(){var d=rnd(2,6),q2=rnd(2,6),total=d*q2;return{q:total+' ÷ '+d+' = ?想：'+d+' 乘几等于 '+total+'？',opts:makeOpts(q2,[q2+1,q2-1,q2+2]),ans:q2};},'除法想口诀：12 ÷ 3，想"三四十二"，商就是 4。做完用乘法检查。','倒着背口诀'),
+    mathUnit('sx_u3_wenti','除法解决问题','🧺',8,'用除法解决生活中的平均分问题。','遇到平均分的问题，可以先找总数和份数，再用除法求每份有多少。','<div class="formula">18 个橘子，平均装进 3 个篮子。<br>18 ÷ 3 = 6（个）</div>',[
+      {title:'第 1 步：找总数和份数',speak:'题目告诉我们有 18 个橘子，要平均装进 3 个篮子。18 是总数，3 是份数。',render:function(st){stageHTML(st,'<div class="formula">总数：18 个<br>份数：3 个篮子</div>');},interact:{prompt:'18 个橘子平均装进 3 个篮子，每个篮子几个？',kind:'pick',opts:[5,6,7,9],answer:6}},
+      {title:'第 2 步：列除法算式',speak:'用总数除以份数：18 除以 3 等于 6。每个篮子装 6 个。',render:function(st){stageHTML(st,'<div class="formula">18 ÷ 3 = 6（个）</div><div class="hint">答：每个篮子装 6 个。</div>');},interact:{prompt:'20 本书平均放在 5 层书架，每层几本？',kind:'pick',opts:[3,4,5,6],answer:4}},
+      {title:'第 3 步：检查答案',speak:'用每份数乘份数检查：6 乘 3 等于 18，说明答案正确。',render:function(st){stageHTML(st,'<div class="formula">6 × 3 = 18<br>所以 18 ÷ 3 = 6</div>');},interact:{prompt:'16 支铅笔平均分给 4 人，每人几支？',kind:'pick',opts:[2,3,4,5],answer:4}}
+    ],[{q:'14 个气球平均分给 2 人，每人几个？',opts:[5,6,7,8],ans:7},{q:'24 个苹果平均放进 6 盘，每盘几个？',opts:[3,4,5,6],ans:4},{q:'15 本书平均放在 3 层，每层几本？',opts:[3,4,5,6],ans:5}],function(){var d=rnd(2,6),per=rnd(2,6),total=d*per;return{q:total+' 个物品平均分成 '+d+' 份，每份几个？',opts:makeOpts(per,[per-1,per+1,d]),ans:per};},'解决平均分问题：总数 ÷ 份数 = 每份数，再用乘法检查。','摆一摆，平均分一分'),
+    mathUnit('sx_u4_cmgmi','厘米和米','📏',9,'认识厘米和米 —— 用尺子量长度。','今天认识长度单位厘米和米。较短的物体常用厘米，较长的距离可以用米。','<div class="formula">1 米 = 100 厘米<br>铅笔约 15 厘米<br>教室门高约 2 米</div>',[
+      {title:'第 1 步：认识厘米',speak:'尺子上相邻两条小刻度之间是 1 厘米。铅笔、橡皮这些小物体常用厘米。',render:function(st){stageHTML(st,ruler(10,6)+'<div class="hint">从 0 刻度开始量，读到 6，就是 6 厘米。</div>');},interact:{prompt:'橡皮长约 5 什么？',kind:'pick',opts:['厘米','米','千米','斤'],answer:'厘米'}},
+      {title:'第 2 步：认识米',speak:'米是比厘米大的长度单位。教室、操场这些较长的地方可以用米。',render:function(st){stageHTML(st,'<div class="formula">课桌长：约 1 米<br>教室门高：约 2 米<br>铅笔长：约 15 厘米</div>');},interact:{prompt:'教室门高约 2 什么？',kind:'pick',opts:['厘米','米','毫米','克'],answer:'米'}},
+      {title:'第 3 步：厘米和米的关系',speak:'1 米等于 100 厘米。看到“米”换成“厘米”，要乘 100。',render:function(st){stageHTML(st,'<div class="formula">1 米 = 100 厘米<br>2 米 = 200 厘米</div>');},interact:{prompt:'1 米等于多少厘米？',kind:'pick',opts:[10,50,100,1000],answer:100}}
+    ],[{q:'一本练习本长约 25 什么？',opts:['厘米','米','千米','斤'],ans:'厘米'},{q:'操场跑道长约 100 什么？',opts:['厘米','米','毫米','克'],ans:'米'},{q:'2 米等于多少厘米？',opts:[20,100,200,1000],ans:200}],function(){var m=rnd(1,5);return{q:m+' 米 = ? 厘米',opts:makeOpts(m*100,[(m-1)*100,(m+1)*100,m*10]),ans:m*100};},'短物体常用厘米，长距离常用米；1 米 = 100 厘米。','用尺子量一量'),
+    mathUnit('sx_u5_789chengchu','7、8、9 的乘除法','🚀',11,'用口诀挑战 7、8、9 的乘除法。','我们把乘法口诀继续学到 9，再用口诀反过来做除法。','<div class="formula">7 × 8 = 56<br>8 × 9 = 72<br>72 ÷ 8 = 9</div>',[
+      {title:'第 1 步：7 的口诀',speak:'七八五十六，七九六十三。记住口诀，就能快速算乘法。',render:function(st){stageHTML(st,'<div class="formula">7 × 7 = 49<br>7 × 8 = 56<br>7 × 9 = 63</div>');},interact:{prompt:'7 × 8 = ?',kind:'pick',opts:[48,54,56,63],answer:56}},
+      {title:'第 2 步：8 和 9 的口诀',speak:'八八六十四，八九七十二，九九八十一。',render:function(st){stageHTML(st,'<div class="formula">8 × 8 = 64<br>8 × 9 = 72<br>9 × 9 = 81</div>');},interact:{prompt:'8 × 9 = ?',kind:'pick',opts:[63,64,72,81],answer:72}},
+      {title:'第 3 步：乘除法互相检查',speak:'因为 8 乘 9 等于 72，所以 72 除以 8 等于 9。',render:function(st){stageHTML(st,'<div class="formula">8 × 9 = 72<br>72 ÷ 8 = 9<br>72 ÷ 9 = 8</div>');},interact:{prompt:'72 ÷ 9 = ?',kind:'pick',opts:[6,7,8,9],answer:8}}
+    ],[{q:'7 × 9 = ?',opts:[54,56,63,72],ans:63},{q:'8 × 8 = ?',opts:[56,64,72,81],ans:64},{q:'63 ÷ 7 = ?',opts:[7,8,9,10],ans:9}],function(){var a=rnd(7,9),b=rnd(2,9),ans=a*b;return{q:a+' × '+b+' = ?',opts:makeOpts(ans,[ans-a,ans+a,ans+3]),ans:ans};},'熟记七、八、九的口诀，并用乘法口诀反过来求商。','挑战大九九')
+    /* 2024 新版人教二上 · 学校同步单元已补齐（2026-09-10）：
+       W0 分类与整理 → W1 乘法的初步认识 / 5口诀 → W2 2-4口诀 → W3 乘加乘减
+       → W4 6口诀 → W5 乘法解决问题 / 平均分 → W6 除法的初步认识 → W7 用2~6口诀求商
+       → W8 除法解决问题 → W9 厘米和米 → W11 7~9乘除法
+       待补（综合实践，P1）：校园小导游（东南西北）约 W8、身体上的尺子约 W10
     */
   ];
   UNITS_BY_SUBJECT.math = MATH_UNITS;
@@ -1915,7 +2033,8 @@
   */
 
   /* 笔顺数据：每个字 = 笔画名列表 */
-  var STROKE_DATA = {"一": ["横"], "二": ["横", "横"], "三": ["横", "横", "横"], "十": ["横", "竖"], "上": ["竖", "横", "横"], "下": ["横", "竖", "点"], "人": ["撇", "捺"], "口": ["竖", "横折", "横", "横"], "日": ["竖", "横折", "横", "横", "竖"], "山": ["竖", "竖折", "竖"], "水": ["竖钩", "横撇", "撇", "捺"], "火": ["点", "撇", "捺"], "木": ["横", "竖", "撇", "捺"], "禾": ["撇", "横", "竖", "横", "横"], "月": ["撇", "横折", "横", "横", "横"], "六": ["点", "横", "撇", "点"], "八": ["撇", "捺"], "九": ["横折钩", "撇"], "又": ["横折", "撇", "捺"], "本": ["横", "竖", "撇", "捺", "横"], "林": ["横", "竖", "撇", "捺", "横", "竖", "撇", "捺"], "土": ["横", "竖", "横"], "牛": ["撇", "横", "横", "竖", "横"], "羊": ["点", "撇", "横", "横", "竖", "横"], "马": ["横折", "竖", "横", "竖", "横"], "鸟": ["撇", "竖", "横折", "点", "横", "竖", "横"], "鱼": ["横", "竖", "点", "撇", "捺", "横", "竖"], "竹": ["撇", "横", "竖", "撇", "横", "竖钩"], "石": ["横", "撇", "竖", "横折", "横"], "田": ["竖", "横折", "横", "横", "竖", "横"], "手": ["撇", "横", "横", "竖钩"], "足": ["竖", "横折", "横", "横", "竖", "横", "撇", "捺"], "心": ["点", "卧钩", "点", "点"], "天": ["横", "横", "撇", "捺"], "目": ["竖", "横折", "横", "横", "横", "横", "竖"], "耳": ["横", "竖", "竖", "横", "横", "横"], "毛": ["撇", "横", "横", "竖弯钩"], "四": ["竖", "横折", "横", "竖折", "竖", "横"], "五": ["横", "横", "竖", "横", "横"], "七": ["横", "竖弯钩"], "风": ["撇", "横折弯", "竖", "横"], "雨": ["横", "竖", "横折", "竖", "点", "点", "点", "点"], "云": ["横折", "横", "撇", "捺"], "雪": ["横", "竖", "横折", "竖", "点", "横", "撇", "捺"], "花": ["横", "竖", "撇", "竖", "横", "竖", "横", "竖", "点"], "果": ["竖", "横折", "横", "横", "竖", "横", "横", "竖"]};
+  var STROKE_DATA = {"一": ["横"], "二": ["横", "横"], "三": ["横", "横", "横"], "十": ["横", "竖"], "上": ["竖", "横", "横"], "下": ["横", "竖", "点"], "人": ["撇", "捺"], "口": ["竖", "横折", "横", "横"], "日": ["竖", "横折", "横", "横", "竖"], "山": ["竖", "竖折", "竖"], "水": ["竖钩", "横撇", "撇", "捺"], "火": ["点", "撇", "捺"], "木": ["横", "竖", "撇", "捺"], "禾": ["撇", "横", "竖", "横", "横"], "月": ["撇", "横折", "横", "横", "横"], "六": ["点", "横", "撇", "点"], "八": ["撇", "捺"], "九": ["横折钩", "撇"], "又": ["横折", "撇", "捺"], "本": ["横", "竖", "撇", "捺", "横"], "林": ["横", "竖", "撇", "捺", "横", "竖", "撇", "捺"], "土": ["横", "竖", "横"], "牛": ["撇", "横", "横", "竖", "横"], "羊": ["点", "撇", "横", "横", "竖", "横"], "马": ["横折", "竖", "横", "竖", "横"], "鸟": ["撇", "竖", "横折", "点", "横", "竖", "横"], "鱼": ["横", "竖", "点", "撇", "捺", "横", "竖"], "竹": ["撇", "横", "竖", "撇", "横", "竖钩"], "石": ["横", "撇", "竖", "横折", "横"], "田": ["竖", "横折", "横", "横", "竖", "横"], "手": ["撇", "横", "横", "竖钩"], "足": ["竖", "横折", "横", "横", "竖", "横", "撇", "捺"], "心": ["点", "卧钩", "点", "点"], "天": ["横", "横", "撇", "捺"], "目": ["竖", "横折", "横", "横", "横", "横", "竖"], "耳": ["横", "竖", "竖", "横", "横", "横"], "毛": ["撇", "横", "横", "竖弯钩"], "四": ["竖", "横折", "横", "竖折", "竖", "横"], "五": ["横", "横", "竖", "横", "横"], "七": ["横", "竖弯钩"], "风": ["撇", "横折弯", "竖", "横"], "雨": ["横", "竖", "横折", "竖", "点", "点", "点", "点"], "云": ["横折", "横", "撇", "捺"], "雪": ["横", "竖", "横折", "竖", "点", "横", "撇", "捺"], "花": ["横", "竖", "撇", "竖", "横", "竖", "横", "竖", "点"], "果": ["竖", "横折", "横", "横", "竖", "横", "横", "竖"],
+    "两": ["横", "竖", "横折钩", "撇", "点", "撇", "点"], "哪": ["竖", "横折", "横", "横折钩", "竖", "横折钩", "竖"], "跳": ["竖", "横折", "横", "竖", "横", "撇", "点", "提", "撇", "点"], "变": ["点", "横", "竖", "竖", "撇", "点", "横撇", "捺"], "海": ["点", "点", "提", "撇", "横", "竖折", "横折钩", "点", "横", "点"], "法": ["点", "点", "提", "横", "竖", "横", "撇折", "点"], "娃": ["撇点", "撇", "横", "横", "竖", "横", "横", "竖", "横"], "园": ["竖", "横折", "横", "撇", "竖弯钩", "横"], "桥": ["横", "竖", "撇", "点", "撇", "横", "撇", "捺", "撇", "竖"], "队": ["横折钩", "竖", "撇", "捺"], "铜": ["撇", "横", "横", "横", "竖提", "竖", "横折钩", "横"], "杨": ["横", "竖", "撇", "点", "横折折折钩", "撇", "撇"], "枫": ["横", "竖", "撇", "点", "撇", "横折弯钩", "撇", "点"], "松": ["横", "竖", "撇", "点", "撇", "捺", "撇", "点"], "柏": ["横", "竖", "撇", "点", "撇", "竖", "横折", "横", "横"], "歌": ["横", "竖", "横折", "横", "竖", "横折", "横", "横", "撇", "横撇", "撇", "捺"], "猫": ["撇", "弯钩", "撇", "点", "横", "竖", "竖", "横折", "横", "竖", "横"], "季": ["撇", "横", "竖", "撇", "捺", "横撇", "竖钩", "横"], "农": ["点", "横撇", "撇", "竖提", "撇", "捺"], "忙": ["点", "点", "竖", "点", "横", "竖折"], "年": ["撇", "横", "横", "竖", "横", "竖"]};
 
   var CHINESE_UNITS=[
     /* ---------- U1 阅读·自然现象（W0 学校已学完）---------- */
@@ -2013,19 +2132,32 @@
       intro:{title:'学写汉字 —— 按正确的笔画顺序。',speak:'今天来学 30 个生字的笔画顺序。每个字都有笔顺，按顺序写才好看。',render:function(st){var sampleWords=['两','跳','变','海','法','毛','园','桥','队','铜','杨','枫','松','歌','熊','猫','季','农','忙','年'];stageHTML(st,'<div class="hint">本单元综合学 30 个字的笔顺</div><div class="word-grid">'+sampleWords.map(function(w){var strokes=STROKE_DATA[w]||[];return '<div class="word-card bs-mini"><div class="han" style="font-size:36px;color:var(--green);">'+w+'</div><div class="bs-strokes" style="font-size:11px;">'+strokes.join('/')+'</div><div class="hint-mini">'+strokes.length+' 笔</div></div>';}).join('')+'</div>');}},
       demoSteps:[
         {title:'第 1 步：什么是笔顺',speak:'笔顺就是写字的顺序 —— 先写哪一笔，后写哪一笔。按笔顺写，字才好看。',render:function(st){stageHTML(st,'<div class="hint">笔顺 = 写字的先后顺序</div><div class="pill green" style="margin-bottom:10px;">✓ 从上到下</div><div class="pill green" style="margin-bottom:10px;">✓ 从左到右</div><div class="pill green">✓ 按顺序写，字才好看</div>');},interact:{prompt:'笔顺是什么意思？',kind:'pick',opts:['写字的先后顺序','字的读音','字的意思','字的颜色'],answer:'写字的先后顺序'}},
-        {title:'第 2 步：学写「两」',speak:'「两」一共 7 笔：点、横、撇、横、横、竖、撇。',render:function(st){stageHTML(st,'<div class="bs-card"><div class="bs-han" style="font-size:80px;">两</div><div class="bs-strokes" style="font-size:18px;">'+STROKE_DATA['两'].map(function(s,i){return '<span class="bs-step" style="font-size:18px;">'+(i+1)+'. '+s+'</span>';}).join('<span class="bs-arrow">→</span>')+'</div></div><div class="hint" style="margin-top:10px;">用手指在屏幕上按顺序划 —— 点、横、撇、横、横、竖、撇</div>');},interact:{prompt:'「两」一共有几笔？',kind:'pick',opts:[5,6,7,8],answer:7}},
+        {title:'第 2 步：学写「两」',speak:'「两」一共 7 笔：横、竖、横折钩、撇、点、撇、点。',render:function(st){stageHTML(st,'<div class="bs-card"><div class="bs-han" style="font-size:80px;">两</div><div class="bs-strokes" style="font-size:18px;">'+STROKE_DATA['两'].map(function(s,i){return '<span class="bs-step" style="font-size:18px;">'+(i+1)+'. '+s+'</span>';}).join('<span class="bs-arrow">→</span>')+'</div></div><div class="hint" style="margin-top:10px;">用手指在屏幕上按顺序划 —— 横、竖、横折钩、撇、点、撇、点</div>');},interact:{prompt:'「两」一共有几笔？',kind:'pick',opts:[5,6,7,8],answer:7}},
         {title:'第 3 步：学写「海」',speak:'「海」一共 10 笔：「氵」3 笔 + 「每」7 笔。',render:function(st){stageHTML(st,'<div class="bs-card"><div class="bs-han" style="font-size:80px;">海</div><div class="bs-strokes" style="font-size:18px;">氵(点/点/提) + 每(撇/横/竖/横折/横/横/横) = 10 笔</div></div><div class="hint" style="margin-top:10px;">三点水「氵」在左，每字在右。</div>');},interact:{prompt:'「海」字左边是什么偏旁？',kind:'pick',opts:['氵','木','讠','口'],answer:'氵'}}
       ],
       practice:{title:'写字笔顺 · 看字认笔画',render:function(st){var words=['两','跳','变','海','法','毛','园','桥','队','铜','杨','枫','松','歌','熊','猫','季','农','忙','年'];var w=words[rnd(0,words.length-1)];var strokes=STROKE_DATA[w]||[];stageHTML(st,'<div class="bs-card"><div class="bs-han" style="font-size:100px;">'+w+'</div><div class="bs-strokes">'+strokes.map(function(s,i){return '<span class="bs-step">'+(i+1)+'. '+s+'</span>';}).join('<span class="bs-arrow">→</span>')+'</div><div class="hint-mini">'+strokes.length+' 笔</div></div>');window._bsCurrent=strokes;},
         questions:[
-          {q:'「两」的第一笔是什么？',opts:['点','横','撇','竖'],ans:'点'},
+          {q:'「两」的第一笔是什么？',opts:['点','横','撇','竖'],ans:'横'},
           {q:'「海」有几笔？',opts:[8,9,10,11],ans:10},
           {q:'「毛」有几笔？',opts:[3,4,5,6],ans:4}
         ]},
-      makeReviewQ:function(){var words=['两','跳','变','海','法','毛','园','桥','队','铜','杨','枫','松','歌','熊','猫','季','农','忙','年'];var w=words[rnd(0,words.length-1)];var strokes=STROKE_DATA[w]||[];return{q:'「'+w+'」的第一笔是什么？',opts:shuffle(['点','横','撇','竖']),ans:strokes[0]||'点'};},
+      makeReviewQ:function(){var words=['两','跳','变','海','法','毛','园','桥','队','铜','杨','枫','松','歌','熊','猫','季','农','忙','年'];var w=words[rnd(0,words.length-1)];var strokes=STROKE_DATA[w]||[];var first=strokes[0]||'点';var pool=['点','横','竖','撇','捺','横折','横折钩','竖弯钩','提'];var dis=pool.filter(function(p){return p!==first;});shuffle(dis);return{q:'「'+w+'」的第一笔是什么？',opts:shuffle([first,dis[0],dis[1],dis[2]]),ans:first};},
       help:'每个字都有笔顺，按顺序写才好看。点/横/竖/撇/捺/折/钩/提。',
       exploreHint:'点字卡，看笔顺怎么写'
-    }
+    },
+    /* ---------- U3 彩虹与想象（W3）---------- */
+    {id:'yu_u3_xiangxiang',name:'彩虹与想象',emoji:'🌈',category:'zh_reading',unlockWeek:3,
+      intro:{title:'读懂小诗，展开想象 —— 彩虹可以变成什么？',speak:'今天读一读彩虹和夜空的小故事，学会从颜色、形状和心情展开想象。',render:function(st){stageHTML(st,'<div class="poem">彩虹像一座小桥，<br>挂在雨后的天空。<br>我想走上去，<br>和星星打个招呼。</div><div class="hint">读一读：彩虹、天空、星星、想象。</div>');}},
+      demoSteps:[
+        {title:'第 1 步：找出写景词',speak:'彩虹、天空、星星，都是写景的词语。读文章时，先找出看到的景物。',render:function(st){stageHTML(st,'<div class="word-grid"><div class="word-card"><div class="emoji">🌈</div><div class="han">彩虹</div></div><div class="word-card"><div class="emoji">🌤️</div><div class="han">天空</div></div><div class="word-card"><div class="emoji">⭐</div><div class="han">星星</div></div></div>');},interact:{prompt:'🌈 彩虹是什么？',kind:'pick',opts:['雨后的景物','一种水果','一只小鸟','一本书'],answer:'雨后的景物'}},
+        {title:'第 2 步：读懂比喻',speak:'诗里说彩虹像一座小桥，这是把彩虹和小桥作比较，让画面更生动。',render:function(st){stageHTML(st,'<div class="cmp"><div class="pill coral">彩虹</div><div class="vs">像</div><div class="pill blue">一座小桥</div></div><div class="hint">「像」后面常常是想象出来的样子。</div>');},interact:{prompt:'诗里把彩虹比作什么？',kind:'pick',opts:['小桥','小船','大树','长路'],answer:'小桥'}},
+        {title:'第 3 步：大胆想象',speak:'想象没有唯一答案，只要说得通、说得有趣就可以。',render:function(st){stageHTML(st,'<div class="formula" style="font-size:24px;">云朵像棉花糖<br>月亮像小船<br>星星像小灯笼</div>');},interact:{prompt:'下面哪一句用了「像」来想象？',kind:'pick',opts:['月亮像小船','我在看书','小鸟在唱歌','今天下雨了'],answer:'月亮像小船'}}
+      ],
+      practice:{title:'彩虹与想象 · 阅读小测',render:function(st){stageHTML(st,'<div class="poem">雨后的天空有彩虹，<br>彩虹像一座小桥。</div><div class="hint">先读短文，再选择答案。</div>');},
+        questions:[{q:'短文里写了什么景物？',opts:['彩虹','大树','小船','雪花'],ans:'彩虹'},{q:'彩虹像什么？',opts:['小桥','小灯','棉花糖','小鸟'],ans:'小桥'},{q:'「像」字可以帮助我们？',opts:['展开想象','数数','写拼音','认颜色'],ans:'展开想象'}]},
+      makeReviewQ:function(){var qs=[{q:'彩虹像什么？',opts:['小桥','小船','大树','小鸟'],ans:'小桥'},{q:'下面哪句用了想象？',opts:['月亮像小船','我在看书','小鸟在飞','今天很热'],ans:'月亮像小船'},{q:'雨后天空可能出现什么？',opts:['彩虹','课桌','书包','铅笔'],ans:'彩虹'}];return qs[rnd(0,qs.length-1)];},
+      help:'阅读时先找景物，再看「像」字后面的想象。想象要有根据，也可以很有趣。',exploreHint:'点字卡，听词语怎么读'
+    },
     /* 后续语文单元按学校进度补：
        yu_u3_xiangxiang   阅读 U3（彩虹/去外婆家/数星星）     W3
        yu_u4_shanshui     阅读 U4（古诗+黄山+日月潭+葡萄沟）W5
@@ -2040,6 +2172,388 @@
   Object.keys(UNITS_BY_SUBJECT).forEach(function(s){
     (UNITS_BY_SUBJECT[s]||[]).forEach(function(u){ u.subject=s; UNITS_ALL.push(u); });
   });
+
+  /* ================= 错题本存储（三科通用，按账户隔离） ================= */
+  function wrongKey(){ return 'manman_v6_wrong_'+(profile||'manman'); }
+  function loadWrong(){ try{ return JSON.parse(localStorage.getItem(wrongKey())||'{}'); }catch(e){ return {}; } }
+  function saveWrongBook(w){ try{ localStorage.setItem(wrongKey(), JSON.stringify(w)); }catch(e){} }
+  function addWrong(item){
+    if(isTest()) return;
+    var w=loadWrong(); if(!w.items) w.items={};
+    var it=w.items[item.id];
+    if(it){ it.wc=(it.wc||1)+1; it.lv=Math.min((it.lv||1)+1,5); it.last=Date.now(); it.q=item.q; it.opts=item.opts; it.ans=item.ans; it.unitName=item.unitName; }
+    else w.items[item.id]={subject:item.subject,unitName:item.unitName,q:item.q,opts:item.opts,ans:item.ans,wc:1,lv:1,last:Date.now()};
+    saveWrongBook(w);
+  }
+  function resolveWrong(id){
+    if(isTest()) return;
+    var w=loadWrong(); if(!w.items||!w.items[id]) return;
+    var it=w.items[id]; it.lv=(it.lv||1)-1;
+    if(it.lv<=0) delete w.items[id];
+    saveWrongBook(w);
+  }
+  function wrongCount(){ var w=loadWrong(),c=0; if(w.items) for(var k in w.items){ if(w.items[k]) c++; } return c; }
+  function escapeHtml(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+  /* ================= 听写模式 ================= */
+  var DICT_UNITS=[
+    {id:'d_u1',name:'自然现象（阅读 U1）',emoji:'🐸',words:[['两','liǎng','两只小蝌蚪'],['哪','nǎ','你是哪一个'],['跳','tiào','小青蛙跳一跳'],['变','biàn','水会变云'],['海','hǎi','大海很大'],['法','fǎ','有办法'],['娃','wá','小娃娃'],['毛','máo','小草的毛']]},
+    {id:'d_zi1',name:'场景歌（识字 1）',emoji:'🌊',words:[['园','yuán','花园'],['孔','kǒng','孔雀'],['桥','qiáo','石桥'],['群','qún','一群鸟'],['队','duì','队伍'],['旗','qí','红旗'],['铜','tóng','铜号'],['号','hào','号声'],['领','lǐng','红领巾'],['巾','jīn','毛巾']]},
+    {id:'d_zi2',name:'树之歌（识字 2）',emoji:'🌳',words:[['杨','yáng','杨树'],['壮','zhuàng','粗壮'],['桐','tóng','梧桐'],['枫','fēng','枫叶'],['松','sōng','松树'],['柏','bǎi','松柏'],['棉','mián','棉花'],['杉','shān','水杉'],['化','huà','化石'],['桂','guì','桂花']]},
+    {id:'d_zi3',name:'拍手歌（识字 3）',emoji:'🐾',words:[['歌','gē','唱歌'],['丛','cóng','树丛'],['深','shēn','深处'],['处','chù','到处'],['六','liù','六个'],['熊','xióng','熊猫'],['猫','māo','小猫'],['九','jiǔ','九个'],['朋','péng','朋友'],['友','yǒu','友谊']]},
+    {id:'d_zi4',name:'田家四季歌（识字 4）',emoji:'🌾',words:[['季','jì','四季'],['吹','chuī','春风吹'],['肥','féi','化肥'],['农','nóng','农民'],['忙','máng','忙碌'],['归','guī','归来'],['戴','dài','穿戴'],['辛','xīn','辛苦'],['苦','kǔ','辛苦'],['年','nián','一年']]}
+  ];
+  function dictKey(){ return 'manman_v6_dict_'+(profile||'manman'); }
+  function loadDict(){ try{ return JSON.parse(localStorage.getItem(dictKey())||'{}'); }catch(e){ return {}; } }
+  function saveDictStore(d){ try{ localStorage.setItem(dictKey(), JSON.stringify(d)); }catch(e){} }
+  function dictWrongWords(){
+    var d=loadDict(), arr=[];
+    if(d.words) for(var w in d.words){ if(d.words[w]) arr.push(w); }
+    return arr;
+  }
+  function findDictWord(w){
+    for(var i=0;i<DICT_UNITS.length;i++){
+      var ws=DICT_UNITS[i].words;
+      for(var j=0;j<ws.length;j++){ if(ws[j][0]===w) return ws[j]; }
+    }
+    return null;
+  }
+  function speakDictWord(word){
+    var w=findDictWord(word);
+    if(w) speak(w[0]+'，'+w[2]+'的'+w[0], 'zh-CN');
+    else speak(word,'zh-CN');
+  }
+  var dictSession=null;
+  function openDictation(){ show('screen-dictation'); renderDictSetup(); }
+  function renderDictSetup(){
+    var st=document.getElementById('dictStage');
+    var ww=dictWrongWords();
+    var h='<div class="hint" style="margin:4px 24px;">老师留了听写作业？选一个单元，我来报词，写在本子上。</div>';
+    if(ww.length) h+='<div class="task-card" style="cursor:pointer;margin:8px auto;max-width:480px;" id="dictWrongStart"><div style="display:flex;justify-content:space-between;align-items:center;"><div class="task-main">📕 错词重听</div><div class="task-label" style="margin:0;">'+ww.length+' 个字</div></div></div>';
+    h+='<div style="width:100%;max-width:480px;margin:8px auto;">';
+    DICT_UNITS.forEach(function(u){
+      h+='<div class="task-card" style="cursor:pointer;" data-du="'+u.id+'"><div style="display:flex;justify-content:space-between;align-items:center;"><div class="task-main">'+u.emoji+' '+u.name+'</div><div class="task-label" style="margin:0;">'+u.words.length+' 个字</div></div></div>';
+    });
+    h+='</div>';
+    st.innerHTML=h;
+    var b1=document.getElementById('dictWrongStart');
+    if(b1) b1.addEventListener('click',function(){ ensureAudio(); startDictSession(ww.slice()); });
+    st.querySelectorAll('[data-du]').forEach(function(c){
+      c.addEventListener('click',function(){ ensureAudio();
+        var unit=DICT_UNITS.filter(function(u){return u.id===c.dataset.du;})[0];
+        if(unit) startDictSession(unit.words.map(function(w){return w[0];}));
+      });
+    });
+  }
+  function startDictSession(words){
+    dictSession={words:words, idx:0, marks:words.map(function(){return null;})};
+    renderDictSession();
+  }
+  function renderDictSession(){
+    var st=document.getElementById('dictStage');
+    var s=dictSession;
+    var h='<div class="progress-text">✍️ 听写中 · 跟着声音写</div>'+
+      '<div class="big" style="font-size:30px;margin:10px 0;">第 '+(s.idx+1)+' / '+s.words.length+' 个字</div>'+
+      '<div style="font-size:88px;text-align:center;cursor:pointer;" id="dictBigSound">🔊</div>'+
+      '<div class="hint" style="margin:6px 24px;">听完写在本子上，写好了再点下一个</div>'+
+      '<div class="btn-row">'+
+      (s.idx>0?'<button class="btn ghost" id="dictPrev">上一个</button>':'')+
+      '<button class="btn" id="dictNext">'+(s.idx===s.words.length-1?'写完了，去核对':'写好了，下一个')+'</button>'+
+      '</div>'+
+      '<div style="margin-top:10px;">'+renderDots(s.words.length, s.idx)+'</div>';
+    st.innerHTML=h;
+    var big=document.getElementById('dictBigSound');
+    if(big) big.addEventListener('click',function(){ ensureAudio(); speakDictWord(s.words[s.idx]); });
+    var pv=document.getElementById('dictPrev');
+    if(pv) pv.addEventListener('click',function(){ ensureAudio(); dictSession.idx--; renderDictSession(); });
+    document.getElementById('dictNext').addEventListener('click',function(){ ensureAudio();
+      if(dictSession.idx>=dictSession.words.length-1){ renderDictCheck(); }
+      else { dictSession.idx++; renderDictSession(); }
+    });
+    speakDictWord(s.words[s.idx]);
+  }
+  function renderDictCheck(){
+    var st=document.getElementById('dictStage');
+    var s=dictSession;
+    var h='<div class="big" style="font-size:26px;">👨 交给爸爸核对</div>'+
+      '<div class="hint" style="margin:4px 24px;">对照本子，写对了点 ✓，写错了点 ✗</div><div style="width:100%;max-width:480px;margin:8px auto;">';
+    s.words.forEach(function(w,i){
+      var wd=findDictWord(w)||[w,'',''];
+      h+='<div class="task-card" style="padding:10px 14px;">'+
+        '<div style="display:flex;align-items:center;gap:10px;">'+
+        '<div style="font-size:34px;font-weight:700;width:44px;text-align:center;">'+w+'</div>'+
+        '<div style="flex:1;"><div class="hint" style="margin:0;font-size:13px;">'+wd[1]+' · '+wd[2]+'</div></div>'+
+        '<button class="btn tiny" data-cm="'+i+'" data-r="1">✓</button>'+
+        '<button class="btn tiny" data-cm="'+i+'" data-r="0">✗</button>'+
+        '</div></div>';
+    });
+    h+='</div><div class="btn-row"><button class="btn" id="dictCheckDone">核对完成</button></div>';
+    st.innerHTML=h;
+    st.querySelectorAll('[data-cm]').forEach(function(b){
+      b.addEventListener('click',function(){
+        ensureAudio();
+        var i=+b.dataset.cm, ok=b.dataset.r==='1';
+        dictSession.marks[i]=ok;
+        if(ok){ b.style.background='#4CAF50'; b.style.color='#fff'; b.style.borderColor='#4CAF50'; playPop(); }
+        else { b.style.background='#E74C3C'; b.style.color='#fff'; b.style.borderColor='#E74C3C'; }
+        st.querySelectorAll('[data-cm="'+i+'"]').forEach(function(x){ x.disabled=true; });
+      });
+    });
+    document.getElementById('dictCheckDone').addEventListener('click',function(){ ensureAudio(); finishDictCheck(); });
+    speak('写完啦？请爸爸对照本子核对一下吧。','zh-CN');
+  }
+  function finishDictCheck(){
+    var s=dictSession;
+    var wrongs=[];
+    s.words.forEach(function(w,i){ if(s.marks[i]===false) wrongs.push(w); });
+    if(!isTest()){
+      var d=loadDict(); if(!d.words) d.words={};
+      wrongs.forEach(function(w){ d.words[w]=(d.words[w]||0)+1; });
+      s.words.forEach(function(w,i){ if(s.marks[i]===true && d.words[w]){ d.words[w]--; if(d.words[w]<=0) delete d.words[w]; } });
+      if(!d.hist) d.hist=[];
+      d.hist.push({at:Date.now(), total:s.words.length, wrong:wrongs.length});
+      saveDictStore(d);
+    }
+    var st=document.getElementById('dictStage');
+    var h='<div class="hero-emoji">'+(wrongs.length?'💪':'🏆')+'</div>'+
+      '<div class="big">'+(wrongs.length?('错了 '+wrongs.length+' 个字'):('全对！'+s.words.length+' 个字'))+'</div>';
+    if(wrongs.length){
+      h+='<div class="hint" style="margin:6px 24px;">错字已记进错词本，随时可以重听：</div><div class="word-grid" style="max-width:360px;">';
+      wrongs.forEach(function(w){ var wd=findDictWord(w)||[w,'','']; h+='<div class="word-card"><div class="han">'+w+'</div><div class="pin">'+wd[1]+'</div><div class="hint-mini">'+wd[2]+'</div></div>'; });
+      h+='</div>';
+    } else {
+      h+='<div class="hint" style="margin:6px 24px;">一个都没错，听写小达人！</div>';
+    }
+    if(wrongs.length) h+='<div class="btn-row"><button class="btn secondary" id="dictRetryWrong">把错字再听一遍</button></div>';
+    st.innerHTML=h;
+    playWin();
+    speak(wrongs.length?('听写完成！错了'+wrongs.length+'个字，等会儿再练一遍。'):'听写全对，太棒了！','zh-CN');
+    var rw=document.getElementById('dictRetryWrong');
+    if(rw) rw.addEventListener('click',function(){ ensureAudio(); startDictSession(wrongs.slice()); });
+    renderHome();
+  }
+
+  /* ================= 口算速练 ================= */
+  var SPRINT_LEVELS=[
+    {id:'mul25',name:'2~5 乘法',gen:function(){var a=rnd(2,5),b=rnd(2,9);return{q:a+' × '+b+' = ?',ans:a*b};}},
+    {id:'mul69',name:'6~9 乘法',gen:function(){var a=rnd(6,9),b=rnd(2,9);return{q:a+' × '+b+' = ?',ans:a*b};}},
+    {id:'mulall',name:'全部乘法',gen:function(){var a=rnd(2,9),b=rnd(2,9);return{q:a+' × '+b+' = ?',ans:a*b};}},
+    {id:'divall',name:'表内除法',gen:function(){var b=rnd(2,9),q=rnd(2,9);return{q:(b*q)+' ÷ '+b+' = ?',ans:q};}},
+    {id:'mixmd',name:'乘除混合',gen:function(){if(Math.random()<.5){var a=rnd(2,9),b=rnd(2,9);return{q:a+' × '+b+' = ?',ans:a*b};}var b2=rnd(2,9),q2=rnd(2,9);return{q:(b2*q2)+' ÷ '+b2+' = ?',ans:q2};}}
+  ];
+  function sprintKey(){ return 'manman_v6_sprint_'+(profile||'manman'); }
+  function loadSprint(){ try{ return JSON.parse(localStorage.getItem(sprintKey())||'{}'); }catch(e){ return {}; } }
+  function saveSprintBest(b){ try{ localStorage.setItem(sprintKey(), JSON.stringify(b)); }catch(e){} }
+  var sprint=null, sprintTimer=null;
+  function openSprint(){ show('screen-sprint'); renderSprintSetup(); }
+  function stopSprint(){ if(sprintTimer){ clearInterval(sprintTimer); sprintTimer=null; } sprint=null; }
+  function renderSprintSetup(){
+    var st=document.getElementById('sprintStage');
+    var best=loadSprint().best||{};
+    var h='<div class="hint" style="margin:4px 24px;">60 秒口算挑战！选一个关卡，答对越多越厉害。</div><div style="width:100%;max-width:480px;margin:8px auto;">';
+    SPRINT_LEVELS.forEach(function(lv){
+      h+='<div class="task-card" style="cursor:pointer;" data-sl="'+lv.id+'"><div style="display:flex;justify-content:space-between;align-items:center;"><div class="task-main">⚡ '+lv.name+'</div><div class="task-label" style="margin:0;">'+(best[lv.id]!==undefined?'最佳 '+best[lv.id]+' 题':'还没挑战')+'</div></div></div>';
+    });
+    h+='</div>';
+    st.innerHTML=h;
+    st.querySelectorAll('[data-sl]').forEach(function(c){
+      c.addEventListener('click',function(){ ensureAudio(); var lv=SPRINT_LEVELS.filter(function(x){return x.id===c.dataset.sl;})[0]; if(lv) startSprint(lv); });
+    });
+  }
+  function startSprint(lv){
+    stopSprint();
+    sprint={lv:lv, left:60, score:0, wrong:0, total:0};
+    renderSprintQ();
+    speak('口算挑战开始！','zh-CN');
+    sprintTimer=setInterval(function(){
+      if(!sprint){ stopSprint(); return; }
+      sprint.left-=1;
+      var bar=document.getElementById('sprintBar');
+      if(bar){ bar.style.width=Math.max(0,sprint.left/60*100)+'%'; if(sprint.left<=10) bar.style.background='var(--coral)'; }
+      var t=document.getElementById('sprintTime');
+      if(t) t.textContent=sprint.left;
+      if(sprint.left<=0){ stopSprint(); finishSprint(lv); }
+    },1000);
+  }
+  function renderSprintQ(){
+    var st=document.getElementById('sprintStage');
+    var q=sprint.lv.gen();
+    sprint.total++;
+    var opts=makeOpts(q.ans,[q.ans+1,q.ans-1,q.ans+2]);
+    var h='<div style="width:100%;max-width:480px;margin:0 auto 8px;display:flex;justify-content:space-between;align-items:center;">'+
+      '<div class="hint" style="margin:0;">⚡ '+sprint.lv.name+'</div>'+
+      '<div class="hint" style="margin:0;">⏱ <span id="sprintTime">'+sprint.left+'</span> 秒</div>'+
+      '<div class="hint" style="margin:0;">⭐ '+sprint.score+'</div></div>'+
+      '<div style="width:100%;max-width:480px;margin:0 auto 8px;height:12px;border-radius:8px;background:var(--border);overflow:hidden;"><div id="sprintBar" style="height:100%;width:'+(sprint.left/60*100)+'%;background:var(--teal);transition:width .3s;"></div></div>'+
+      '<div class="big" id="sprintQText">'+q.q+'</div>'+
+      '<div id="sprintOpts" class="opts"></div>'+
+      '<div class="feedback" id="sprintFeedback"></div>';
+    st.innerHTML=h;
+    var box=document.getElementById('sprintOpts');
+    renderOpts(box, opts, function(v,o,box){
+      box.dataset.lock='1';
+      if(v===q.ans){
+        o.classList.add('right'); sprint.score++; playPop();
+        setTimeout(function(){ if(sprint) renderSprintQ(); }, 280);
+      } else {
+        o.classList.add('wrong'); sprint.wrong++;
+        box.querySelectorAll('.opt').forEach(function(x){ if(x.textContent===''+q.ans) x.classList.add('right'); });
+        addWrong({id:'sp|'+sprint.lv.id+'|'+q.q, subject:'math', unitName:'口算·'+sprint.lv.name, q:q.q, opts:opts, ans:q.ans});
+        document.getElementById('sprintFeedback').textContent='正确答案：'+q.ans;
+        setTimeout(function(){ if(sprint) renderSprintQ(); }, 950);
+      }
+    });
+  }
+  function finishSprint(lv){
+    var score=sprint?sprint.score:0, wcnt=sprint?sprint.wrong:0;
+    sprint=null;
+    var best=loadSprint(); if(!best.best) best.best={};
+    var isNew=false;
+    if(!isTest() && score>0 && score>(best.best[lv.id]||0)){ best.best[lv.id]=score; isNew=true; saveSprintBest(best); }
+    var st=document.getElementById('sprintStage');
+    var h='<div class="hero-emoji">'+(score>=20?'🏆':(score>=10?'🎉':'💪'))+'</div>'+
+      '<div class="big">时间到！</div>'+
+      '<div class="summary-list">'+
+      '<div class="summary-item"><div class="task-label" style="margin:0;">答对</div><div class="task-main">'+score+' 题</div></div>'+
+      '<div class="summary-item"><div class="task-label" style="margin:0;">答错</div><div class="task-main">'+wcnt+' 题</div></div>'+
+      (isNew?'<div class="summary-item"><div class="task-label" style="margin:0;">纪录</div><div class="task-main">新纪录！🎉</div></div>':'')+
+      '</div>'+
+      (wcnt?'<div class="hint" style="margin:6px 24px;">错题已自动放进错题本</div>':'')+
+      '<div class="btn-row"><button class="btn secondary" id="sprintAgain">再来一次</button></div>';
+    st.innerHTML=h;
+    playWin();
+    speak('时间到！一共答对'+score+'题'+(isNew?'，新纪录！':''), 'zh-CN');
+    document.getElementById('sprintAgain').addEventListener('click',function(){ ensureAudio(); startSprint(lv); });
+    renderHome();
+  }
+
+  /* ================= 错题本界面 ================= */
+  function openMistakes(){ show('screen-mistakes'); renderMistakes(); }
+  function mistakeItems(){
+    var w=loadWrong(), arr=[];
+    if(w.items) for(var k in w.items){ var it=w.items[k]; if(it){ it.id=k; arr.push(it); } }
+    arr.sort(function(a,b){ return (b.last||0)-(a.last||0); });
+    return arr;
+  }
+  function renderMistakes(){
+    var st=document.getElementById('mistStage');
+    var items=mistakeItems();
+    var dw=dictWrongWords();
+    if(!items.length && !dw.length){
+      st.innerHTML='<div class="hero-emoji">🎉</div><div class="big">还没有错题！</div><div class="hint" style="margin:8px 24px;">做单元练习、口算、听写时错的题会自动收进来，等你来消灭它们。</div>';
+      return;
+    }
+    var h='<div class="hint" style="margin:4px 24px;">点一条错题可以单独重练；连对几次，它就会"出本"。</div>';
+    if(items.length){
+      var groups={};
+      items.forEach(function(it){ if(!groups[it.subject]) groups[it.subject]=[]; groups[it.subject].push(it); });
+      [['math','🧮 数学'],['chinese','📖 语文'],['english','🇬🇧 英语']].forEach(function(g){
+        var its=groups[g[0]]; if(!its||!its.length) return;
+        h+='<div class="hint" style="max-width:480px;margin:14px auto 2px;text-align:left;font-weight:700;">'+g[1]+' · '+its.length+' 题</div><div style="width:100%;max-width:480px;margin:4px auto;">';
+        its.forEach(function(it){
+          h+='<div class="task-card" style="cursor:pointer;padding:10px 14px;" data-mk="'+escapeHtml(it.id)+'"><div style="display:flex;justify-content:space-between;align-items:center;gap:8px;"><div class="task-main" style="font-size:17px;">'+escapeHtml(it.q)+'</div><div class="task-label" style="margin:0;white-space:nowrap;">'+escapeHtml(it.unitName||'')+' · 错 '+(it.wc||1)+' 次</div></div></div>';
+        });
+        h+='</div>';
+      });
+      h+='<div class="btn-row"><button class="btn" id="mkPractice">开始错题重练（'+items.length+' 题）</button></div>';
+    }
+    if(dw.length){
+      h+='<div class="hint" style="max-width:480px;margin:14px auto 2px;text-align:left;font-weight:700;">✍️ 听写错词 · '+dw.length+' 个</div><div class="word-grid" style="max-width:420px;">';
+      dw.forEach(function(w){ var wd=findDictWord(w)||[w,'','']; h+='<div class="word-card"><div class="han">'+w+'</div><div class="pin">'+wd[1]+'</div><div class="hint-mini">'+wd[2]+'</div></div>'; });
+      h+='</div><div class="btn-row"><button class="btn secondary" id="mkDict">把错词再听写一遍</button></div>';
+    }
+    st.innerHTML=h;
+    st.querySelectorAll('[data-mk]').forEach(function(c){
+      c.addEventListener('click',function(){ ensureAudio(); showMistakeDetail(c.dataset.mk); });
+    });
+    var pb=document.getElementById('mkPractice'); if(pb) pb.addEventListener('click',function(){ ensureAudio(); startMistakePractice(); });
+    var db=document.getElementById('mkDict'); if(db) db.addEventListener('click',function(){ ensureAudio(); show('screen-dictation'); startDictSession(dw.slice()); });
+  }
+  function showMistakeDetail(id){
+    var w=loadWrong(); var it=w.items&&w.items[id];
+    if(!it){ renderMistakes(); return; }
+    var st=document.getElementById('mistStage');
+    var h='<div class="big" style="font-size:24px;">'+escapeHtml(it.q)+'</div>';
+    if(it.opts&&it.opts.length) h+='<div class="opts" id="mkDetailOpts"></div>';
+    h+='<div class="feedback" id="mkDetailFb"></div>'+
+      '<div class="hint" style="margin:4px 24px;">来自：'+escapeHtml(it.unitName||'')+' · 已错 '+(it.wc||1)+' 次 · 还需连对 '+(it.lv||1)+' 次出本</div>'+
+      '<div class="btn-row"><button class="btn ghost" id="mkDetailBack">返回列表</button></div>';
+    st.innerHTML=h;
+    var box=document.getElementById('mkDetailOpts');
+    if(box) renderOpts(box, it.opts, function(v,o){
+      box.dataset.lock='1';
+      if(v===it.ans){
+        o.classList.add('right'); playCorrect(); resolveWrong(id);
+        document.getElementById('mkDetailFb').textContent='答对了！'; document.getElementById('mkDetailFb').className='feedback good';
+        speak('答对了！','zh-CN');
+      } else {
+        o.classList.add('wrong');
+        box.querySelectorAll('.opt').forEach(function(x){ if(x.textContent===''+it.ans) x.classList.add('right'); });
+        addWrong({id:id,subject:it.subject,unitName:it.unitName,q:it.q,opts:it.opts,ans:it.ans});
+        document.getElementById('mkDetailFb').textContent='正确答案：'+it.ans; document.getElementById('mkDetailFb').className='feedback soft';
+        speak('正确答案是'+it.ans, it.subject==='english'?'en-US':'zh-CN');
+      }
+      setTimeout(function(){ var w2=loadWrong(); if(!w2.items||!w2.items[id]){ renderMistakes(); } else { showMistakeDetail(id); } }, 1300);
+    });
+    document.getElementById('mkDetailBack').addEventListener('click',function(){ renderMistakes(); });
+  }
+  var mkQueue=null;
+  function startMistakePractice(){
+    mkQueue=mistakeItems().map(function(it){ it._sw=0; return it; });
+    if(!mkQueue.length){ renderMistakes(); return; }
+    showMistakeQ();
+  }
+  function showMistakeQ(){
+    if(!mkQueue||!mkQueue.length){ renderMistakeAllDone(); return; }
+    var it=mkQueue[0];
+    var st=document.getElementById('mistStage');
+    var h='<div class="progress-text">📕 错题重练 · 还剩 '+mkQueue.length+' 题</div>'+
+      '<div class="big" id="mkQText">'+escapeHtml(it.q)+'</div>'+
+      '<div class="opts" id="mkOpts"></div>'+
+      '<div class="feedback" id="mkFb"></div>'+
+      '<div class="btn-row"><button class="btn ghost" id="mkSkip">先跳过</button></div>';
+    st.innerHTML=h;
+    var box=document.getElementById('mkOpts');
+    renderOpts(box, it.opts||[], function(v,o){
+      box.dataset.lock='1';
+      if(v===it.ans){
+        o.classList.add('right'); playCorrect(); resolveWrong(it.id);
+        document.getElementById('mkFb').textContent='对啦！'; document.getElementById('mkFb').className='feedback good';
+        mkQueue.shift(); setTimeout(showMistakeQ, 900);
+      } else {
+        o.classList.add('wrong');
+        box.querySelectorAll('.opt').forEach(function(x){ if(x.textContent===''+it.ans) x.classList.add('right'); });
+        addWrong({id:it.id,subject:it.subject,unitName:it.unitName,q:it.q,opts:it.opts,ans:it.ans});
+        document.getElementById('mkFb').textContent='正确答案：'+it.ans; document.getElementById('mkFb').className='feedback soft';
+        it._sw=(it._sw||0)+1;
+        mkQueue.shift();
+        if(it._sw<3) mkQueue.push(it);
+        setTimeout(showMistakeQ, 1400);
+      }
+    });
+    speak(it.q, it.subject==='english'?'en-US':'zh-CN');
+    document.getElementById('mkSkip').addEventListener('click',function(){ ensureAudio(); mkQueue.push(mkQueue.shift()); showMistakeQ(); });
+  }
+  function renderMistakeAllDone(){
+    var st=document.getElementById('mistStage');
+    st.innerHTML='<div class="hero-emoji">🏅</div><div class="big">错题清零啦！</div><div class="hint" style="margin:8px 24px;">这一轮的错题都练会了。</div>';
+    playWin(); speak('错题都练会了，太棒了！','zh-CN');
+    renderHome();
+  }
+
+  /* ---- 新功能入口绑定 ---- */
+  var _btd=document.getElementById('btnToolDict');
+  if(_btd) _btd.addEventListener('click',function(){ ensureAudio(); openDictation(); });
+  var _bts=document.getElementById('btnToolSprint');
+  if(_bts) _bts.addEventListener('click',function(){ ensureAudio(); openSprint(); });
+  var _btw=document.getElementById('btnToolWrong');
+  if(_btw) _btw.addEventListener('click',function(){ ensureAudio(); openMistakes(); });
+  var _bdh=document.getElementById('btnDictHome');
+  if(_bdh) _bdh.addEventListener('click',function(){ renderHome(); show('screen-home'); });
+  var _bsh=document.getElementById('btnSprintHome');
+  if(_bsh) _bsh.addEventListener('click',function(){ stopSprint(); renderHome(); show('screen-home'); });
+  var _bmh=document.getElementById('btnMistHome');
+  if(_bmh) _bmh.addEventListener('click',function(){ renderHome(); show('screen-home'); });
 
   /* ================= 启动 ================= */
   loadProfile();
