@@ -550,7 +550,7 @@
 (function(){
   /* ================= 学科路由 ================= */
   var SUBJECTS={
-    math:{name:'数学', emoji:'🧮', header:'数学 · 思维闯关', homeEmoji:'🧮', trackALabel:'🅰 学校同步', trackBLabel:'🅱 思维场', mascot:'ip/creeper.png', mascotName:'方块人'},
+    math:{name:'数学', emoji:'🧮', header:'数学 · 思维闯关', homeEmoji:'🧮', trackALabel:'🅰 学校同步', trackBLabel:'🅱 思维场', mascot:'ip/creeper.png', mascotName:'苦力怕'},
     chinese:{name:'语文', emoji:'📖', header:'语文 · 表达闯关', homeEmoji:'📖', trackALabel:'🅰 语文单元', trackBLabel:'🅱 表达场', mascot:'ip/ultraman.png', mascotName:'奥特曼'},
     english:{name:'English', emoji:'🇬🇧', header:'English · KET Challenge', homeEmoji:'🇬🇧', trackALabel:'🅰 KET Topic', trackBLabel:'🅱 Vocab Field', mascot:'ip/pikachu.png', mascotName:'皮卡丘'}
   };
@@ -2163,13 +2163,105 @@
       makeReviewQ:function(){var qs=[{q:'彩虹像什么？',opts:['小桥','小船','大树','小鸟'],ans:'小桥'},{q:'下面哪句用了想象？',opts:['月亮像小船','我在看书','小鸟在飞','今天很热'],ans:'月亮像小船'},{q:'雨后天空可能出现什么？',opts:['彩虹','课桌','书包','铅笔'],ans:'彩虹'}];return qs[rnd(0,qs.length-1)];},
       help:'阅读时先找景物，再看「像」字后面的想象。想象要有根据，也可以很有趣。',exploreHint:'点字卡，听词语怎么读'
     },
-    /* 后续语文单元按学校进度补：
-       yu_u3_xiangxiang   阅读 U3（彩虹/去外婆家/数星星）     W3
-       yu_u4_shanshui     阅读 U4（古诗+黄山+日月潭+葡萄沟）W5
-       yu_u5_yuyan        阅读 U5（坐井观天/寒号鸟/葫芦）    W7
-       yu_u6_geming       阅读 U6（八角楼/朱德/泼水节/刘胡兰）W9
-       yu_u7_ziran        阅读 U7（江雪/敕勒歌/雾/雪孩子）  W11
-       yu_u8_youqing      阅读 U8（称赞/纸船/小河）          W13
+    /* ---------- U4 祖国山河（W5）---------- */
+    {id:'yu_u4_shanshui',name:'祖国山河（古诗/黄山/日月潭/葡萄沟）',emoji:'🏞️',category:'zh_reading',unlockWeek:5,
+      intro:{title:'读诗句，看景物 —— 祖国山河有多美。',speak:'今天读一组写祖国山河的课文：鹳雀楼上看黄河，庐山看瀑布，黄山看奇石，日月潭看湖，葡萄沟看葡萄。',render:function(st){stageHTML(st,'<div class="poem">白日依山尽，<br>黄河入海流。<br>欲穷千里目，<br>更上一层楼。</div><div class="hint">《登鹳雀楼》· 唐 · 王之涣</div>');}},
+      demoSteps:[
+        {title:'第 1 步：读诗句，想画面',speak:'读古诗的时候，一边读一边想画面。「白日依山尽」，就是傍晚的太阳靠着山慢慢落下去。',render:function(st){stageHTML(st,'<div class="scene-line">白日 <span class="em">依山尽</span> 🌇 —— 太阳靠着山落下去</div><div class="scene-line">黄河 <span class="em">入海流</span> 🌊 —— 黄河水奔向大海</div><div class="hint">读诗句 → 想画面 → 就懂了。</div>');},interact:{prompt:'「白日依山尽」写的是什么时候的太阳？',kind:'pick',opts:['傍晚','早晨','中午','半夜'],answer:'傍晚'}},
+        {title:'第 2 步：瀑布有多壮观',speak:'李白写庐山瀑布：飞流直下三千尺，疑是银河落九天。水从很高很高的地方冲下来，像天上的银河落下来一样。',render:function(st){stageHTML(st,'<div class="formula">飞流直下三千尺，<br>疑是银河落九天。</div><div class="hint">「三千尺」不是真的三千尺，是形容瀑布又高又急。</div>');},interact:{prompt:'《望庐山瀑布》写的是哪座山的瀑布？',kind:'pick',opts:['庐山','黄山','泰山','华山'],answer:'庐山'}},
+        {title:'第 3 步：抓住景物的特点',speak:'写景要抓特点。黄山的石头奇形怪状，日月潭一半像太阳一半像月亮，葡萄沟的葡萄又多又甜。',render:function(st){stageHTML(st,'<div class="word-grid"><div class="word-card"><span class="emoji">🪨</span><div class="han">黄山奇石</div><div class="hint-mini">奇形怪状</div></div><div class="word-card"><span class="emoji">🌙</span><div class="han">日月潭</div><div class="hint-mini">日潭像太阳</div></div><div class="word-card"><span class="emoji">🍇</span><div class="han">葡萄沟</div><div class="hint-mini">五光十色</div></div></div>');},interact:{prompt:'「日潭像太阳，月潭像月亮」说的是哪里？',kind:'pick',opts:['日月潭','西湖','太湖','洞庭湖'],answer:'日月潭'}}
+      ],
+      practice:{title:'祖国山河 · 阅读小测',render:function(st){stageHTML(st,'<div class="poem">白日依山尽，黄河入海流。<br>欲穷千里目，更上一层楼。</div><div class="hint">先读诗，再选择答案。</div>');},
+        questions:[
+          {q:'《登鹳雀楼》「白日依山尽」的下一句是？',opts:['黄河入海流','更上一层楼','欲穷千里目','日照香炉生紫烟'],ans:'黄河入海流'},
+          {q:'「欲穷千里目，更上一层楼」告诉我们？',opts:['站得高，看得远','要早点睡觉','黄河很长','山很高'],ans:'站得高，看得远'},
+          {q:'（  ）是我国台湾省最大的一个湖。',opts:['日月潭','西湖','太湖','洞庭湖'],ans:'日月潭'},
+          {q:'《葡萄沟》里，维吾尔族老乡对客人怎么样？',opts:['热情好客','很少说话','不理客人','不让吃葡萄'],ans:'热情好客'}
+        ]},
+      makeReviewQ:function(){var qs=[{q:'《登鹳雀楼》「白日依山尽」的下一句是？',opts:['黄河入海流','更上一层楼','欲穷千里目','日照香炉生紫烟'],ans:'黄河入海流'},{q:'「日潭像太阳，月潭像月亮」说的是哪里？',opts:['日月潭','西湖','太湖','洞庭湖'],ans:'日月潭'},{q:'《望庐山瀑布》写的是哪座山的瀑布？',opts:['庐山','黄山','泰山','华山'],ans:'庐山'},{q:'读古诗时，我们应该？',opts:['一边读一边想画面','只看有多少字','只背作者名字','跳过不读'],ans:'一边读一边想画面'}];return qs[rnd(0,qs.length-1)];},
+      help:'读诗句想画面；写景抓特点 —— 黄山石奇、日月潭美、葡萄沟好客。',
+      exploreHint:'读一读，说说你想到的画面'
+    },
+    /* ---------- U5 寓言故事（W7）---------- */
+    {id:'yu_u5_yuyan',name:'寓言故事（坐井观天/寒号鸟/葫芦）',emoji:'🦉',category:'zh_reading',unlockWeek:7,
+      intro:{title:'三个小故事，三个大道理。',speak:'寓言就是用一个故事，告诉我们一个道理。今天读三个寓言：坐井观天、寒号鸟、我要的是葫芦。',render:function(st){stageHTML(st,'<div class="word-grid"><div class="word-card"><span class="emoji">🐸</span><div class="han">坐井观天</div><div class="hint-mini">青蛙看天</div></div><div class="word-card"><span class="emoji">🐦</span><div class="han">寒号鸟</div><div class="hint-mini">做窝过冬</div></div><div class="word-card"><span class="emoji">🍐</span><div class="han">我要的是葫芦</div><div class="hint-mini">种葫芦</div></div></div>');}},
+      demoSteps:[
+        {title:'第 1 步：坐井观天',speak:'青蛙坐在井里，以为天只有井口那么大。小鸟告诉它，天无边无际，大得很哪。',render:function(st){stageHTML(st,'<div class="cmp"><div class="pill coral">青蛙说</div><div class="vs">vs</div><div class="pill blue">小鸟说</div></div><div class="scene-line">青蛙：天不过井口那么大 🕳️</div><div class="scene-line">小鸟：天无边无际，大得很哪 🕊️</div><div class="hint">「无边无际」就是一眼望不到边。</div>');},interact:{prompt:'青蛙认为天有多大？',kind:'pick',opts:['井口那么大','无边无际','像海一样大','比山还高'],answer:'井口那么大'}},
+        {title:'第 2 步：寒号鸟',speak:'秋天到了，喜鹊忙着做窝，寒号鸟却只顾玩。冬天来了，喜鹊住在暖和的窝里，寒号鸟冻得直打哆嗦。',render:function(st){stageHTML(st,'<div class="scene-line">喜鹊 🐦 —— 天晴就<span class="em">做窝</span></div><div class="scene-line">寒号鸟 🪶 —— 天晴就<span class="em">出去玩</span></div><div class="hint">同样的天气，不同的做法，结果也不一样。</div>');},interact:{prompt:'谁在天晴的时候忙着做窝？',kind:'pick',opts:['喜鹊','寒号鸟','青蛙','小鸟'],answer:'喜鹊'}},
+        {title:'第 3 步：我要的是葫芦',speak:'有个人种了一棵葫芦，叶子上生了蚜虫，邻居劝他快治一治，他说：我要的是葫芦。结果叶子被吃光了，小葫芦也全落了。',render:function(st){stageHTML(st,'<div class="formula" style="font-size:22px;">叶子生蚜虫 🐛 → 不治<br>叶子被吃光 → 葫芦全落了</div><div class="hint">事物之间是有联系的，不能只看一部分。</div>');},interact:{prompt:'种葫芦的人为什么没收到葫芦？',kind:'pick',opts:['不治蚜虫，叶子被吃光','葫芦太多','天太冷','没浇水'],answer:'不治蚜虫，叶子被吃光'}}
+      ],
+      practice:{title:'寓言故事 · 阅读小测',render:function(st){stageHTML(st,'<div class="hint">读故事，想想它告诉我们什么道理。</div><div class="scene-line">🐸 坐井观天　🐦 寒号鸟　🍐 我要的是葫芦</div>');},
+        questions:[
+          {q:'「坐井观天」比喻？',opts:['眼界狭小，见识短','很会游泳','住得很高','天很小'],ans:'眼界狭小，见识短'},
+          {q:'「无边无际」的意思接近？',opts:['一眼望不到边','很小很窄','很黑很暗','很高很远'],ans:'一眼望不到边'},
+          {q:'寒号鸟最后的结局是？',opts:['冻死了','住进了新窝','飞到南方','美美睡了一觉'],ans:'冻死了'},
+          {q:'这三个寓言一起告诉我们什么？',opts:['看问题要全面，做事要勤劳，要听劝','要多睡觉','要多吃果子','要多出去玩'],ans:'看问题要全面，做事要勤劳，要听劝'}
+        ]},
+      makeReviewQ:function(){var qs=[{q:'青蛙认为天有多大？',opts:['井口那么大','无边无际','像海一样大','比山还高'],ans:'井口那么大'},{q:'谁在天晴的时候忙着做窝？',opts:['喜鹊','寒号鸟','青蛙','小鸟'],ans:'喜鹊'},{q:'种葫芦的人为什么没收到葫芦？',opts:['不治蚜虫，叶子被吃光','葫芦太多','天太冷','没浇水'],ans:'不治蚜虫，叶子被吃光'},{q:'「无边无际」的意思接近？',opts:['一眼望不到边','很小很窄','很黑很暗','很高很远'],ans:'一眼望不到边'}];return qs[rnd(0,qs.length-1)];},
+      help:'寓言用故事讲道理：坐井观天要开阔眼界，寒号鸟要勤劳，种葫芦要听劝。',
+      exploreHint:'读完想一想：这个故事教了我们什么？'
+    },
+    /* ---------- U6 革命前辈（W9）---------- */
+    {id:'yu_u6_geming',name:'革命前辈（八角楼/朱德/泼水节/刘胡兰）',emoji:'🏮',category:'zh_reading',unlockWeek:9,
+      intro:{title:'读革命故事，记住那些人和事。',speak:'今天读四个革命前辈的故事：八角楼上的毛主席、挑粮的朱德、和傣族人民过泼水节的周总理、还有勇敢的刘胡兰。',render:function(st){stageHTML(st,'<div class="word-grid"><div class="word-card"><span class="emoji">🪔</span><div class="han">八角楼上</div><div class="hint-mini">深夜写文章</div></div><div class="word-card"><span class="emoji">🎋</span><div class="han">朱德的扁担</div><div class="hint-mini">一起挑粮</div></div><div class="word-card"><span class="emoji">💦</span><div class="han">难忘的泼水节</div><div class="hint-mini">周总理来了</div></div></div>');}},
+      demoSteps:[
+        {title:'第 1 步：八角楼上的灯光',speak:'在井冈山艰苦斗争的年代，寒冬深夜，毛主席在八角楼上，就着一盏清油灯写文章，指导中国革命。',render:function(st){stageHTML(st,'<div class="scene-line">深夜 · 清油灯 🪔</div><div class="scene-line">毛主席披着薄毯，<span class="em">写文章</span> ✍️</div><div class="hint">环境越艰苦，越能看出人的精神。</div>');},interact:{prompt:'《八角楼上》写的是谁在深夜写文章？',kind:'pick',opts:['毛主席','朱德','周总理','刘胡兰'],answer:'毛主席'}},
+        {title:'第 2 步：朱德的扁担',speak:'井冈山时期，粮食不够，朱德和战士们一起去茅坪挑粮。山高路陡，来回五六十里。战士们心疼他，就把他的扁担藏起来，他又找来一根，还写上「朱德的扁担」。',render:function(st){stageHTML(st,'<div class="scene-line">山高路陡 ⛰️ 来回<span class="em">五六十里</span></div><div class="scene-line">战士们藏扁担 → 朱德又找来一根，写上名字 ✍️</div><div class="hint">他和战士们一起吃苦，所以大家越发敬爱他。</div>');},interact:{prompt:'战士们为什么把朱德的扁担藏起来？',kind:'pick',opts:['心疼他太辛苦','不喜欢扁担','扁担坏了','想自己用'],answer:'心疼他太辛苦'}},
+        {title:'第 3 步：难忘的泼水节',speak:'1961 年，周总理来到西双版纳，和傣族人民一起过泼水节。他穿着傣族服装，笑容满面，和大家互相泼水，祝福吉祥。',render:function(st){stageHTML(st,'<div class="scene-line">💦 泼水节 · 傣族人民的节日</div><div class="scene-line">周总理穿着傣族服装，<span class="em">笑容满面</span> 😊</div><div class="hint">泼水是祝福 —— 水泼得越多，祝福越多。</div>');},interact:{prompt:'和周总理一起过泼水节的是哪个民族？',kind:'pick',opts:['傣族','苗族','藏族','蒙古族'],answer:'傣族'}}
+      ],
+      practice:{title:'革命前辈 · 阅读小测',render:function(st){stageHTML(st,'<div class="hint">读革命故事，抓住人物做了什么、说了什么。</div><div class="scene-line">🪔 八角楼上　🎋 朱德的扁担　💦 难忘的泼水节</div>');},
+        questions:[
+          {q:'《朱德的扁担》里，朱德和战士们一起做什么？',opts:['挑粮','读书','种地','写字'],ans:'挑粮'},
+          {q:'《八角楼上》毛主席深夜还在工作，说明他？',opts:['工作辛苦，非常忘我','睡不着觉','怕黑','在玩'],ans:'工作辛苦，非常忘我'},
+          {q:'刘胡兰面对敌人的威胁，是什么态度？',opts:['坚贞不屈','害怕逃跑','答应了敌人','一直哭'],ans:'坚贞不屈'},
+          {q:'读革命故事时，我们要特别注意什么？',opts:['人物做了什么、说了什么','一共有多少字','只看插图','只读标题'],ans:'人物做了什么、说了什么'}
+        ]},
+      makeReviewQ:function(){var qs=[{q:'《八角楼上》写的是谁在深夜写文章？',opts:['毛主席','朱德','周总理','刘胡兰'],ans:'毛主席'},{q:'战士们为什么把朱德的扁担藏起来？',opts:['心疼他太辛苦','不喜欢扁担','扁担坏了','想自己用'],ans:'心疼他太辛苦'},{q:'和周总理一起过泼水节的是哪个民族？',opts:['傣族','苗族','藏族','蒙古族'],ans:'傣族'},{q:'《朱德的扁担》里，朱德和战士们一起做什么？',opts:['挑粮','读书','种地','写字'],ans:'挑粮'}];return qs[rnd(0,qs.length-1)];},
+      help:'读革命故事，抓住人物的动作和语言，体会他们的品质：忘我工作、同甘共苦、坚贞不屈。',
+      exploreHint:'和爸爸妈妈说一说，你最敬佩哪一位？'
+    },
+    /* ---------- U7 自然与想象（W11）---------- */
+    {id:'yu_u7_ziran',name:'自然与想象（江雪/敕勒歌/雾/雪孩子）',emoji:'❄️',category:'zh_reading',unlockWeek:11,
+      intro:{title:'读诗想画面，读童话感想象。',speak:'这个单元有冬天的江雪、辽阔的草原、会躲猫猫的雾，还有变成白云的雪孩子。',render:function(st){stageHTML(st,'<div class="poem">千山鸟飞绝，<br>万径人踪灭。<br>孤舟蓑笠翁，<br>独钓寒江雪。</div><div class="hint">《江雪》· 唐 · 柳宗元</div>');}},
+      demoSteps:[
+        {title:'第 1 步：江雪 —— 安静到极点',speak:'千山鸟飞绝，万径人踪灭。所有的山上都没有鸟，所有的路上都没有人。只有一位老翁，独自在江上钓雪。',render:function(st){stageHTML(st,'<div class="scene-line">千山鸟飞绝 🐦❌ —— 山上没有鸟</div><div class="scene-line">万径人踪灭 👣❌ —— 路上没有人</div><div class="scene-line">孤舟蓑笠翁 🎣 —— 只有一位老翁在钓鱼</div><div class="hint">读到这里，是不是觉得又冷又安静？</div>');},interact:{prompt:'《江雪》描写的是哪个季节？',kind:'pick',opts:['冬天','春天','夏天','秋天'],answer:'冬天'}},
+        {title:'第 2 步：敕勒歌 —— 辽阔的草原',speak:'敕勒川，阴山下。天似穹庐，笼盖四野。天苍苍，野茫茫，风吹草低见牛羊。',render:function(st){stageHTML(st,'<div class="formula">天似穹庐，笼盖四野。<br>天苍苍，野茫茫，<br>风吹草低见牛羊。</div><div class="hint">「天似穹庐」是说天空像一顶大帐篷，罩着整个草原。</div>');},interact:{prompt:'「天似穹庐」把天空比作什么？',kind:'pick',opts:['大帐篷','大海','大树','大伞'],answer:'大帐篷'}},
+        {title:'第 3 步：会躲猫猫的雾，会变云的雪孩子',speak:'《雾在哪里》把雾写成淘气的孩子，它把大海、天空、城市一个个藏起来。《雪孩子》里，雪孩子为了救小白兔冲进大火，自己化成了水汽，变成一朵美丽的白云。',render:function(st){stageHTML(st,'<div class="scene-line">雾 🌫️ 把<span class="em">大海、天空、城市</span>藏起来</div><div class="scene-line">雪孩子 ⛄ → 水汽 → 一朵<span class="em">白云</span> ☁️</div><div class="hint">把物当成人来写，文章就有趣多了。</div>');},interact:{prompt:'《雾在哪里》把雾写成什么？',kind:'pick',opts:['淘气的孩子','一只小狗','一片树叶','一阵风'],answer:'淘气的孩子'}}
+      ],
+      practice:{title:'自然与想象 · 阅读小测',render:function(st){stageHTML(st,'<div class="hint">读诗想画面，读童话体会想象。</div><div class="scene-line">❄️ 江雪　🌾 敕勒歌　🌫️ 雾在哪里　⛄ 雪孩子</div>');},
+        questions:[
+          {q:'《江雪》里「孤舟蓑笠翁」在做什么？',opts:['钓鱼','划船','睡觉','爬山'],ans:'钓鱼'},
+          {q:'《敕勒歌》描写的是哪里的风光？',opts:['草原','海边','山里','沙漠'],ans:'草原'},
+          {q:'《雪孩子》最后变成了什么？',opts:['一朵白云','一堆雪','一条小河','一团火'],ans:'一朵白云'},
+          {q:'《雾在哪里》中，雾把什么藏了起来？',opts:['大海、天空、城市','森林和小鸟','房子和学校','太阳和月亮'],ans:'大海、天空、城市'}
+        ]},
+      makeReviewQ:function(){var qs=[{q:'《江雪》描写的是哪个季节？',opts:['冬天','春天','夏天','秋天'],ans:'冬天'},{q:'「天似穹庐」把天空比作什么？',opts:['大帐篷','大海','大树','大伞'],ans:'大帐篷'},{q:'《雾在哪里》把雾写成什么？',opts:['淘气的孩子','一只小狗','一片树叶','一阵风'],ans:'淘气的孩子'},{q:'《雪孩子》最后变成了什么？',opts:['一朵白云','一堆雪','一条小河','一团火'],ans:'一朵白云'}];return qs[rnd(0,qs.length-1)];},
+      help:'读诗想画面，读童话感受想象：雾会躲猫猫，雪孩子会变成白云。',
+      exploreHint:'闭上眼睛想一想，你心里是什么画面？'
+    },
+    /* ---------- U8 相处与交往（W13）---------- */
+    {id:'yu_u8_youqing',name:'相处与交往（称赞/纸船和风筝/快乐的小河）',emoji:'🤝',category:'zh_reading',unlockWeek:13,
+      intro:{title:'和朋友在一起，怎么相处才好？',speak:'这个单元有三个关于朋友的故事：小刺猬的称赞、松鼠和小熊的纸船风筝，还有一条快乐的小河。',render:function(st){stageHTML(st,'<div class="word-grid"><div class="word-card"><span class="emoji">🦔</span><div class="han">称赞</div><div class="hint-mini">小刺猬和小獾</div></div><div class="word-card"><span class="emoji">⛵</span><div class="han">纸船和风筝</div><div class="hint-mini">松鼠和小熊</div></div><div class="word-card"><span class="emoji">🌊</span><div class="han">快乐的小河</div><div class="hint-mini">一路帮助别人</div></div></div>');}},
+      demoSteps:[
+        {title:'第 1 步：称赞的力量',speak:'小獾做的板凳很粗糙，小刺猬却认真地说：你做得一次比一次好。小獾有了自信，越做越好。后来小獾也称赞小刺猬，小刺猬一天的疲劳都消除了。',render:function(st){stageHTML(st,'<div class="scene-line">小刺猬 🦔 <span class="em">「你做得一次比一次好」</span></div><div class="scene-line">小獾 🦡 有了自信 → 越做越好</div><div class="hint">真诚的称赞，能给人信心和力量。</div>');},interact:{prompt:'《称赞》里，小刺猬称赞小獾做的什么？',kind:'pick',opts:['板凳','房子','桌子','衣服'],answer:'板凳'}},
+        {title:'第 2 步：纸船和风筝',speak:'松鼠和小熊住在山上山下，他们用纸船和风筝互相送礼物、送祝福。吵架以后，两个人都很难过，最后还是用纸船和风筝，重新和好了。',render:function(st){stageHTML(st,'<div class="scene-line">松鼠 ⛵ 纸船顺水漂下去 ↓</div><div class="scene-line">小熊 🪁 风筝随风飘上来 ↑</div><div class="hint">吵架了怎么办？主动送出第一份祝福。</div>');},interact:{prompt:'松鼠和小熊用什么传递友谊？',kind:'pick',opts:['纸船和风筝','电话和短信','礼物和信','树叶和小船'],answer:'纸船和风筝'}},
+        {title:'第 3 步：快乐的小河',speak:'一条小河从山上流下来，一路奔跑，一路帮助别人：浇田、发电、推动水车。它明白了，帮助别人、一直往前跑，就是真正的快乐。',render:function(st){stageHTML(st,'<div class="scene-line">🌊 小河一路向前 → <span class="em">浇田</span> 🌾 · <span class="em">发电</span> 💡 · <span class="em">推水车</span> ⚙️</div><div class="hint">快乐不在停下来，而在奔流和付出之中。</div>');},interact:{prompt:'《快乐的小河》里，小河一路帮助人们做什么？',kind:'pick',opts:['浇田、发电','做饭、洗衣','盖房、修路','种树、养花'],answer:'浇田、发电'}}
+      ],
+      practice:{title:'相处与交往 · 阅读小测',render:function(st){stageHTML(st,'<div class="hint">三个故事，都在讲怎么和朋友相处。</div><div class="scene-line">🦔 称赞　⛵ 纸船和风筝　🌊 快乐的小河</div>');},
+        questions:[
+          {q:'《称赞》告诉我们？',opts:['真诚的称赞能给人信心','要多吃果子','要做木工','要少说话'],ans:'真诚的称赞能给人信心'},
+          {q:'《纸船和风筝》里，松鼠和小熊吵架后怎么样了？',opts:['互相送祝福，和好了','再也不见面','搬走了','打了一架'],ans:'互相送祝福，和好了'},
+          {q:'「真诚」的意思接近？',opts:['真心实意','很热闹','很客气','很漂亮'],ans:'真心实意'},
+          {q:'这个单元的三篇课文都写了什么？',opts:['朋友之间怎么相处','动物怎么过冬','植物怎么生长','怎么学写字'],ans:'朋友之间怎么相处'}
+        ]},
+      makeReviewQ:function(){var qs=[{q:'《称赞》里，小刺猬称赞小獾做的什么？',opts:['板凳','房子','桌子','衣服'],ans:'板凳'},{q:'松鼠和小熊用什么传递友谊？',opts:['纸船和风筝','电话和短信','礼物和信','树叶和小船'],ans:'纸船和风筝'},{q:'《快乐的小河》里，小河一路帮助人们做什么？',opts:['浇田、发电','做饭、洗衣','盖房、修路','种树、养花'],ans:'浇田、发电'},{q:'「真诚」的意思接近？',opts:['真心实意','很热闹','很客气','很漂亮'],ans:'真心实意'}];return qs[rnd(0,qs.length-1)];},
+      help:'和朋友相处：真诚称赞、主动和好、乐于助人。',
+      exploreHint:'想一想，你要称赞身边的谁？'
+    },
+    /* ---------- 语文阅读单元路线图 ----------
+       ✅ U3 彩虹与想象（W3）、U4 祖国山河（W5）、U5 寓言故事（W7）、
+          U6 革命前辈（W9）、U7 自然与想象（W11）、U8 相处与交往（W13）已全部完成
+       待补（P2）：看图写话、快乐读书吧《读读童话故事》
     */
   ];
   UNITS_BY_SUBJECT.chinese = CHINESE_UNITS;
