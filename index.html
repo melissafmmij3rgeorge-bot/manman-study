@@ -266,6 +266,30 @@
   .bs-mini{padding:8px;}
   .hint-mini{font-size:11px;color:var(--muted);margin-top:2px;}
 
+  /* ===== v6.2 方向图（校园小导游）+ 田字格笔顺跟写 ===== */
+  .dir-map{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;max-width:250px;margin:12px auto;}
+  .dir-cell{background:var(--card);border:2px solid var(--border);border-radius:12px;padding:10px;text-align:center;font-weight:700;font-size:18px;}
+  .dir-cell.n{background:var(--blue);color:#fff;border-color:var(--blue);}
+  .dir-cell.s{background:var(--coral);color:#fff;border-color:var(--coral);}
+  .dir-cell.w{background:var(--green);color:#fff;border-color:var(--green);}
+  .dir-cell.e{background:var(--amber);color:#5A4300;border-color:var(--amber);}
+  .dir-cell.c{background:transparent;border:none;font-size:30px;}
+  .dir-cell.sm{font-size:15px;padding:8px 6px;font-weight:600;}
+
+  .tz-wrap{display:flex;flex-direction:column;align-items:center;gap:12px;margin:12px 0;}
+  .tz-grid{position:relative;width:260px;height:260px;max-width:62vw;max-height:62vw;background:#fff;border:2px solid var(--coral);border-radius:10px;overflow:hidden;touch-action:none;}
+  .tz-grid::before,.tz-grid::after{content:"";position:absolute;background:#F3D3BC;}
+  .tz-grid::before{left:50%;top:0;width:1px;height:100%;transform:translateX(-.5px);}
+  .tz-grid::after{top:50%;left:0;height:1px;width:100%;transform:translateY(-.5px);}
+  .tz-ghost{position:absolute;left:0;top:0;width:100%;height:100%;display:flex;align-items:center;justify-content:center;
+    font-size:190px;line-height:1;color:#EADFD4;font-family:"KaiTi","Microsoft YaHei",serif;user-select:none;pointer-events:none;}
+  .tz-canvas{position:absolute;left:0;top:0;width:100%;height:100%;touch-action:none;}
+  .tz-bar{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;}
+  .tz-word-row{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin:6px 0;}
+  .tz-chip{padding:8px 14px;border-radius:10px;border:2px solid var(--border);background:var(--card);font-size:22px;
+    font-family:"KaiTi","Microsoft YaHei",serif;cursor:pointer;font-weight:700;}
+  .tz-chip.on{background:var(--coral);color:#fff;border-color:var(--coral);}
+
   .balloon-row{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;align-items:center;font-size:28px;margin:10px 0;}
   .balloon{display:inline-block;padding:6px;border-radius:50%;min-width:36px;text-align:center;}
 
@@ -349,6 +373,7 @@
         <button class="btn ghost" id="btnToolDict">✍️ 听写</button>
         <button class="btn ghost" id="btnToolSprint">⚡ 口算</button>
         <button class="btn ghost" id="btnToolWrong">📕 错题本</button>
+        <button class="btn ghost" id="btnToolWrite">✍️ 笔顺跟写</button>
       </div>
       <div class="center" data-page-node-id="58tKfh12IRUvEhX5TGHQME">
         <p class="hint" id="homeHint" style="margin:6px 24px;" data-page-node-id="3kgHJdnVodHCVbqDKC0tBH"></p>
@@ -542,6 +567,15 @@
       <div class="center"><div class="big">📕 错题本</div></div>
       <div id="mistStage" style="width:100%;"></div>
       <div class="btn-row"><button class="btn ghost" id="btnMistHome">回首页</button></div>
+    </div>
+  </section>
+
+  <!-- 笔顺跟写 -->
+  <section id="screen-writing">
+    <div style="flex:1;display:flex;flex-direction:column;justify-content:center;">
+      <div class="center"><div class="big">✍️ 笔顺跟写</div></div>
+      <div id="writeStage" style="width:100%;"></div>
+      <div class="btn-row"><button class="btn ghost" id="btnWriteHome">回首页</button></div>
     </div>
   </section>
 </div>
@@ -1756,6 +1790,19 @@
      - 认识长度 = 新版 U4 厘米和米
      当前已写：U1 分类与整理（W0）。后续 11 个单元按学校进度补。
   */
+  /* 方向图：badges 可选 {n:'教学楼',s:'大门',e:'图书馆',w:'体育馆'} */
+  function dirMap(badges, center){
+    var b=badges||{};
+    function cell(cls,label,txt){
+      var t=txt||label;
+      return '<div class="dir-cell '+cls+(txt?' sm':'')+'">'+t+'</div>';
+    }
+    return '<div class="dir-map">'+
+      '<div class="dir-cell c"></div>'+cell('n','北',b.n)+'<div class="dir-cell c"></div>'+
+      cell('w','西',b.w)+'<div class="dir-cell c">'+(center||'🧭')+'</div>'+cell('e','东',b.e)+
+      '<div class="dir-cell c"></div>'+cell('s','南',b.s)+'<div class="dir-cell c"></div>'+
+    '</div>';
+  }
   var MATH_UNITS=[
     {id:'sx_u1_fenlei',name:'分类与整理',emoji:'🗂️',category:'math_concept',unlockWeek:0,
       intro:{title:'把同一类东西放在一起 —— 学会"分类"。',speak:'今天来学一个新本领 —— 分类。什么是分类？就是把同一种东西放在一起。',render:function(st){stageHTML(st,'<div class="hint">场景：把气球分类</div><div class="balloon-row">'+'<span class="balloon" style="background:#FF8A4C;">🎈</span>'.repeat(5)+'<span class="balloon" style="background:#E74C3C;">❤️</span>'.repeat(4)+'<span class="balloon" style="background:#4A9BFF;">🔵</span>'.repeat(3)+'</div><div class="hint" style="margin-top:10px;">这里有不同形状的气球。怎么分呢？</div>');}},
@@ -1845,6 +1892,26 @@
       {title:'第 2 步：列除法算式',speak:'用总数除以份数：18 除以 3 等于 6。每个篮子装 6 个。',render:function(st){stageHTML(st,'<div class="formula">18 ÷ 3 = 6（个）</div><div class="hint">答：每个篮子装 6 个。</div>');},interact:{prompt:'20 本书平均放在 5 层书架，每层几本？',kind:'pick',opts:[3,4,5,6],answer:4}},
       {title:'第 3 步：检查答案',speak:'用每份数乘份数检查：6 乘 3 等于 18，说明答案正确。',render:function(st){stageHTML(st,'<div class="formula">6 × 3 = 18<br>所以 18 ÷ 3 = 6</div>');},interact:{prompt:'16 支铅笔平均分给 4 人，每人几支？',kind:'pick',opts:[2,3,4,5],answer:4}}
     ],[{q:'14 个气球平均分给 2 人，每人几个？',opts:[5,6,7,8],ans:7},{q:'24 个苹果平均放进 6 盘，每盘几个？',opts:[3,4,5,6],ans:4},{q:'15 本书平均放在 3 层，每层几本？',opts:[3,4,5,6],ans:5}],function(){var d=rnd(2,6),per=rnd(2,6),total=d*per;return{q:total+' 个物品平均分成 '+d+' 份，每份几个？',opts:makeOpts(per,[per-1,per+1,d]),ans:per};},'解决平均分问题：总数 ÷ 份数 = 每份数，再用乘法检查。','摆一摆，平均分一分'),
+    mathUnit('sx_u3_daoyou','校园小导游（东南西北）','🧭',8,'认识东、南、西、北 —— 用方向说清位置。','今天学四个方向：东、南、西、北。学会辨认方向，就能像小导游一样把校园介绍得清清楚楚。','<div class="hint">先认一认四个方向</div>'+dirMap()+'<div class="hint">地图上的规则：上北、下南、左西、右东</div>',[
+      {title:'第 1 步：用太阳和指南针辨认方向',speak:'早晨起来面向太阳：前面是东，后面是西，左面是北，右面是南。指南针的红色指针总是指向北方。',render:function(st){stageHTML(st,'<div class="formula">早晨面向太阳：<br>前面是<b>东</b>，后面是<b>西</b><br>左面是<b>北</b>，右面是<b>南</b></div>'+dirMap({},'🌅')+'<div class="hint">红色指针指向北 —— 这就是指南针 🧭</div>');},interact:{prompt:'早晨面向太阳，你的左面是什么方向？',kind:'pick',opts:['东','南','西','北'],answer:'北'}},
+      {title:'第 2 步：知一推三，记住地图规则',speak:'只要知道一个方向，其他三个就知道了。东和西相对，南和北相对，按东、南、西、北顺时针排列。地图上都按上北、下南、左西、右东来画。',render:function(st){stageHTML(st,'<div class="cmp"><div class="pill blue">东</div><div class="vs">↔</div><div class="pill coral">西</div></div><div class="cmp"><div class="pill blue">南</div><div class="vs">↔</div><div class="pill coral">北</div></div>'+dirMap()+'<div class="hint">地图：上北、下南、左西、右东。</div>');},interact:{prompt:'地图通常是上北、下南、左西、右东。地图的左面是什么方向？',kind:'pick',opts:['东','南','西','北'],answer:'西'}},
+      {title:'第 3 步：当小导游，说清路线',speak:'介绍校园要说清方向，比如：从大门往北走到教学楼，再向东到图书馆。',render:function(st){stageHTML(st,dirMap({n:'教学楼',e:'图书馆',w:'体育馆',s:'大门'},'🏃')+'<div class="hint">操场在校园中间 🏃，四面都有建筑。</div><div class="formula">从大门往北走到教学楼，<br>再向东到图书馆。</div>');},interact:{prompt:'看上面的校园图：大门在操场的南面。从大门往北走，会到哪个地方？',kind:'pick',opts:['教学楼','图书馆','体育馆','操场'],answer:'教学楼'}}
+    ],[
+      {q:'早晨起来面向太阳，前面是什么方向？',opts:['东','南','西','北'],ans:'东'},
+      {q:'地图按「上北、下南、左西、右东」画。地图的左面是什么方向？',opts:['东','南','西','北'],ans:'西'},
+      {q:'和东方相对的是哪个方向？',opts:['东','南','西','北'],ans:'西'},
+      {q:'校园图里，大门在南面，教学楼在大门的北面。从大门往北走，会到哪里？',opts:['教学楼','图书馆','体育馆','操场'],ans:'教学楼'},
+      {q:'图书馆在操场的东面。从操场往东走，会到哪里？',opts:['图书馆','大门','教学楼','体育馆'],ans:'图书馆'}
+    ],function(){
+      var dirs=['东','南','西','北'];var opp={'东':'西','西':'东','南':'北','北':'南'};
+      var d=dirs[rnd(0,3)];
+      if(Math.random()<0.5){
+        var o=opp[d];var dis=shuffle(dirs.filter(function(x){return x!==o;}));
+        return{q:'和「'+d+'方」相对的是哪个方向？',opts:shuffle([o].concat(dis)),ans:o};
+      }
+      var i=dirs.indexOf(d);var nx=dirs[(i+1)%4];
+      return{q:'东、南、西、北按顺时针排列，「'+d+'」后面（顺时针下一个）是哪个方向？',opts:shuffle([nx,d,dirs[(i+2)%4],dirs[(i+3)%4]]),ans:nx};
+    },'辨认方向：早晨面向太阳，前东、后西、左北、右南；指南针红色指针指北。地图上北、下南、左西、右东；东和西相对，南和北相对。','给爸爸妈妈当一次校园小导游'),
     mathUnit('sx_u4_cmgmi','厘米和米','📏',9,'认识厘米和米 —— 用尺子量长度。','今天认识长度单位厘米和米。较短的物体常用厘米，较长的距离可以用米。','<div class="formula">1 米 = 100 厘米<br>铅笔约 15 厘米<br>教室门高约 2 米</div>',[
       {title:'第 1 步：认识厘米',speak:'尺子上相邻两条小刻度之间是 1 厘米。铅笔、橡皮这些小物体常用厘米。',render:function(st){stageHTML(st,ruler(10,6)+'<div class="hint">从 0 刻度开始量，读到 6，就是 6 厘米。</div>');},interact:{prompt:'橡皮长约 5 什么？',kind:'pick',opts:['厘米','米','千米','斤'],answer:'厘米'}},
       {title:'第 2 步：认识米',speak:'米是比厘米大的长度单位。教室、操场这些较长的地方可以用米。',render:function(st){stageHTML(st,'<div class="formula">课桌长：约 1 米<br>教室门高：约 2 米<br>铅笔长：约 15 厘米</div>');},interact:{prompt:'教室门高约 2 什么？',kind:'pick',opts:['厘米','米','毫米','克'],answer:'米'}},
@@ -1860,14 +1927,84 @@
       {title:'第 2 步：8 和 9 的口诀',speak:'八八六十四，八九七十二，九九八十一。',render:function(st){stageHTML(st,'<div class="formula">8 × 8 = 64<br>8 × 9 = 72<br>9 × 9 = 81</div>');},interact:{prompt:'8 × 9 = ?',kind:'pick',opts:[63,64,72,81],answer:72}},
       {title:'第 3 步：乘除法互相检查',speak:'因为 8 乘 9 等于 72，所以 72 除以 8 等于 9。',render:function(st){stageHTML(st,'<div class="formula">8 × 9 = 72<br>72 ÷ 8 = 9<br>72 ÷ 9 = 8</div>');},interact:{prompt:'72 ÷ 9 = ?',kind:'pick',opts:[6,7,8,9],answer:8}}
     ],[{q:'7 × 9 = ?',opts:[54,56,63,72],ans:63},{q:'8 × 8 = ?',opts:[56,64,72,81],ans:64},{q:'63 ÷ 7 = ?',opts:[7,8,9,10],ans:9}],function(){var a=rnd(7,9),b=rnd(2,9),ans=a*b;return{q:a+' × '+b+' = ?',opts:makeOpts(ans,[ans-a,ans+a,ans+3]),ans:ans};},'熟记七、八、九的口诀，并用乘法口诀反过来求商。','挑战大九九')
-    /* 2024 新版人教二上 · 学校同步单元已补齐（2026-09-10）：
+    /* 2024 新版人教二上 · 全部同步单元已补齐（2026-09-17）：
        W0 分类与整理 → W1 乘法的初步认识 / 5口诀 → W2 2-4口诀 → W3 乘加乘减
        → W4 6口诀 → W5 乘法解决问题 / 平均分 → W6 除法的初步认识 → W7 用2~6口诀求商
-       → W8 除法解决问题 → W9 厘米和米 → W11 7~9乘除法
-       待补（综合实践，P1）：校园小导游（东南西北）约 W8、身体上的尺子约 W10
+       → W8 除法解决问题 / 校园小导游（东南西北）→ W9 厘米和米 → W10 身体上的尺子
+       → W11 7~9 的乘除法
+       数学同步单元已全部覆盖（含 2 个综合实践）。
     */
   ];
   UNITS_BY_SUBJECT.math = MATH_UNITS;
+  /* ================= 自然拼读单元工厂（Jolly Phonics 42 音 · 7 分组） ================= */
+  function phonicsUnit(cfg){
+    var so=cfg.sounds, ws=cfg.words, bl=cfg.blend, no=cfg.no;
+    var letterList=so.map(function(x){return x.L;});
+    var name='Phonics '+no+' · '+letterList.join(' ');
+    function listenCards(list){
+      return '<div class="word-grid">'+list.map(function(x){
+        return '<div class="word-card speaker-btn" data-en="'+x.w+'"><span class="emoji">'+x.e+'</span><div class="en">'+x.L+'</div><div class="hint-mini">🔊 '+x.w+'</div></div>';
+      }).join('')+'</div>';
+    }
+    function bindSpeak(st){
+      st.querySelectorAll('.speaker-btn').forEach(function(c){
+        c.addEventListener('click',function(){ speak(c.dataset.en,'en-US'); });
+      });
+    }
+    var pool=so.map(function(x){return x.w;}).concat(ws).filter(function(w,i,arr){return arr.indexOf(w)===i;});
+    // 首个「例词首音 = 该字母组合」的音，避免 ai/ue 这类只在词中词尾的音被误用
+    var d1=so[0];
+    for(var _i=0;_i<so.length;_i++){ if(so[_i].w.indexOf(so[_i].L)===0){ d1=so[_i]; break; } }
+    function scramble(w){
+      var out=[],guard=0;
+      while(out.length<3&&guard<60){
+        var s=shuffle(w.split('')).join('');
+        if(s!==w&&out.indexOf(s)<0) out.push(s);
+        guard++;
+      }
+      while(out.length<3) out.push(w+'s');
+      return out;
+    }
+    return {
+      id:cfg.id, name:name, emoji:'🔤', category:'en_phonics', unlockWeek:0,
+      intro:{title:'Phonics '+no+' — '+letterList.join(', ')+'.', speak:'Letter sounds: '+letterList.join(', ')+'. Listen and repeat.', render:function(st){
+        stageHTML(st,'<div class="hint">👂 Tap a card to hear the word</div>'+listenCards(so)+'<div class="formula">'+cfg.tip+'</div>');
+        bindSpeak(st);
+      }},
+      demoSteps:[
+        {title:'Step 1: Hear the sound', speak:'Listen to the word, then pick the letter it starts with.', render:function(st){
+          stageHTML(st,'<div class="hint">👂 Listen, then pick the first letter</div>'+listenCards(so));
+          bindSpeak(st);
+        }, interact:{prompt:'Listen — which letter does this word start with?',kind:'ket_speak',word:d1.w,opts:shuffle([d1.L].concat(shuffle(so.map(function(x){return x.L;}).filter(function(l){return l!==d1.L;})).slice(0,3))),answer:d1.L}},
+        {title:'Step 2: Blend the sounds', speak:'Blend the sounds: '+bl.parts.join(' - ')+' makes '+bl.word+'.', render:function(st){
+          stageHTML(st,'<div class="formula">'+bl.parts.join(' + ')+' = <b>'+bl.word+'</b></div><div class="hint">Say it fast: '+bl.parts.join('-')+' → '+bl.word+'</div>'+listenCards(so));
+          bindSpeak(st);
+        }, interact:{prompt:bl.parts.join(' + ')+' = ?',kind:'pick',opts:shuffle(bl.opts.slice()),answer:bl.word}},
+        {title:'Step 3: Read these words', speak:'Tap to listen, then read each word yourself.', render:function(st){
+          stageHTML(st,'<div class="hint">👂 Tap, listen, then read it aloud</div><div class="word-grid">'+ws.map(function(w){
+            return '<div class="word-card speaker-btn" data-en="'+w+'"><span class="emoji">🔊</span><div class="en" style="font-size:19px;">'+w+'</div></div>';
+          }).join('')+'</div>');
+          bindSpeak(st);
+        }, interact:{prompt:'Listen — which word do you hear?',kind:'ket_speak',word:ws[1],opts:shuffle(ws.slice(0,4)),answer:ws[1]}}
+      ],
+      practice:{title:name+' · Listen & pick', render:function(st){
+        stageHTML(st,'<div class="formula">'+cfg.tip+'</div>'+listenCards(so));
+        bindSpeak(st);
+      }, questions:cfg.qs.slice()},
+      makeReviewQ:function(){
+        if(Math.random()<0.5){
+          var i=rnd(0,so.length-1),p=so[i];
+          var dis=shuffle(pool.filter(function(w){return w.indexOf(p.L)<0;})).slice(0,3);
+          if(dis.length===3) return {q:'Which word has the sound "'+p.L+'"?',opts:shuffle([p.w].concat(dis)),ans:p.w};
+        }
+        var b=cfg.blends[rnd(0,cfg.blends.length-1)];
+        var parts=b.slice(0,b.length-1), word=b[b.length-1];
+        return {q:parts.join(' + ')+' = ?',opts:shuffle([word].concat(scramble(word))),ans:word};
+      },
+      help:'Letter sounds: '+letterList.join(', ')+'. '+cfg.tip,
+      exploreHint:'Tap the cards and listen'
+    };
+  }
   /* ================= KET 8 主题单元 ================= */
   var KET_UNITS=[
     {id:'ket_family',name:'👨‍👩‍👧 Family',emoji:'👨‍👩‍👧',category:'en_ket',unlockWeek:0,
@@ -2005,7 +2142,71 @@
       makeReviewQ:function(){var allWords=[{en:'house',emoji:'🏠'},{en:'room',emoji:'🚪'},{en:'bed',emoji:'🛏️'},{en:'table',emoji:'🪑'},{en:'door',emoji:'🚪'},{en:'window',emoji:'🪟'},{en:'chair',emoji:'🪑'},{en:'lamp',emoji:'💡'}];var ans=allWords[rnd(0,allWords.length-1)];var dis=allWords.filter(function(w){return w.en!==ans.en;});shuffle(dis);return{q:ans.emoji+' — pick the word',opts:shuffle([ans.en,dis[0].en,dis[1].en,dis[2].en]),ans:ans.en};},
       help:'Home: house, room, bed, table, door, window, chair, lamp.',
       exploreHint:'Tap to hear the word'
-    }
+    },
+    /* ---------- 自然拼读 7 单元（Jolly Phonics 42 音官方分组）---------- */
+    phonicsUnit({id:'ph_1_satipn',no:1,
+      sounds:[{L:'s',w:'sun',e:'☀️'},{L:'a',w:'ant',e:'🐜'},{L:'t',w:'top',e:'🎩'},{L:'i',w:'ink',e:'🖋️'},{L:'p',w:'pen',e:'🖊️'},{L:'n',w:'net',e:'🕸️'}],
+      words:['sat','sit','pin','tap','nap','tin','pan','sip'],
+      blend:{parts:['s','a','t'],word:'sat',opts:['sat','sit','tap','pan']},
+      blends:[['s','a','t','sat'],['p','i','n','pin'],['n','a','p','nap']],
+      tip:'s 像蛇的嘶嘶声 · a 是 ant 里的短音 · t 像钟表的滴答声',
+      qs:[{q:'Which word starts with the letter s?',opts:['sun','ant','top','ink'],ans:'sun'},
+          {q:'s + a + t = ?',opts:['sat','sit','tap','pan'],ans:'sat'},
+          {q:'Which word starts with the letter n?',opts:['net','sun','pen','ink'],ans:'net'}]}),
+    phonicsUnit({id:'ph_2_ckehrmd',no:2,
+      sounds:[{L:'c',w:'cat',e:'🐱'},{L:'k',w:'kit',e:'🪁'},{L:'e',w:'egg',e:'🥚'},{L:'h',w:'hat',e:'🎩'},{L:'r',w:'run',e:'🏃'},{L:'m',w:'map',e:'🗺️'},{L:'d',w:'dog',e:'🐶'}],
+      words:['hen','red','mat','kid','hat','dad','men','hit'],
+      blend:{parts:['h','e','n'],word:'hen',opts:['hen','red','hat','men']},
+      blends:[['h','e','n','hen'],['r','e','d','red'],['m','a','t','mat']],
+      tip:'c 和 k 是同一个音 · e 是 egg 里的短音',
+      qs:[{q:'Which word starts with the letter c?',opts:['cat','kit','egg','hat'],ans:'cat'},
+          {q:'h + e + n = ?',opts:['hen','red','hat','men'],ans:'hen'},
+          {q:'Which word starts with the letter d?',opts:['dog','cat','map','run'],ans:'dog'}]}),
+    phonicsUnit({id:'ph_3_goulfb',no:3,
+      sounds:[{L:'g',w:'goat',e:'🐐'},{L:'o',w:'orange',e:'🍊'},{L:'u',w:'umbrella',e:'☂️'},{L:'l',w:'leg',e:'🦵'},{L:'f',w:'fish',e:'🐟'},{L:'b',w:'ball',e:'⚽'}],
+      words:['bug','dog','log','fun','bell','gulp','lamp'],
+      blend:{parts:['d','o','g'],word:'dog',opts:['dog','log','bug','fun']},
+      blends:[['d','o','g','dog'],['f','u','n','fun'],['b','u','g','bug']],
+      tip:'o 是 orange 里的短音 · u 是 umbrella 里的短音',
+      qs:[{q:'Which word starts with the letter g?',opts:['goat','orange','leg','fish'],ans:'goat'},
+          {q:'d + o + g = ?',opts:['dog','log','bug','fun'],ans:'dog'},
+          {q:'Which word starts with the letter b?',opts:['ball','dog','leg','fun'],ans:'ball'}]}),
+    phonicsUnit({id:'ph_4_ajoaieeeor',no:4,
+      sounds:[{L:'ai',w:'rain',e:'🌧️'},{L:'j',w:'jam',e:'🍯'},{L:'oa',w:'boat',e:'⛵'},{L:'ie',w:'pie',e:'🥧'},{L:'ee',w:'tree',e:'🌳'},{L:'or',w:'corn',e:'🌽'}],
+      words:['rain','jeep','boat','pie','feet','fork','soap','deep'],
+      blend:{parts:['b','oa','t'],word:'boat',opts:['boat','rain','pie','corn']},
+      blends:[['b','oa','t','boat'],['r','ai','n','rain'],['t','r','ee','tree']],
+      tip:'两个字母合起来发一个音：ai / oa / ie / ee / or',
+      qs:[{q:'Which word has the sound "ai"?',opts:['rain','jam','boat','pie'],ans:'rain'},
+          {q:'b + oa + t = ?',opts:['boat','rain','pie','corn'],ans:'boat'},
+          {q:'Which word has the sound "ee"?',opts:['tree','boat','corn','jam'],ans:'tree'}]}),
+    phonicsUnit({id:'ph_5_zwngvoo',no:5,
+      sounds:[{L:'z',w:'zip',e:'🤐'},{L:'w',w:'wet',e:'💦'},{L:'ng',w:'ring',e:'💍'},{L:'v',w:'van',e:'🚐'},{L:'oo',w:'moon',e:'🌙'},{L:'oo',w:'book',e:'📖'}],
+      words:['zip','wet','ring','van','moon','book','wing','zoo'],
+      blend:{parts:['r','i','ng'],word:'ring',opts:['ring','zip','moon','book']},
+      blends:[['r','i','ng','ring'],['m','oo','n','moon'],['b','oo','k','book']],
+      tip:'oo 有两个音：moon 里的长音、book 里的短音',
+      qs:[{q:'Which word has the sound "z"?',opts:['zip','wet','ring','van'],ans:'zip'},
+          {q:'r + i + ng = ?',opts:['ring','zip','moon','book'],ans:'ring'},
+          {q:'Which word has the sound "oo" like moon?',opts:['moon','wing','zip','van'],ans:'moon'}]}),
+    phonicsUnit({id:'ph_6_yxchshth',no:6,
+      sounds:[{L:'y',w:'yes',e:'✅'},{L:'x',w:'fox',e:'🦊'},{L:'ch',w:'chip',e:'🍟'},{L:'sh',w:'ship',e:'🚢'},{L:'th',w:'think',e:'🤔'},{L:'th',w:'this',e:'👉'}],
+      words:['shop','chip','think','that','yes','fox','fish','chin'],
+      blend:{parts:['sh','o','p'],word:'shop',opts:['shop','chip','fish','chin']},
+      blends:[['sh','o','p','shop'],['ch','i','p','chip'],['f','i','sh','fish']],
+      tip:'th 有两个音：think 里的清音、this 里的浊音',
+      qs:[{q:'Which word starts with the sound "sh"?',opts:['ship','chip','think','fox'],ans:'ship'},
+          {q:'ch + i + p = ?',opts:['chip','shop','fish','chin'],ans:'chip'},
+          {q:'Which word starts with the sound "th"?',opts:['think','yes','fox','fish'],ans:'think'}]}),
+    phonicsUnit({id:'ph_7_quouoiueerar',no:7,
+      sounds:[{L:'qu',w:'queen',e:'👑'},{L:'ou',w:'out',e:'📢'},{L:'oi',w:'oil',e:'🛢️'},{L:'ue',w:'blue',e:'💙'},{L:'er',w:'her',e:'👧'},{L:'ar',w:'car',e:'🚗'}],
+      words:['queen','shout','oil','blue','her','car','bird','farm'],
+      blend:{parts:['c','ar'],word:'car',opts:['car','her','oil','blue']},
+      blends:[['c','ar','car'],['h','er','her'],['qu','ee','n','queen']],
+      tip:'qu / ou / oi / ue / er / ar —— 记住它们的发音',
+      qs:[{q:'Which word starts with the sound "qu"?',opts:['queen','out','oil','blue'],ans:'queen'},
+          {q:'c + ar = ?',opts:['car','her','oil','blue'],ans:'car'},
+          {q:'Which word has the sound "ou"?',opts:['shout','queen','car','bird'],ans:'shout'}]})
   ];
   var EXPLORE_EN_WORDS=[
     {en:'father',emoji:'👨'},{en:'mother',emoji:'👩'},{en:'brother',emoji:'👦'},{en:'sister',emoji:'👧'},{en:'baby',emoji:'👶'},{en:'grandpa',emoji:'👴'},{en:'grandma',emoji:'👵'},{en:'friend',emoji:'🧑‍🤝‍🧑'},
@@ -2638,6 +2839,120 @@
     renderHome();
   }
 
+  /* ================= 笔顺跟写（田字格 · 逐笔引导 + 手指描红） ================= */
+  var TZ_WORDS=Object.keys(STROKE_DATA);
+  var tzCur=null, tzIdx=0, tzTimer=null, tzDraw=false, tzLast=null;
+
+  function openWriting(){ renderWritePicker(); show('screen-writing'); }
+  function renderWritePicker(){
+    var st=document.getElementById('writeStage');
+    st.innerHTML='<div class="hint" style="margin:6px 10px;">选一个字，用手指在田字格里跟着写。<br>点「下一笔」听笔画顺序，点「擦掉重写」可以随时重来。</div>'+
+      '<div class="tz-word-row">'+TZ_WORDS.map(function(w){
+        return '<div class="tz-chip" data-w="'+w+'">'+w+'</div>';
+      }).join('')+'</div>'+
+      '<div class="hint">第一批 '+TZ_WORDS.length+' 个字，会陆续增加。</div>';
+    st.querySelectorAll('[data-w]').forEach(function(c){
+      c.addEventListener('click',function(){ ensureAudio(); openTzWord(c.dataset.w); });
+    });
+  }
+  function openTzWord(w){
+    var strokes=STROKE_DATA[w]||[];
+    if(!strokes.length) return;
+    tzCur=w; tzIdx=0;
+    var st=document.getElementById('writeStage');
+    st.innerHTML='<div class="bs-han" style="text-align:center;">'+w+'</div>'+
+      '<div class="tz-wrap">'+
+        '<div class="tz-grid"><div class="tz-ghost">'+w+'</div><canvas class="tz-canvas" id="tzCanvas"></canvas></div>'+
+        '<div class="tz-idx" id="tzIdx"></div>'+
+        '<div class="bs-strokes" id="tzList">'+strokes.map(function(s,i){
+          return '<span class="bs-step" data-tz="'+i+'">'+(i+1)+'. '+s+'</span>';
+        }).join('')+'</div>'+
+        '<div class="tz-bar">'+
+          '<button class="btn tiny" id="tzPrev">上一笔</button>'+
+          '<button class="btn tiny" id="tzNext">下一笔</button>'+
+          '<button class="btn tiny secondary" id="tzPlay">看全部笔顺</button>'+
+          '<button class="btn tiny ghost" id="tzClear">擦掉重写</button>'+
+        '</div>'+
+      '</div>'+
+      '<div class="btn-row"><button class="btn secondary" id="tzBack">换一个字</button></div>';
+    tzPaintOnly(0);
+    document.getElementById('tzPrev').addEventListener('click',function(){ ensureAudio(); tzPaint(Math.max(0,tzIdx-1)); });
+    document.getElementById('tzNext').addEventListener('click',function(){ ensureAudio(); tzPaint(Math.min(strokes.length-1,tzIdx+1)); });
+    document.getElementById('tzPlay').addEventListener('click',function(){ ensureAudio(); tzPlayAll(); });
+    document.getElementById('tzClear').addEventListener('click',function(){ tzClearInk(); });
+    document.getElementById('tzBack').addEventListener('click',function(){ tzStopPlay(); renderWritePicker(); });
+    tzSetupCanvas();
+    speak(w+'。一共 '+strokes.length+' 笔。第一笔，'+strokes[0]+'。','zh-CN');
+  }
+  function tzPaintOnly(i){
+    var strokes=STROKE_DATA[tzCur]||[];
+    if(i<0) i=0; if(i>strokes.length-1) i=strokes.length-1;
+    tzIdx=i;
+    var idxEl=document.getElementById('tzIdx');
+    if(idxEl) idxEl.textContent='第 '+(i+1)+' 笔 / 共 '+strokes.length+' 笔：'+strokes[i];
+    var list=document.getElementById('tzList');
+    if(list){
+      list.querySelectorAll('[data-tz]').forEach(function(el){
+        var k=+el.getAttribute('data-tz');
+        el.style.background = k<i?'#E8F8E8' : (k===i?'#FFE3D2':'#FFFFFF');
+        el.style.borderColor = k<i?'#4CAF50' : (k===i?'#FF8A4C':'#EFE3D6');
+        el.style.color = k===i?'#E86A2A' : (k<i?'#2A6F2A':'#8A7A70');
+        el.style.fontWeight = k===i?'700':'400';
+      });
+    }
+  }
+  function tzPaint(i){ tzPaintOnly(i); var strokes=STROKE_DATA[tzCur]||[]; if(tzIdx>0) speak('第 '+(tzIdx+1)+' 笔，'+strokes[tzIdx],'zh-CN'); }
+  function tzPlayAll(){
+    tzStopPlay();
+    var strokes=STROKE_DATA[tzCur]||[];
+    tzPaintOnly(0); speak(strokes[0],'zh-CN');
+    var k=1;
+    tzTimer=setInterval(function(){
+      if(k>=strokes.length){ tzStopPlay(); return; }
+      tzPaintOnly(k); speak(strokes[k],'zh-CN'); k++;
+    },1100);
+  }
+  function tzStopPlay(){ if(tzTimer){ clearInterval(tzTimer); tzTimer=null; } }
+  function tzSetupCanvas(){
+    var cv=document.getElementById('tzCanvas');
+    if(!cv) return;
+    var rect=cv.getBoundingClientRect();
+    var dpr=window.devicePixelRatio||1;
+    if(!rect.width||!rect.height) return;
+    cv.width=Math.round(rect.width*dpr);
+    cv.height=Math.round(rect.height*dpr);
+    var ctx=cv.getContext('2d');
+    if(!ctx) return;
+    ctx.scale(dpr,dpr);
+    ctx.lineWidth=7; ctx.lineCap='round'; ctx.lineJoin='round';
+    ctx.strokeStyle='#E86A2A';
+    tzDraw=false;
+    function tzPos(e){
+      var r=cv.getBoundingClientRect();
+      return {x:e.clientX-r.left, y:e.clientY-r.top};
+    }
+    cv.addEventListener('pointerdown',function(e){
+      e.preventDefault(); tzDraw=true; tzLast=tzPos(e);
+      try{ cv.setPointerCapture(e.pointerId); }catch(err){}
+    });
+    cv.addEventListener('pointermove',function(e){
+      if(!tzDraw) return;
+      e.preventDefault();
+      var p=tzPos(e);
+      ctx.beginPath(); ctx.moveTo(tzLast.x,tzLast.y); ctx.lineTo(p.x,p.y); ctx.stroke();
+      tzLast=p;
+    });
+    cv.addEventListener('pointerup',function(){ tzDraw=false; });
+    cv.addEventListener('pointercancel',function(){ tzDraw=false; });
+    cv.addEventListener('pointerleave',function(){ tzDraw=false; });
+  }
+  function tzClearInk(){
+    var cv=document.getElementById('tzCanvas');
+    if(!cv) return;
+    var ctx=cv.getContext('2d');
+    if(ctx) ctx.clearRect(0,0,cv.width,cv.height);
+  }
+
   /* ---- 新功能入口绑定 ---- */
   var _btd=document.getElementById('btnToolDict');
   if(_btd) _btd.addEventListener('click',function(){ ensureAudio(); openDictation(); });
@@ -2651,6 +2966,10 @@
   if(_bsh) _bsh.addEventListener('click',function(){ stopSprint(); renderHome(); show('screen-home'); });
   var _bmh=document.getElementById('btnMistHome');
   if(_bmh) _bmh.addEventListener('click',function(){ renderHome(); show('screen-home'); });
+  var _btwr=document.getElementById('btnToolWrite');
+  if(_btwr) _btwr.addEventListener('click',function(){ ensureAudio(); openWriting(); });
+  var _bwh=document.getElementById('btnWriteHome');
+  if(_bwh) _bwh.addEventListener('click',function(){ tzStopPlay(); renderHome(); show('screen-home'); });
 
   /* ================= 启动 ================= */
   loadProfile();
