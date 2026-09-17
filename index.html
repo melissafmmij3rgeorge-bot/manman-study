@@ -378,6 +378,7 @@
         <button class="btn ghost" id="btnToolSprint">⚡ 口算</button>
         <button class="btn ghost" id="btnToolWrong">📕 错题本</button>
         <button class="btn ghost" id="btnToolWrite">✍️ 笔顺跟写</button>
+        <button class="btn ghost" id="btnToolPhonics">🔤 自然拼读</button>
       </div>
       <div class="center" data-page-node-id="58tKfh12IRUvEhX5TGHQME">
         <p class="hint" id="homeHint" style="margin:6px 24px;" data-page-node-id="3kgHJdnVodHCVbqDKC0tBH"></p>
@@ -895,6 +896,17 @@
     });
     var sub=SUBJECTS[currentSubject];
     document.getElementById('hdrTitle').textContent=sub.emoji+' '+sub.header;
+    /* 工具入口按科目分配：数学=口算+错题本；语文=听写+笔顺跟写+错题本；英语=自然拼读+错题本 */
+    var toolMap={
+      math:    {btnToolSprint:1, btnToolWrong:1},
+      chinese: {btnToolDict:1, btnToolWrite:1, btnToolWrong:1},
+      english: {btnToolPhonics:1, btnToolWrong:1}
+    };
+    var vis=toolMap[currentSubject]||{};
+    ['btnToolDict','btnToolSprint','btnToolWrong','btnToolWrite','btnToolPhonics'].forEach(function(id){
+      var el=document.getElementById(id);
+      if(el) el.style.display=vis[id]?'':'none';
+    });
   }
 
   /* ================= 选项渲染 / 答题门 ================= */
@@ -1347,7 +1359,27 @@
       box.appendChild(empty);
       return;
     }
+    /* 按类别分组显示，不同科目的小节标题 */
+    var GROUP_TITLES={
+      en_ket:'🎒 KET 主题',
+      en_phonics:'🔤 自然拼读 · Jolly Phonics',
+      zh_word:'📝 字词与识字',
+      zh_bishun:'✍️ 笔顺跟写',
+      zh_reading:'📖 阅读闯关'
+    };
+    var lastCat=null;
     units.forEach(function(u){
+      if(u.category!==lastCat){
+        lastCat=u.category;
+        var gt=GROUP_TITLES[lastCat];
+        if(gt && units.length>1){
+          var gh=document.createElement('div');
+          gh.className='hint'; gh.id='grp-'+lastCat;
+          gh.style.cssText='font-weight:800;margin:14px 4px 4px;text-align:left;';
+          gh.textContent=gt;
+          box.appendChild(gh);
+        }
+      }
       var st=getSt(u.id);
       var status=(!st||st.lv===0)?(isEn?'New':((st&&st.dueCount)?'Due':'未学')):(st.lv>=4?(isEn?'Mastered':'已掌握'):(isEn?'Learning':'学习中'));
       var card=document.createElement('div');
@@ -3073,6 +3105,16 @@
   if(_bmh) _bmh.addEventListener('click',function(){ renderHome(); show('screen-home'); });
   var _btwr=document.getElementById('btnToolWrite');
   if(_btwr) _btwr.addEventListener('click',function(){ ensureAudio(); openWriting(); });
+  var _btp=document.getElementById('btnToolPhonics');
+  if(_btp) _btp.addEventListener('click',function(){
+    ensureAudio();
+    currentSubject='english'; refreshSubjectUI(); renderHome();
+    showUnits();
+    setTimeout(function(){
+      var g=document.getElementById('grp-en_phonics');
+      if(g) g.scrollIntoView({behavior:'smooth',block:'start'});
+    },80);
+  });
   var _bwh=document.getElementById('btnWriteHome');
   if(_bwh) _bwh.addEventListener('click',function(){ tzStopPlay(); renderHome(); show('screen-home'); });
 
