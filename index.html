@@ -266,6 +266,93 @@
   .bs-mini{padding:8px;}
   .hint-mini{font-size:11px;color:var(--muted);margin-top:2px;}
 
+  /* ===== v7 金币 / 装备 / 小游戏 ===== */
+  .ip-stage{position:relative;display:inline-block;}
+  .ip-stage .mascot-hero,.ip-stage .mascot-win{position:relative;z-index:2;}
+  .gear-layer{position:absolute;z-index:3;transform:translate(-50%,-50%);width:52px;height:52px;pointer-events:none;}
+  .gear-back{position:absolute;inset:0;z-index:1;pointer-events:none;}
+  .gear-back .gear-layer{z-index:1;width:72%;left:50%!important;top:30%!important;}
+  .gear-aura{animation:gearPulse 2.2s ease-in-out infinite;}
+  @keyframes gearSpin{to{transform:rotate(360deg);}}
+  @keyframes gearPulse{0%,100%{opacity:.75;transform:translate(-50%,-50%) scale(1);}50%{opacity:1;transform:translate(-50%,-50%) scale(1.06);}}
+  .coin-pill{display:inline-flex;align-items:center;gap:6px;background:linear-gradient(180deg,#FFE066,#FCC419);color:#5A4300;
+    font-weight:800;font-size:14px;padding:6px 14px;border-radius:999px;box-shadow:0 2px 6px rgba(250,200,20,.4);}
+  .coin-pop{animation:coinPop .5s ease;}
+  @keyframes coinPop{0%{transform:scale(1);}40%{transform:scale(1.25);}100%{transform:scale(1);}}
+  .coin-fly{position:fixed;z-index:99;font-size:20px;font-weight:800;color:#F59F00;pointer-events:none;animation:coinFly 1s ease forwards;text-shadow:0 1px 3px rgba(0,0,0,.25);}
+  @keyframes coinFly{0%{transform:translateY(0) scale(.6);opacity:0;}20%{opacity:1;}100%{transform:translateY(-60px) scale(1.3);opacity:0;}}
+  .report-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;width:100%;max-width:420px;margin:10px auto;}
+  .report-cell{background:var(--card);border-radius:12px;padding:10px 6px;text-align:center;}
+  .report-cell .num{font-size:22px;font-weight:800;color:var(--coral);}
+  .report-cell .lab{font-size:11px;color:var(--muted);margin-top:2px;}
+  .next-goal{width:100%;max-width:420px;margin:8px auto;background:var(--card);border-radius:12px;padding:10px 14px;text-align:left;}
+  .next-goal .bar{height:10px;background:var(--line);border-radius:99px;overflow:hidden;margin-top:6px;}
+  .next-goal .bar i{display:block;height:100%;background:linear-gradient(90deg,#FCC419,#F59F00);border-radius:99px;transition:width .6s ease;}
+  .shop-item{display:flex;align-items:center;gap:12px;background:var(--card);border-radius:14px;padding:10px 14px;margin:8px auto;max-width:460px;text-align:left;border:2px solid transparent;}
+  .shop-item.next{border-color:#FCC419;}
+  .shop-item .thumb{width:56px;height:56px;flex:0 0 56px;background:var(--bg2,#F6F1E7);border-radius:12px;display:flex;align-items:center;justify-content:center;}
+  .shop-item .info{flex:1;min-width:0;}
+  .shop-item .name{font-weight:800;font-size:15px;}
+  .shop-item .desc{font-size:12px;color:var(--muted);margin-top:2px;}
+  .shop-item .buy{min-width:86px;}
+  .btn.buy{background:linear-gradient(180deg,#FFE066,#FCC419);color:#5A4300;font-weight:800;border:none;}
+  .btn.buy:disabled{background:var(--line);color:var(--muted);}
+  .btn.wear{background:var(--green);color:#fff;border:none;font-weight:700;}
+  .btn.worn{background:var(--line);color:var(--muted);}
+  .arcade-card{display:flex;align-items:center;gap:14px;background:var(--card);border-radius:16px;padding:14px 18px;margin:8px auto;max-width:460px;cursor:pointer;text-align:left;border:2px solid transparent;}
+  .arcade-card:active{transform:scale(.98);}
+  .arcade-card.locked{opacity:.55;cursor:not-allowed;}
+  .arcade-card .aicon{font-size:34px;}
+  .arcade-card .ainfo{flex:1;}
+  .arcade-card .aname{font-weight:800;font-size:16px;}
+  .arcade-card .adesc{font-size:12px;color:var(--muted);margin-top:2px;}
+  .ticket-row{display:flex;gap:6px;justify-content:center;margin:8px 0;}
+  .ticket{width:16px;height:16px;border-radius:4px;background:var(--line);}
+  .ticket.on{background:linear-gradient(180deg,#FFE066,#F59F00);}
+  /* 挖矿 */
+  .mine-wrap{width:100%;max-width:430px;margin:8px auto;}
+  .mine-hud{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;font-weight:800;}
+  .mine-timer{height:10px;background:var(--line);border-radius:99px;overflow:hidden;flex:1;margin:0 12px;}
+  .mine-timer i{display:block;height:100%;background:linear-gradient(90deg,#4AEDD9,#1971C2);}
+  .mine-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:6px;}
+  .mine-cell{aspect-ratio:1;border-radius:10px;background:linear-gradient(145deg,#A97C50,#8A6238);position:relative;cursor:pointer;
+    display:flex;align-items:center;justify-content:center;font-size:20px;transition:transform .12s;}
+  .mine-cell.dug{background:transparent;pointer-events:none;}
+  .mine-cell .gem-emoji{animation:popIn .3s ease;}
+  .mine-q{background:var(--card);border-radius:14px;padding:14px;text-align:center;margin-bottom:10px;}
+  .mine-q .q{font-size:22px;font-weight:800;}
+  .mine-opts{display:flex;gap:8px;justify-content:center;margin-top:10px;flex-wrap:wrap;}
+  .mine-opt{min-width:64px;padding:10px 14px;border-radius:12px;border:2px solid var(--border);background:#fff;font-weight:800;font-size:17px;cursor:pointer;}
+  .mine-opt.right{background:var(--green);color:#fff;border-color:var(--green);}
+  .mine-opt.wrong{background:var(--line);color:var(--muted);}
+  .combo-tag{position:fixed;top:18%;left:50%;transform:translateX(-50%);z-index:60;font-size:30px;font-weight:900;color:#F59F00;
+    text-shadow:0 2px 0 #fff,0 4px 10px rgba(0,0,0,.2);pointer-events:none;animation:comboPop .7s ease forwards;}
+  @keyframes comboPop{0%{transform:translateX(-50%) scale(.4);opacity:0;}30%{transform:translateX(-50%) scale(1.25);opacity:1;}75%{opacity:1;}100%{transform:translateX(-50%) translateY(-24px) scale(1);opacity:0;}}
+  .frag{position:fixed;z-index:70;pointer-events:none;font-size:18px;animation:fragFly .7s ease forwards;}
+  @keyframes fragFly{0%{transform:translate(0,0) rotate(0);opacity:1;}100%{transform:translate(var(--dx),70px) rotate(200deg);opacity:0;}}
+  .score-jump{animation:scoreJump .4s ease;}
+  @keyframes scoreJump{0%{transform:scale(1);}50%{transform:scale(1.35);}100%{transform:scale(1);}}
+  .beam{position:absolute;left:0;top:50%;width:100%;height:14px;transform:translateY(-50%) scaleX(0);transform-origin:left center;
+    background:linear-gradient(90deg,rgba(255,255,255,0),#FFFFFF 20%,#74C0FC 80%,rgba(116,192,252,0));border-radius:99px;z-index:5;animation:beamSweep .55s ease forwards;}
+  @keyframes beamSweep{0%{transform:translateY(-50%) scaleX(0);opacity:1;}70%{transform:translateY(-50%) scaleX(1);opacity:1;}100%{transform:translateY(-50%) scaleX(1);opacity:0;}}
+  .monster-hurt{animation:monsterShake .45s ease;}
+  @keyframes monsterShake{0%,100%{transform:translateX(0) rotate(0);}25%{transform:translateX(-9px) rotate(-6deg);}50%{transform:translateX(8px) rotate(5deg);}75%{transform:translateX(-5px) rotate(-3deg);}}
+  .monster-dead{animation:monsterDie .6s ease forwards;}
+  @keyframes monsterDie{to{transform:scale(.2) rotate(160deg);opacity:0;}}
+  .ball-throw{position:absolute;z-index:6;font-size:26px;animation:ballFly .9s ease forwards;}
+  @keyframes ballFly{0%{left:10%;top:70%;transform:rotate(0);}60%{left:50%;top:35%;transform:rotate(540deg);}100%{left:56%;top:38%;transform:rotate(1080deg);}}
+  .ball-wobble{animation:ballWobble 1.4s ease;}
+  @keyframes ballWobble{0%,100%{transform:rotate(0);}20%{transform:rotate(-24deg);}40%{transform:rotate(22deg);}60%{transform:rotate(-16deg);}80%{transform:rotate(10deg);}}
+  .pet-flee{animation:petFlee .8s ease forwards;}
+  @keyframes petFlee{to{transform:translateX(130px) scale(.5);opacity:0;}}
+  .pet-caught{animation:petCaught .6s ease;}
+  @keyframes petCaught{0%{transform:scale(1);}45%{transform:scale(.35);}70%{transform:scale(.5);}100%{transform:scale(.4);}}
+  .rare-pet{box-shadow:0 0 0 4px #FFD43B,0 0 18px 4px rgba(255,212,59,.65);border-radius:16px;animation:rareGlow 1s ease-in-out infinite;}
+  @keyframes rareGlow{0%,100%{box-shadow:0 0 0 4px #FFD43B,0 0 14px 2px rgba(255,212,59,.5);}50%{box-shadow:0 0 0 6px #FFE066,0 0 26px 8px rgba(255,212,59,.85);}}
+  .stage-wrap{position:relative;width:100%;max-width:430px;height:120px;margin:0 auto;background:var(--card);border-radius:16px;overflow:hidden;}
+  .lobby-hero{font-size:44px;line-height:1;}
+  .rule-line{font-size:12px;color:var(--muted);margin:6px 0;text-align:left;}
+
   /* ===== v6.2 方向图（校园小导游）+ 田字格笔顺跟写 ===== */
   .dir-map{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;max-width:250px;margin:12px auto;}
   .dir-cell{background:var(--card);border:2px solid var(--border);border-radius:12px;padding:10px;text-align:center;font-weight:700;font-size:18px;}
@@ -356,8 +443,9 @@
       <div class="center" data-page-node-id="1MyHmW02qa8kb3ftbFLNzI">
         <div class="hero-emoji" id="homeEmoji" data-page-node-id="1RdraiBrqnoZPOgDJf1udc">🧩</div>
         <div class="big" id="homeDate" data-page-node-id="PrLnPNQmWizrWianfoYCKz"></div>
-        <img id="homeMascot" class="mascot-hero" src="" alt="">
+        <div class="ip-stage" id="homeMascotStage"><img id="homeMascot" class="mascot-hero" src="" alt=""></div>
         <div class="mascot-name" id="homeMascotName"></div>
+        <div style="margin:6px 0;"><span class="coin-pill" id="homeCoins">🪙 0</span></div>
       </div>
       <div class="track-card" id="trackA" data-page-node-id="ELqNmG1GIYtlkvDILcHXYW">
         <div data-page-node-id="arhVgo8o2ePgksCRMEV2Nu">
@@ -379,6 +467,8 @@
         <button class="btn ghost" id="btnToolWrong">📕 错题本</button>
         <button class="btn ghost" id="btnToolWrite">✍️ 笔顺跟写</button>
         <button class="btn ghost" id="btnToolPhonics">🔤 自然拼读</button>
+        <button class="btn ghost" id="btnToolShop">🛍️ 装备店</button>
+        <button class="btn ghost" id="btnToolArcade">🎮 小游戏</button>
       </div>
       <div class="center" data-page-node-id="58tKfh12IRUvEhX5TGHQME">
         <p class="hint" id="homeHint" style="margin:6px 24px;" data-page-node-id="3kgHJdnVodHCVbqDKC0tBH"></p>
@@ -477,7 +567,7 @@
       <div class="star-rain" id="starRain" data-page-node-id="EbKgychIRLyHrSZr6xClNQ"></div>
       <div class="big" data-page-node-id="p0BsdllC1UwHNJMEeE8UhT">太棒了！</div>
       <p class="hint" id="winMsg" style="margin:10px 24px;" data-page-node-id="ECDKrjuN8CAoLofaohSItD"></p>
-      <img id="winMascot" class="mascot-win" src="" alt="">
+      <div class="ip-stage" id="winMascotStage"><img id="winMascot" class="mascot-win" src="" alt=""></div>
       <div class="btn-row" data-page-node-id="1DLjBjDJjwKgKmHEbboDjG">
         <button class="btn" id="btnWinExplore" data-page-node-id="S4izVnCcaUYiyf2E5kXuCt">自由玩一会儿</button>
         <button class="btn secondary" id="btnWinNext" data-page-node-id="rDI9y5SkVa8JmVJneGFAl7">继续</button>
@@ -535,16 +625,96 @@
     </div>
   </section>
 
-  <!-- 今日小结 -->
+  <!-- 今日小结（战报版） -->
   <section id="screen-daydone" data-page-node-id="YrdWh84lBIzYS181qGoMpB">
     <div class="center" style="flex:1;display:flex;flex-direction:column;justify-content:center;" data-page-node-id="1GOW1RhofgO2NE5ns4fqbZ">
-      <div class="hero-emoji" data-page-node-id="uDEQfwpvelHBzMeSJrw4Q9">🏅</div>
+      <div class="ip-stage" id="doneMascotStage"><img id="doneMascot" class="mascot-hero" src="" alt=""></div>
       <div class="big" id="doneTitle" data-page-node-id="nQX1FaAADPZyn78QIPZoPb">今天学完啦！</div>
-      <div class="summary-list" id="summaryList" data-page-node-id="oDPzNPJ8ZiMBKCCAjDDvnX"></div>
-      <p class="hint" id="doneMsg" style="margin:10px 24px;" data-page-node-id="AHk6hnCTNh2MUZAzjgAAkx"></p>
+      <div style="margin:4px 0;"><span class="coin-pill" id="doneCoins">🪙 0</span></div>
+      <div class="report-grid" id="reportGrid"></div>
+      <div class="next-goal" id="nextGoal"></div>
+      <p class="hint" id="doneMsg" style="margin:6px 24px;" data-page-node-id="AHk6hnCTNh2MUZAzjgAAkx"></p>
       <div class="btn-row" data-page-node-id="VkrJ6JMMktQBkxgwU0LDPa">
-        <button class="btn" id="btnDoneHome" data-page-node-id="Y9S5nVCrWD42Qk5qrMF5Zf">回首页</button>
+        <button class="btn" id="btnDoneArcade">🎮 挑战小游戏</button>
+        <button class="btn ghost" id="btnDoneShop">🛍️ 装备店</button>
+        <button class="btn secondary" id="btnDoneHome" data-page-node-id="Y9S5nVCrWD42Qk5qrMF5Zf">回首页</button>
       </div>
+    </div>
+  </section>
+
+  <!-- 装备商店 -->
+  <section id="screen-shop">
+    <div class="center" style="flex:1;display:flex;flex-direction:column;justify-content:center;">
+      <div class="big">🛍️ 装备店</div>
+      <div style="margin:6px 0;"><span class="coin-pill" id="shopCoins">🪙 0</span></div>
+      <p class="hint" style="margin:4px 24px;">用金币给伙伴换装备，穿上就去小游戏里大显身手！</p>
+      <div id="shopList" style="width:100%;max-width:460px;"></div>
+      <div class="btn-row"><button class="btn ghost" id="btnShopHome">回首页</button></div>
+    </div>
+  </section>
+
+  <!-- 游戏中心 -->
+  <section id="screen-arcade">
+    <div class="center" style="flex:1;display:flex;flex-direction:column;justify-content:center;">
+      <div class="big">🎮 游戏中心</div>
+      <div class="ticket-row" id="ticketRow"></div>
+      <p class="hint" id="arcadeHint" style="margin:4px 24px;"></p>
+      <div id="arcadeList" style="width:100%;max-width:460px;"></div>
+      <div class="btn-row"><button class="btn ghost" id="btnArcadeHome">回首页</button></div>
+    </div>
+  </section>
+
+  <!-- 小游戏1：苦力怕挖矿（数学） -->
+  <section id="screen-mine">
+    <div class="center" style="flex:1;display:flex;flex-direction:column;justify-content:center;">
+      <div class="big">⛏️ 苦力怕挖矿</div>
+      <div id="mineLobby" style="width:100%;max-width:430px;"></div>
+      <div class="mine-wrap" id="minePlay" style="display:none;">
+        <div class="mine-hud">
+          <span id="mineScore">💎 0</span>
+          <div class="mine-timer"><i id="mineTimerBar" style="width:100%;"></i></div>
+          <span id="mineCombo">×1</span>
+        </div>
+        <div class="mine-q" id="mineQBox"></div>
+        <div class="mine-grid" id="mineGrid"></div>
+      </div>
+      <div class="btn-row"><button class="btn ghost" id="btnMineHome">结束</button></div>
+    </div>
+  </section>
+
+  <!-- 小游戏2：奥特曼打怪兽（语文） -->
+  <section id="screen-monster">
+    <div class="center" style="flex:1;display:flex;flex-direction:column;justify-content:center;">
+      <div class="big">⚡ 奥特曼打怪兽</div>
+      <div id="monsterLobby" style="width:100%;max-width:430px;"></div>
+      <div class="mine-wrap" id="monsterPlay" style="display:none;">
+        <div class="mine-hud">
+          <span id="monsterScore">🏆 0</span>
+          <div class="mine-timer"><i id="monsterTimerBar" style="width:100%;"></i></div>
+          <span id="monsterHP">❤️❤️❤️</span>
+        </div>
+        <div id="monsterStage" style="min-height:110px;display:flex;align-items:center;justify-content:center;font-size:64px;"></div>
+        <div class="mine-q" id="monsterQBox"></div>
+      </div>
+      <div class="btn-row"><button class="btn ghost" id="btnMonsterHome">结束</button></div>
+    </div>
+  </section>
+
+  <!-- 小游戏3：皮卡丘收服（英语） -->
+  <section id="screen-catch">
+    <div class="center" style="flex:1;display:flex;flex-direction:column;justify-content:center;">
+      <div class="big">🔮 皮卡丘收服</div>
+      <div id="catchLobby" style="width:100%;max-width:430px;"></div>
+      <div class="mine-wrap" id="catchPlay" style="display:none;">
+        <div class="mine-hud">
+          <span id="catchScore">🐾 0</span>
+          <div class="mine-timer"><i id="catchTimerBar" style="width:100%;"></i></div>
+          <span id="catchCombo">×1</span>
+        </div>
+        <div id="catchStage" style="min-height:110px;display:flex;align-items:center;justify-content:center;font-size:64px;"></div>
+        <div class="mine-q" id="catchQBox"></div>
+      </div>
+      <div class="btn-row"><button class="btn ghost" id="btnCatchHome">结束</button></div>
     </div>
   </section>
 
@@ -787,6 +957,192 @@
 
   /* ================= 状态（按 profile + subject 隔离） ================= */
   var INTERVALS={1:1,2:3,3:7,4:15,5:30};
+
+  /* ================= 金币与资产（三科通用钱包，按账户隔离） ================= */
+  var sessionWrong=0;
+  function walletKey(){ return 'manman_v6_wallet_'+(profile||'manman'); }
+  var wallet=null;
+  function blankWallet(){
+    return {coins:0,total:0,streak:0,lastStudy:'',paid:{},owned:[],
+      wear:{math:{},chinese:{},english:{}},
+      dayLog:{},studyDays:{},
+      games:{date:'',used:0,extra:0,best:{mine:0,monster:0,catch:0}}};
+  }
+  function loadWallet(){
+    if(isTest()){ wallet=blankWallet(); return; }
+    var w=null;
+    try{ w=JSON.parse(localStorage.getItem(walletKey())||'null'); }catch(e){ w=null; }
+    var d=blankWallet();
+    if(!w) w=d;
+    for(var k in d){ if(w[k]===undefined) w[k]=d[k]; }
+    if(!w.wear||typeof w.wear!=='object') w.wear={math:{},chinese:{},english:{}};
+    ['math','chinese','english'].forEach(function(s){ if(!w.wear[s]) w.wear[s]={}; });
+    if(!w.games||typeof w.games!=='object') w.games=d.games;
+    if(!w.games.best) w.games.best={mine:0,monster:0,catch:0};
+    if(!w.owned) w.owned=[];
+    wallet=w;
+    rollDay();
+  }
+  function saveWallet(){ if(isTest()) return; try{ localStorage.setItem(walletKey(), JSON.stringify(wallet)); }catch(e){} }
+  function rollDay(){
+    var t=today();
+    if(!wallet.dayLog[t]) wallet.dayLog[t]={coins:0,learn:0,review:0};
+    if(wallet.games.date!==t){ wallet.games.date=t; wallet.games.used=0; wallet.games.extra=0; }
+  }
+  function dayLog(){ rollDay(); return wallet.dayLog[today()]; }
+  function bumpStreak(){
+    var t=today();
+    if(wallet.lastStudy===t) return;
+    wallet.streak=(wallet.lastStudy===addDays(t,-1))?(wallet.streak||0)+1:1;
+    wallet.lastStudy=t;
+    wallet.studyDays[t]=1;
+  }
+  function studiedToday(){ rollDay(); return !!wallet.studyDays[today()]; }
+  /* 发币：kind 'new'|'review'，unitId 防重复（同天同单元只发一次） */
+  function awardCoins(kind, unitId){
+    if(isTest()) return null;
+    var t=today();
+    if(unitId){ if(wallet.paid[unitId]===t) return null; wallet.paid[unitId]=t; }
+    bumpStreak();
+    var lg=dayLog();
+    var base=(kind==='new')?10:5;
+    var perfect=(sessionWrong===0);
+    var bonus=perfect?5:0;
+    var sb=(wallet.streak>=3)?3:0;
+    var lucky=Math.random()<0.10;
+    var total=base+bonus+sb;
+    if(lucky) total*=2;
+    wallet.coins+=total; wallet.total+=total;
+    lg.coins+=total;
+    if(kind==='new') lg.learn++; else lg.review++;
+    if(perfect && wallet.games.extra<1) wallet.games.extra=1;
+    saveWallet();
+    return {total:total,base:base,bonus:bonus,streakBonus:sb,lucky:lucky,streak:wallet.streak};
+  }
+  /* 小游戏门票：今天学过才有 1 局，全对加 1 局，最多 2 局 */
+  function gameTickets(){
+    rollDay();
+    var studied=studiedToday();
+    var max=studied?(1+wallet.games.extra):0;
+    return {studied:studied, left:Math.max(0,max-wallet.games.used), max:max};
+  }
+  function useTicket(){ var tk=gameTickets(); if(tk.left<=0) return false; wallet.games.used++; saveWallet(); return true; }
+
+  /* ================= 装备库（像素风，SVG 程序化绘制） ================= */
+  var ANCHORS={
+    math:   {head:[0.50,0.055], hand:[0.76,0.52], body:[0.50,0.47], aura:[0.50,0.50]},
+    chinese:{head:[0.49,0.015], hand:[0.79,0.50], body:[0.49,0.42], aura:[0.49,0.46]},
+    english:{head:[0.40,0.28],  hand:[0.20,0.68], body:[0.42,0.74], aura:[0.46,0.60]}
+  };
+  var GEAR={
+    math:{items:[
+      {id:'m_sword_stone',   name:'石剑',        slot:'hand', price:40,  art:'sword',  c:{blade:'#9AA0A6',blade2:'#7E8489',guard:'#6B4F2A',hilt:'#5C4326',gem:'#C9CDD4'}},
+      {id:'m_helm_iron',     name:'铁头盔',      slot:'head', price:60,  art:'helm',   c:{a:'#C9CDD4',b:'#8A9099'}},
+      {id:'m_sword_diamond', name:'钻石剑',      slot:'hand', price:150, art:'sword',  c:{blade:'#4AEDD9',blade2:'#2BC5B4',guard:'#2F6D5F',hilt:'#1F4D42',gem:'#A8FFE9',glow:'#4AEDD9'}},
+      {id:'m_chest_nether',  name:'下界合金甲',  slot:'body', price:220, art:'chest',  c:{a:'#2B2B33',b:'#6B5B3E',trim:'#E0B04B'}},
+      {id:'m_aura_enchant',  name:'附魔紫光',    slot:'aura', price:300, art:'aura',   c:{a:'#B197FC',b:'#845EF7'}},
+      {id:'m_crown_diamond', name:'钻石王冠',    slot:'head', price:400, art:'crown',  c:{a:'#4AEDD9',b:'#2BC5B4',gem:'#FF6B9D',glow:'#4AEDD9'}}
+    ]},
+    chinese:{items:[
+      {id:'c_band_silver',   name:'银河头标',    slot:'head', price:40,  art:'band',   c:{a:'#E9ECEF',b:'#ADB5BD',gem:'#FFD43B'}},
+      {id:'c_wrist_combat',  name:'战斗护腕',    slot:'hand', price:60,  art:'wrist',  c:{a:'#E03131',b:'#A61E1E'}},
+      {id:'c_blade_ult',     name:'究极光剑',    slot:'hand', price:150, art:'sword',  c:{blade:'#FFE066',blade2:'#FFC078',guard:'#F59F00',hilt:'#B0500A',gem:'#FFF3BF',glow:'#FFD43B'}},
+      {id:'c_cape_light',    name:'光之披风',    slot:'body', price:220, art:'cape',   c:{a:'#E03131',b:'#A61E1E',trim:'#FFD43B'}},
+      {id:'c_aura_storm',    name:'光子风暴',    slot:'aura', price:300, art:'aura',   c:{a:'#74C0FC',b:'#228BE6'}},
+      {id:'c_crown_king',    name:'光之国王冠',  slot:'head', price:400, art:'crown',  c:{a:'#FFD43B',b:'#F59F00',gem:'#74C0FC',glow:'#FFD43B'}}
+    ]},
+    english:{items:[
+      {id:'e_cap_trainer',   name:'训练家帽',    slot:'head', price:40,  art:'helm',   c:{a:'#E03131',b:'#B02525'}},
+      {id:'e_ring_thunder',  name:'雷之石手环',  slot:'hand', price:60,  art:'wrist',  c:{a:'#FFD43B',b:'#F59F00'}},
+      {id:'e_hammer_thor',   name:'雷神之锤',    slot:'hand', price:150, art:'hammer', c:{a:'#FFD43B',b:'#E8B80C',handle:'#6B4F2A',glow:'#FFD43B'}},
+      {id:'e_cape_champ',    name:'冠军披风',    slot:'body', price:220, art:'cape',   c:{a:'#1971C2',b:'#145CA6',trim:'#FFD43B'}},
+      {id:'e_aura_volt',     name:'十万伏特',    slot:'aura', price:300, art:'aura',   c:{a:'#FFD43B',b:'#F59F00'}},
+      {id:'e_crown_champ',   name:'冠军金冠',    slot:'head', price:400, art:'crown',  c:{a:'#FFD43B',b:'#F59F00',gem:'#E03131',glow:'#FFD43B'}}
+    ]}
+  };
+  function gearItem(id){
+    for(var s in GEAR){ var list=GEAR[s].items;
+      for(var i=0;i<list.length;i++){ if(list[i].id===id) return list[i]; } }
+    return null;
+  }
+  /* 像素风装备 SVG（viewBox 0 0 100 100）， aura 自带旋转动画 */
+  var _gearSeq=0;
+  function gearSVG(item){
+    var c=item.c||{}, A=item.art, s='';
+    if(A==='sword'){
+      s='<polygon points="45,4 55,4 59,57 41,57" fill="'+c.blade+'"/>'
+       +'<polygon points="52,6 55,4 59,57 55,57" fill="'+(c.blade2||c.blade)+'"/>'
+       +'<rect x="30" y="57" width="40" height="9" rx="2" fill="'+c.guard+'"/>'
+       +'<rect x="44" y="66" width="12" height="26" rx="3" fill="'+c.hilt+'"/>'
+       +'<circle cx="50" cy="61.5" r="4.5" fill="'+(c.gem||'#fff')+'"/>';
+    } else if(A==='hammer'){
+      s='<rect x="40" y="30" width="20" height="30" rx="3" fill="'+c.a+'"/>'
+       +'<rect x="40" y="30" width="9" height="30" rx="3" fill="'+(c.b||c.a)+'"/>'
+       +'<rect x="36" y="26" width="28" height="7" rx="2" fill="'+(c.b||c.a)+'"/>'
+       +'<rect x="46" y="60" width="8" height="32" rx="3" fill="'+(c.handle||'#6B4F2A')+'"/>';
+    } else if(A==='helm'){
+      s='<path d="M22,66 Q22,22 50,22 Q78,22 78,66 L78,74 L64,74 L64,58 L36,58 L36,74 L22,74 Z" fill="'+c.a+'"/>'
+       +'<path d="M50,22 Q78,22 78,66 L66,66 Q66,34 50,30 Z" fill="'+(c.b||c.a)+'"/>'
+       +'<rect x="30" y="70" width="40" height="6" rx="2" fill="'+(c.b||c.a)+'"/>';
+    } else if(A==='crown'){
+      s='<path d="M22,72 L22,42 L37,54 L50,30 L63,54 L78,42 L78,72 Z" fill="'+c.a+'"/>'
+       +'<path d="M63,54 L78,42 L78,72 L63,72 Z" fill="'+(c.b||c.a)+'"/>'
+       +'<rect x="22" y="70" width="56" height="8" rx="3" fill="'+(c.b||c.a)+'"/>'
+       +'<circle cx="50" cy="58" r="5" fill="'+(c.gem||'#fff')+'"/>'
+       +'<circle cx="33" cy="63" r="3.5" fill="'+(c.gem||'#fff')+'"/>'
+       +'<circle cx="67" cy="63" r="3.5" fill="'+(c.gem||'#fff')+'"/>';
+    } else if(A==='band'){
+      s='<ellipse cx="50" cy="50" rx="26" ry="12" fill="'+c.a+'"/>'
+       +'<ellipse cx="50" cy="47" rx="26" ry="10" fill="'+(c.b||c.a)+'"/>'
+       +'<circle cx="50" cy="47" r="7" fill="'+(c.gem||'#FFD43B')+'"/>';
+    } else if(A==='wrist'){
+      s='<circle cx="50" cy="50" r="24" fill="'+c.a+'"/>'
+       +'<circle cx="50" cy="50" r="15" fill="rgba(0,0,0,0.25)"/>'
+       +'<circle cx="50" cy="50" r="15" fill="none" stroke="'+(c.b||c.a)+'" stroke-width="4"/>'
+       +'<rect x="44" y="26" width="12" height="10" rx="2" fill="'+(c.b||c.a)+'"/>';
+    } else if(A==='cape'){
+      s='<path d="M30,18 L70,18 Q78,50 74,86 Q62,78 50,86 Q38,78 26,86 Q22,50 30,18 Z" fill="'+c.a+'"/>'
+       +'<path d="M50,18 L70,18 Q78,50 74,86 Q62,78 50,86 Z" fill="'+(c.b||c.a)+'"/>'
+       +'<rect x="28" y="14" width="44" height="9" rx="4" fill="'+(c.trim||'#fff')+'"/>';
+    } else if(A==='chest'){
+      s='<path d="M26,22 L74,22 L80,50 L74,80 L26,80 L20,50 Z" fill="'+c.a+'"/>'
+       +'<path d="M50,22 L74,22 L80,50 L74,80 L50,80 Z" fill="rgba(255,255,255,0.08)"/>'
+       +'<rect x="26" y="44" width="48" height="6" fill="'+(c.trim||c.b)+'"/>'
+       +'<circle cx="50" cy="60" r="8" fill="'+(c.b||c.trim)+'"/>';
+    } else if(A==='aura'){
+      var p='';
+      for(var i=0;i<8;i++){
+        var ang=(i*45)*Math.PI/180, rx=42, ry=38;
+        var x=50+rx*Math.cos(ang), y=50+ry*Math.sin(ang);
+        p+='<path d="M'+x+' '+(y-5)+' L'+(x+4)+' '+y+' L'+x+' '+(y+5)+' L'+(x-4)+' '+y+' Z" fill="'+(i%2?c.a:c.b)+'"/>';
+      }
+      s='<g style="transform-origin:50px 50px;animation:gearSpin 7s linear infinite">'+p+'</g>'
+       +'<circle cx="50" cy="50" r="30" fill="none" stroke="'+c.a+'" stroke-width="1.5" opacity="0.35"/>';
+    }
+    var glow='';
+    if(c.glow){ _gearSeq++; var fid='gg_'+_gearSeq;
+      glow='<filter id="'+fid+'" x="-30%" y="-30%" width="160%" height="160%"><feDropShadow dx="0" dy="0" stdDeviation="3" flood-color="'+c.glow+'"/></filter>';
+      return '<svg viewBox="0 0 100 100" width="100%" height="100%" style="overflow:visible"><defs>'+glow+'</defs><g filter="url(#'+fid+')">'+s+'</g></svg>';
+    }
+    return '<svg viewBox="0 0 100 100" width="100%" height="100%" style="overflow:visible"><g>'+s+'</g></svg>';
+  }
+  /* IP 形象 + 已穿戴装备（front 层叠加在图上；body 槽位的披风画在图后） */
+  function mascotGearHTML(subject){
+    var wear=(wallet&&wallet.wear&&wallet.wear[subject])||{};
+    var a=ANCHORS[subject]||{};
+    var back='', front='';
+    for(var slot in wear){
+      var gid=wear[slot]; if(!gid) continue;
+      var it=gearItem(gid); if(!it) continue;
+      var pos=a[slot]||[0.5,0.5];
+      var div='<div class="gear-layer'+(slot==='aura'?' gear-aura':'')+'" style="left:'+(pos[0]*100)+'%;top:'+(pos[1]*100)+'%;'
+        +(slot==='hand'?'width:64px;height:64px;':(slot==='aura'?'width:100%;height:100%;':''))
+        +'">'+gearSVG(it)+'</div>';
+      if(slot==='body'&&it.art==='cape') back+=div; else front+=div;
+    }
+    return '<div class="gear-back">'+back+'</div>'+front;
+  }
+
   function stateKey(){ return 'manman_v6_units_'+currentSubject+'_'+(profile||'manman'); }
   function timesKey(){ return 'manman_v6_times_'+currentSubject+'_'+(profile||'manman'); }
   var state={};
@@ -898,12 +1254,12 @@
     document.getElementById('hdrTitle').textContent=sub.emoji+' '+sub.header;
     /* 工具入口按科目分配：数学=口算+错题本；语文=听写+笔顺跟写+错题本；英语=自然拼读+错题本 */
     var toolMap={
-      math:    {btnToolSprint:1, btnToolWrong:1},
-      chinese: {btnToolDict:1, btnToolWrite:1, btnToolWrong:1},
-      english: {btnToolPhonics:1, btnToolWrong:1}
+      math:    {btnToolSprint:1, btnToolWrong:1, btnToolShop:1, btnToolArcade:1},
+      chinese: {btnToolDict:1, btnToolWrite:1, btnToolWrong:1, btnToolShop:1, btnToolArcade:1},
+      english: {btnToolPhonics:1, btnToolWrong:1, btnToolShop:1, btnToolArcade:1}
     };
     var vis=toolMap[currentSubject]||{};
-    ['btnToolDict','btnToolSprint','btnToolWrong','btnToolWrite','btnToolPhonics'].forEach(function(id){
+    ['btnToolDict','btnToolSprint','btnToolWrong','btnToolWrite','btnToolPhonics','btnToolShop','btnToolArcade'].forEach(function(id){
       var el=document.getElementById(id);
       if(el) el.style.display=vis[id]?'':'none';
     });
@@ -948,6 +1304,7 @@
   var browseMode=false, phaseStart=0;
   function startIntro(unit){
     curUnit=unit||todayNew;
+    sessionWrong=0;
     phaseStart=Date.now();
     show('screen-intro');
     document.getElementById('introTitle').textContent=curUnit.intro.title;
@@ -1110,7 +1467,8 @@
   }
   function finishNew(){
     var isEn=(currentSubject==='english');
-    var wm=document.getElementById('winMascot'); var mPath=SUBJECTS[currentSubject].mascot||''; if(wm) wm.src=mPath?new URL(mPath,location.href).href:'';
+    var wst=document.getElementById('winMascotStage'); var mPath=SUBJECTS[currentSubject].mascot||'';
+    if(wst) wst.innerHTML='<img id="winMascot" class="mascot-win" src="'+(mPath?new URL(mPath,location.href).href:'')+'" alt="">'+mascotGearHTML(currentSubject);
     if(browseMode){
       document.getElementById('winMsg').textContent=isEn?('You finished 「'+curUnit.name+'」! Free play, or pick another unit.'):('你解决了「'+curUnit.name+'」！再来玩一会儿，或换个单元。');
       playWin(); speak(isEn?('Great job! You can do '+curUnit.name+' now!'):('太棒了！你会解决'+curUnit.name+'了！'), isEn?'en-US':'zh-CN');
@@ -1118,6 +1476,7 @@
       return;
     }
     markLearned(curUnit.id, true);
+    if(!browseMode) finishNew.award=awardCoins('new', curUnit.id);
     refreshProg();
     document.getElementById('winMsg').textContent=isEn?('Done with 「'+curUnit.name+'」! Free play, or finish.'):('解决了「'+curUnit.name+'」！自由玩一会儿，或直接结束。');
     playWin(); speak(isEn?('Great job! You can do '+curUnit.name+' now!'):('太棒了！你会解决'+curUnit.name+'了！'), isEn?'en-US':'zh-CN');
@@ -1129,6 +1488,7 @@
   var revIdx=0, revUnits=[];
   function startReview(){
     revUnits=todayDue; revIdx=0;
+    sessionWrong=0;
     show('screen-review'); renderReview();
   }
   function renderReview(){
@@ -1164,6 +1524,7 @@
   }
   function afterReview(){
     saveState(); refreshProg();
+    for(var i=0;i<revUnits.length;i++){ awardCoins('review', revUnits[i].id); }
     if(todayNew){ startIntro(); } else { afterTrackA(); }
   }
 
@@ -1317,22 +1678,65 @@
   function dayDone(){ finishDay(); }
   function finishDay(){
     refreshProg();
-    var list=document.getElementById('summaryList');
-    list.innerHTML='';
+    loadWallet();
+    var lg=dayLog();
     var isEn=(currentSubject==='english');
-    var items=[];
-    if(todayDue.length) items.push({label:isEn?'Review':'复习', value: todayDue.length+(isEn?' items':' 个')});
-    if(todayNew && !browseMode) items.push({label:isEn?'New':'新学', value: todayNew.emoji+' '+todayNew.name});
-    if(!items.length) items.push({label:isEn?'Today':'今日', value:isEn?'All done ✅':'全完成 ✅'});
-    items.forEach(function(it){
-      var row=document.createElement('div'); row.className='summary-item';
-      var l=document.createElement('div'); l.className='task-label'; l.textContent=it.label; l.style.margin='0';
-      var v=document.createElement('div'); v.className='task-main'; v.textContent=it.value;
-      row.appendChild(l); row.appendChild(v);
-      list.appendChild(row);
-    });
-    document.getElementById('doneMsg').textContent=isEn?'See you tomorrow!':'辛苦了！明天见～';
+    var sub=SUBJECTS[currentSubject];
+    var mPath=sub.mascot||'';
+    var src=mPath?new URL(mPath,location.href).href:'';
+    var dst=document.getElementById('doneMascotStage');
+    if(dst) dst.innerHTML='<img id="doneMascot" class="mascot-hero" src="'+src+'" alt="'+(sub.mascotName||'')+'">'+mascotGearHTML(currentSubject);
+    var dc=document.getElementById('doneCoins');
+    if(dc) dc.textContent='🪙 今天 +'+lg.coins+' · 钱包 '+wallet.coins;
+    var rg=document.getElementById('reportGrid');
+    if(rg) rg.innerHTML=
+      '<div class="report-cell"><div class="num">'+(lg.learn+lg.review)+'</div><div class="lab">完成单元</div></div>'
+     +'<div class="report-cell"><div class="num">'+(wallet.games.extra>=1?'🎯':'✊')+'</div><div class="lab">'+(wallet.games.extra>=1?'今天全对':'继续加油')+'</div></div>'
+     +'<div class="report-cell"><div class="num">'+(wallet.streak||0)+'</div><div class="lab">连击天数</div></div>';
+    var ng=document.getElementById('nextGoal');
+    if(ng){
+      var items=GEAR[currentSubject].items, next=null;
+      for(var i=0;i<items.length;i++){ if(wallet.owned.indexOf(items[i].id)<0){ next=items[i]; break; } }
+      if(next){
+        var left=Math.max(0,next.price-wallet.coins);
+        var pct=Math.min(100,Math.round(wallet.coins/next.price*100));
+        ng.innerHTML='<div style="font-weight:800;font-size:13px;">下一件：'+next.name+' <span style="color:var(--muted);font-weight:400;">· '+next.price+' 金币</span></div>'
+          +(left>0
+            ?'<div class="bar"><i style="width:'+pct+'%;"></i></div><div style="font-size:12px;color:var(--muted);margin-top:4px;">再攒 '+left+' 枚金币就能换！</div>'
+            :'<div style="font-size:12px;color:#2B8A3E;font-weight:800;margin-top:4px;">金币已经攒够啦，快去装备店换上！</div>');
+      } else {
+        ng.innerHTML='<div style="font-weight:800;font-size:13px;">全部装备收集完毕，你是真正的收藏大师！🏆</div>';
+      }
+    }
+    var mname=sub.mascotName;
+    var pool=[
+      mname+'今天陪你赚了 '+lg.coins+' 枚金币！',
+      '连击 '+wallet.streak+' 天，'+mname+'为你竖起大拇指！',
+      (lg.learn>0?('新学了 '+lg.learn+' 个单元，'+mname+'都记在小本本上啦！'):('复习了 '+lg.review+' 个单元，记忆更牢固啦！'))
+    ];
+    document.getElementById('doneMsg').textContent=isEn?('Great job! See you tomorrow. ('+mname+' earned '+lg.coins+' coins today!)'):('辛苦了！'+pool[Math.floor(Math.random()*pool.length)]);
     show('screen-daydone');
+    playWin();
+    coinBurst('doneCoins', lg.coins);
+  }
+  /* 金币飞出动画 */
+  function coinBurst(pillId, n){
+    var pill=document.getElementById(pillId);
+    if(!pill||n<=0) return;
+    var r=pill.getBoundingClientRect();
+    var cnt=Math.min(6,Math.max(3,Math.round(n/5)));
+    for(var i=0;i<cnt;i++){
+      (function(i){
+        setTimeout(function(){
+          var d=document.createElement('div');
+          d.className='coin-fly'; d.textContent='🪙';
+          d.style.left=(r.left+r.width*Math.random())+'px';
+          d.style.top=(r.top)+'px';
+          document.body.appendChild(d);
+          setTimeout(function(){ if(d.parentNode) d.parentNode.removeChild(d); },1050);
+        }, i*160);
+      })(i);
+    }
   }
   function rain(){
     var box=document.getElementById('starRain'); box.innerHTML='';
@@ -1677,8 +2081,12 @@
     document.getElementById('homeDate').textContent='星期'+wd+' · 第 '+cw+' 周 · '+today();
     var hm=document.getElementById('homeMascot'), hmn=document.getElementById('homeMascotName');
     var mPath=SUBJECTS[currentSubject].mascot||'';
-    if(hm){ hm.src=mPath?new URL(mPath,location.href).href:''; hm.alt=SUBJECTS[currentSubject].mascotName||''; }
+    var hsrc=mPath?new URL(mPath,location.href).href:'';
+    var hst=document.getElementById('homeMascotStage');
+    if(hst) hst.innerHTML='<img id="homeMascot" class="mascot-hero" src="'+hsrc+'" alt="'+(SUBJECTS[currentSubject].mascotName||'')+'">'+mascotGearHTML(currentSubject);
     if(hmn){ hmn.textContent=SUBJECTS[currentSubject].mascotName||''; }
+    var hcoins=document.getElementById('homeCoins');
+    if(hcoins) hcoins.textContent='🪙 '+(wallet?wallet.coins:0);
     var units=UNITS_BY_SUBJECT[currentSubject]||[];
     // A 轨
     var aText='', aEmoji='';
@@ -1742,6 +2150,7 @@
 
   function pickProfile(p){
     profile=p; saveProfile();
+    loadWallet();
     refreshProfileTag();
     renderHome(); show('screen-home');
   }
@@ -2605,6 +3014,7 @@
   function saveWrongBook(w){ try{ localStorage.setItem(wrongKey(), JSON.stringify(w)); }catch(e){} }
   function addWrong(item){
     if(isTest()) return;
+    sessionWrong++;
     var w=loadWrong(); if(!w.items) w.items={};
     var it=w.items[item.id];
     if(it){ it.wc=(it.wc||1)+1; it.lv=Math.min((it.lv||1)+1,5); it.last=Date.now(); it.q=item.q; it.opts=item.opts; it.ans=item.ans; it.unitName=item.unitName; }
@@ -3118,8 +3528,566 @@
   var _bwh=document.getElementById('btnWriteHome');
   if(_bwh) _bwh.addEventListener('click',function(){ tzStopPlay(); renderHome(); show('screen-home'); });
 
-  /* ================= 启动 ================= */
-  loadProfile();
+  /* ================= 装备商店 ================= */
+  function hasGear(subject, slot){ var w=(wallet&&wallet.wear&&wallet.wear[subject])||{}; return !!w[slot]; }
+  function slotDesc(slot){
+    return slot==='hand'?'小游戏威力提升':slot==='head'?'小游戏额外奖励':slot==='body'?'小游戏得分 +20%':'炫酷特效环绕';
+  }
+  function openShop(){ loadWallet(); renderShop(); show('screen-shop'); }
+  function renderShop(){
+    var sub=SUBJECTS[currentSubject];
+    document.getElementById('shopCoins').textContent='🪙 '+wallet.coins;
+    var list=document.getElementById('shopList'); list.innerHTML='';
+    var items=GEAR[currentSubject].items;
+    var nextId=null;
+    for(var i=0;i<items.length;i++){ if(wallet.owned.indexOf(items[i].id)<0){ nextId=items[i].id; break; } }
+    items.forEach(function(it){
+      var owned=wallet.owned.indexOf(it.id)>=0;
+      var worn=wallet.wear[currentSubject][it.slot]===it.id;
+      var row=document.createElement('div');
+      row.className='shop-item'+(it.id===nextId?' next':'');
+      row.innerHTML='<div class="thumb">'+gearSVG(it)+'</div>'
+        +'<div class="info"><div class="name">'+it.name+(it.id===nextId?' <span style="font-size:11px;color:#E8590C;">🎯 下一件目标</span>':'')+'</div>'
+        +'<div class="desc">'+slotDesc(it.slot)+' · '+it.price+' 金币</div></div>';
+      var btn=document.createElement('button');
+      btn.className='btn buy';
+      if(worn){ btn.textContent='已穿上'; btn.disabled=true; btn.className='btn worn'; }
+      else if(owned){ btn.textContent='穿上'; btn.className='btn wear'; }
+      else if(wallet.coins>=it.price){ btn.textContent='🪙 '+it.price+' 购买'; }
+      else { btn.textContent='还差 '+(it.price-wallet.coins); btn.disabled=true; }
+      btn.addEventListener('click',function(){
+        loadWallet();
+        if(wallet.owned.indexOf(it.id)<0){
+          if(wallet.coins<it.price) return;
+          wallet.coins-=it.price; wallet.owned.push(it.id);
+          playWin(); speak('叮！获得'+it.name+'！','zh-CN');
+        }
+        wallet.wear[currentSubject][it.slot]=it.id;
+        saveWallet();
+        renderShop();
+      });
+      btn.className=btn.className; // keep
+      var wrap=document.createElement('div'); wrap.className='buy'; wrap.appendChild(btn);
+      row.appendChild(wrap);
+      list.appendChild(row);
+    });
+  }
+
+  /* ================= 游戏中心 ================= */
+  var ARCADE=[
+    {kind:'mine',    subj:'math',    icon:'⛏️', name:'苦力怕挖矿', desc:'答对口算题才能爆破矿石，挖到钻石！', sec:'screen-mine'},
+    {kind:'monster', subj:'chinese', icon:'⚡', name:'奥特曼打怪兽', desc:'答对字词题发射光波，击败怪兽拿勋章！', sec:'screen-monster'},
+    {kind:'catch',   subj:'english', icon:'🔮', name:'皮卡丘收服', desc:'听发音选单词，扔出精灵球收服小伙伴！', sec:'screen-catch'}
+  ];
+  function openArcade(){ loadWallet(); renderArcade(); show('screen-arcade'); }
+  function renderArcade(){
+    var tk=gameTickets();
+    var tr=document.getElementById('ticketRow'); tr.innerHTML='';
+    for(var i=0;i<2;i++){ var t=document.createElement('div'); t.className='ticket'+(i<tk.left?' on':''); tr.appendChild(t); }
+    var hint=document.getElementById('arcadeHint');
+    if(!tk.studied) hint.textContent='今天还没学习哦——先去闯关，赚 1 张游戏门票！';
+    else if(tk.left>0) hint.textContent='今日还有 '+tk.left+' 局机会'+(tk.max>1?'（全对奖励多 1 局）':'')+'，加油！';
+    else hint.textContent='苦力怕、奥特曼和皮卡丘的能量都用完啦，明天再来！';
+    var list=document.getElementById('arcadeList'); list.innerHTML='';
+    ARCADE.forEach(function(g){
+      var card=document.createElement('div');
+      card.className='arcade-card'+(tk.left<=0?' locked':'');
+      var best=wallet.games.best[g.kind]||0;
+      card.innerHTML='<div class="aicon">'+g.icon+'</div>'
+        +'<div class="ainfo"><div class="aname">'+g.name+(currentSubject===g.subj?' <span style="font-size:11px;color:#1971C2;">本学科</span>':'')+'</div>'
+        +'<div class="adesc">'+g.desc+'（最高分 '+best+'）</div></div>'
+        +'<div style="font-weight:800;color:'+(tk.left>0?'#2B8A3E':'var(--muted)')+';font-size:13px;">'+(tk.left>0?'可玩':'明日再来')+'</div>';
+      card.addEventListener('click',function(){
+        if(tk.left<=0){ document.getElementById('arcadeHint').textContent='今天的能量用完啦，明天再来！先回首页休息～'; return; }
+        if(g.subj==='math') openMine(); else if(g.subj==='chinese') openMonster(); else openCatch();
+      });
+      list.appendChild(card);
+    });
+  }
+
+  /* ================= 游戏公共 ================= */
+  var gameTimer=null;
+  function stopTimer(){ if(gameTimer){ clearInterval(gameTimer); gameTimer=null; } }
+  function startTimer(sec, barId, onEnd){
+    stopTimer();
+    var t0=Date.now();
+    function tick(){
+      var left=Math.max(0,sec-Math.floor((Date.now()-t0)/1000));
+      var bar=document.getElementById(barId);
+      if(bar) bar.style.width=(left/sec*100)+'%';
+      if(left<=0){ stopTimer(); onEnd(); }
+    }
+    tick();
+    gameTimer=setInterval(tick,300);
+  }
+  function fragsAt(el, emojis, n){
+    if(!el) return;
+    var r=el.getBoundingClientRect();
+    for(var i=0;i<n;i++){
+      (function(i){
+        var d=document.createElement('div');
+        d.className='frag'; d.textContent=emojis[Math.floor(Math.random()*emojis.length)];
+        d.style.left=(r.left+r.width*Math.random())+'px';
+        d.style.top=(r.top+r.height*Math.random())+'px';
+        d.style.setProperty('--dx',(Math.random()*120-60)+'px');
+        document.body.appendChild(d);
+        setTimeout(function(){ if(d.parentNode) d.parentNode.removeChild(d); },750);
+      })(i);
+    }
+  }
+  function scoreJump(id){
+    var el=document.getElementById(id);
+    if(!el) return;
+    el.classList.remove('score-jump'); void el.offsetWidth; el.classList.add('score-jump');
+  }
+  function endGameCommon(kind, rawScore){
+    loadWallet();
+    var score=Math.round(rawScore*(hasGear(currentSubject,'body')?1.2:1));
+    var best=wallet.games.best;
+    var prev=best[kind]||0, isNew=score>prev;
+    if(isNew) best[kind]=score;
+    var reward=Math.min(15,Math.floor(score/10));
+    wallet.coins+=reward; wallet.total+=reward; dayLog().coins+=reward;
+    saveWallet();
+    return {score:score,reward:reward,isNew:isNew,prev:prev};
+  }
+  function comboTag(txt){
+    var d=document.createElement('div');
+    d.className='combo-tag'; d.textContent=txt;
+    document.body.appendChild(d);
+    setTimeout(function(){ if(d.parentNode) d.parentNode.removeChild(d); },750);
+  }
+
+  /* ================= 小游戏1：苦力怕挖矿 ================= */
+  var mine={on:false,score:0,combo:0,blast:false,cells:[],cur:null,total:60};
+  function mineHasHand(){ return hasGear('math','hand'); }
+  function mineHasHead(){ return hasGear('math','head'); }
+  function openMine(){
+    stopTimer();
+    document.getElementById('minePlay').style.display='none';
+    var lo=document.getElementById('mineLobby'); lo.style.display='';
+    var tk=gameTickets();
+    lo.innerHTML='<div class="center"><div class="lobby-hero">⛏️🧟</div>'
+      +'<div class="rule-line">· 每答对一道口算题，就能爆破一块矿石</div>'
+      +'<div class="rule-line">· 🪨石=1分 ⚫煤=3分 ⚙️铁=6分 🟡金=12分 💎钻石=30分</div>'
+      +'<div class="rule-line">· 连续答对触发连击倍数，最高 ×5！</div>'
+      +(mineHasHand()?'<div class="rule-line" style="color:#1971C2;font-weight:700;">⚔️ 钻石剑生效：一次爆破十字 5 格！</div>':'')
+      +(mineHasHead()?'<div class="rule-line" style="color:#1971C2;font-weight:700;">🪖 头盔生效：本局时间 +10 秒！</div>':'')
+      +'<div class="rule-line">今日剩余门票：'+tk.left+' 局 · 最高分 '+(wallet.games.best.mine||0)+'</div>'
+      +'<div class="btn-row"><button class="btn" id="btnMineStart">⛏️ 开始挖矿</button></div></div>';
+    document.getElementById('btnMineStart').addEventListener('click',function(){
+      if(!useTicket()){ renderArcadeHintBack('苦力怕的能量用完啦！'); return; }
+      mineStart();
+    });
+    show('screen-mine');
+  }
+  function renderArcadeHintBack(msg){
+    document.getElementById('mineLobby').innerHTML='<div class="center"><p class="hint">'+msg+'</p><div class="btn-row"><button class="btn ghost" id="btnMineBack2">回游戏中心</button></div></div>';
+    document.getElementById('btnMineBack2').addEventListener('click',openArcade);
+  }
+  function mineStart(){
+    mine.on=true; mine.score=0; mine.combo=0; mine.blast=false;
+    mine.total=mineHasHead()?70:60;
+    document.getElementById('mineLobby').style.display='none';
+    document.getElementById('minePlay').style.display='';
+    document.getElementById('mineScore').textContent='💎 0';
+    document.getElementById('mineCombo').textContent='×1';
+    var grid=document.getElementById('mineGrid'); grid.innerHTML='';
+    mine.cells=[];
+    var types=[];
+    var i;
+    for(i=0;i<12;i++) types.push({e:'🪨',p:1});
+    for(i=0;i<7;i++) types.push({e:'⚫',p:3});
+    for(i=0;i<5;i++) types.push({e:'⚙️',p:6});
+    for(i=0;i<4;i++) types.push({e:'🟡',p:12});
+    for(i=0;i<2;i++) types.push({e:'💎',p:30});
+    shuffle(types);
+    types.forEach(function(t,idx){
+      var c=document.createElement('div'); c.className='mine-cell';
+      c.dataset.p=t.p; c.dataset.e=t.e;
+      c.addEventListener('click',function(){ mineTap(c); });
+      grid.appendChild(c); mine.cells.push(c);
+    });
+    ensureAudio();
+    mine.cur=mineGenQ(); mineRenderQ();
+    startTimer(mine.total,'mineTimerBar',mineEnd);
+    speak('开始挖矿！','zh-CN');
+  }
+  function mineGenQ(){
+    var r=Math.random();
+    var q,ans,dis=[];
+    if(r<0.6){
+      var a=rnd(2,9),b=rnd(2,9); ans=a*b; q=a+' × '+b+' = ?';
+      dis=[ans+a, Math.max(1,ans-a), ans+10, ans+1];
+    } else if(r<0.8){
+      var a2=rnd(12,79),b2=rnd(11,20); ans=a2+b2; q=a2+' + '+b2+' = ?';
+      dis=[ans+10, ans-10, ans+1, ans+2];
+    } else {
+      var a3=rnd(30,99),b3=rnd(11,29); if(b3>=a3){b3=a3-5;} ans=a3-b3; q=a3+' − '+b3+' = ?';
+      dis=[ans+10, ans-10, ans+2, ans+1];
+    }
+    dis=dis.filter(function(v,i,arr){return v>=0&&arr.indexOf(v)===i&&v!==ans;});
+    while(dis.length<3){ var v=ans+rnd(1,9); if(v!==ans&&dis.indexOf(v)<0) dis.push(v); }
+    return {q:q,ans:ans,opts:shuffle([ans,dis[0],dis[1],dis[2]])};
+  }
+  function mineRenderQ(){
+    var box=document.getElementById('mineQBox');
+    box.innerHTML='<div class="q">'+mine.cur.q+'</div><div class="mine-opts" id="mineOpts"></div>';
+    var opts=document.getElementById('mineOpts');
+    mine.cur.opts.forEach(function(v){
+      var b=document.createElement('button'); b.className='mine-opt'; b.textContent=v;
+      if(v===mine.cur.ans) b.dataset.right='1';
+      b.addEventListener('click',function(){
+        if(!mine.on) return;
+        if(v===mine.cur.ans){
+          b.classList.add('right'); playCorrect();
+          mine.combo++;
+          var mult=Math.min(5,1+Math.floor(mine.combo/3));
+          document.getElementById('mineCombo').textContent='×'+mult;
+          if(mine.combo>0&&mine.combo%3===0) comboTag('连击 ×'+mine.combo+'！');
+          mine.blast=true;
+          document.getElementById('mineQBox').innerHTML='<div class="q">💥 点一块矿石爆破！'+(mineHasHand()?'（钻石剑：十字爆破）':'')+'</div>';
+        } else {
+          b.classList.add('wrong'); tone(196,0,0.2);
+          mine.combo=0;
+          document.getElementById('mineCombo').textContent='×1';
+          setTimeout(function(){ if(mine.on){ mine.cur=mineGenQ(); mineRenderQ(); } },700);
+        }
+      });
+      opts.appendChild(b);
+    });
+  }
+  function mineTap(cell){
+    if(!mine.on||!mine.blast||!cell||cell.classList.contains('dug')) return;
+    var mult=Math.min(5,1+Math.floor(mine.combo/3));
+    var targets=[cell];
+    if(mineHasHand()){
+      var idx=mine.cells.indexOf(cell);
+      var r=Math.floor(idx/6), c=idx%6;
+      [[r-1,c],[r+1,c],[r,c-1],[r,c+1]].forEach(function(rc){
+        if(rc[0]<0||rc[0]>4||rc[1]<0||rc[1]>5) return;
+        var nb=mine.cells[rc[0]*6+rc[1]];
+        if(nb&&!nb.classList.contains('dug')) targets.push(nb);
+      });
+    }
+    var gained=0;
+    targets.forEach(function(t){
+      if(t.classList.contains('dug')) return;
+      t.classList.add('dug');
+      t.innerHTML='<span class="gem-emoji">'+t.dataset.e+'</span>';
+      gained+=parseInt(t.dataset.p,10)*mult;
+      fragsAt(t,[t.dataset.e,'✨','💥'],3);
+    });
+    if(gained>0){
+      mine.score+=gained;
+      document.getElementById('mineScore').textContent='💎 '+mine.score;
+      scoreJump('mineScore');
+      tone(880,0,0.1); tone(1174,0.08,0.12);
+    }
+    mine.blast=false;
+    if(mine.on){ mine.cur=mineGenQ(); mineRenderQ(); }
+  }
+  function mineEnd(){
+    if(!mine.on) return;
+    mine.on=false; mine.blast=false;
+    var res=endGameCommon('mine',mine.score);
+    document.getElementById('minePlay').style.display='none';
+    var lo=document.getElementById('mineLobby'); lo.style.display='';
+    lo.innerHTML='<div class="center"><div class="lobby-hero">'+(res.isNew?'🏆':'⛏️')+'</div>'
+      +'<div class="big" style="font-size:22px;">本局 '+res.score+' 分'+(res.isNew?' · 新纪录！':'（最高 '+res.prev+'）')+'</div>'
+      +'<div class="rule-line">🪙 苦力怕帮你挖到了 '+res.reward+' 枚金币！</div>'
+      +'<div class="btn-row"><button class="btn" id="btnMineAgain">⛏️ 再来一局（如果有门票）</button></div>'
+      +'<div class="btn-row"><button class="btn ghost" id="btnMineBack">回游戏中心</button></div></div>';
+    playWin();
+    document.getElementById('btnMineAgain').addEventListener('click',function(){
+      var tk=gameTickets();
+      if(tk.left<=0){ renderArcadeHintBack('今天的能量用完啦，明天再来！'); return; }
+      if(!useTicket()){ renderArcadeHintBack('今天的能量用完啦，明天再来！'); return; }
+      mineStart();
+    });
+    document.getElementById('btnMineBack').addEventListener('click',openArcade);
+  }
+
+  /* ================= 小游戏2：奥特曼打怪兽 ================= */
+  var mon={on:false,score:0,kills:0,hp:3,cur:null,monsterHp:0,monsterMax:0,busy:false};
+  function openMonster(){
+    stopTimer();
+    document.getElementById('monsterPlay').style.display='none';
+    var lo=document.getElementById('monsterLobby'); lo.style.display='';
+    var tk=gameTickets();
+    var hand=hasGear('chinese','hand'), head=hasGear('chinese','head');
+    lo.innerHTML='<div class="center"><div class="lobby-hero">⚡👹</div>'
+      +'<div class="rule-line">· 答对字词题，奥特曼就发射一道光波！</div>'
+      +'<div class="rule-line">· 击败怪兽掉落勋章 +10 分，怪兽会越打越强</div>'
+      +'<div class="rule-line">· 答错会被怪兽反击扣 1 颗心，心用完就结束</div>'
+      +(hand?'<div class="rule-line" style="color:#1971C2;font-weight:700;">⚔️ 究极光剑生效：光波伤害 ×2！</div>':'')
+      +(head?'<div class="rule-line" style="color:#1971C2;font-weight:700;">👑 光之国王冠生效：多 1 颗心！</div>':'')
+      +'<div class="rule-line">今日剩余门票：'+tk.left+' 局 · 最高分 '+(wallet.games.best.monster||0)+'</div>'
+      +'<div class="btn-row"><button class="btn" id="btnMonsterStart">⚡ 开始战斗</button></div></div>';
+    document.getElementById('btnMonsterStart').addEventListener('click',function(){
+      if(!useTicket()){ renderMonsterHintBack('奥特曼的能量用完啦！'); return; }
+      monsterStart();
+    });
+    show('screen-monster');
+  }
+  function renderMonsterHintBack(msg){
+    document.getElementById('monsterLobby').innerHTML='<div class="center"><p class="hint">'+msg+'</p><div class="btn-row"><button class="btn ghost" id="btnMonsterBack2">回游戏中心</button></div></div>';
+    document.getElementById('btnMonsterBack2').addEventListener('click',openArcade);
+  }
+  function monsterStart(){
+    mon.on=true; mon.score=0; mon.kills=0; mon.busy=false;
+    mon.hp=hasGear('chinese','head')?4:3;
+    document.getElementById('monsterLobby').style.display='none';
+    document.getElementById('monsterPlay').style.display='';
+    document.getElementById('monsterScore').textContent='🏆 0';
+    monHpRender();
+    monsterSpawn();
+    ensureAudio();
+    mon.cur=monsterGenQ(); monsterRenderQ();
+    startTimer(90,'monsterTimerBar',monsterEnd);
+    speak('奥特曼，出发！','zh-CN');
+  }
+  function monHpRender(){
+    var s=''; for(var i=0;i<mon.hp;i++) s+='❤️';
+    document.getElementById('monsterHP').textContent=s||'💔';
+  }
+  var MONSTERS=['👹','👻','🤖','🐲','🧟','🦑','👽'];
+  function monsterSpawn(){
+    mon.monsterMax=Math.min(8,3+Math.floor(mon.kills/2));
+    mon.monsterHp=mon.monsterMax;
+    var st=document.getElementById('monsterStage');
+    st.innerHTML='<div id="monsterBody" style="cursor:pointer;">'+MONSTERS[Math.floor(Math.random()*MONSTERS.length)]+'</div>'
+      +'<div style="position:absolute;top:6px;left:20%;right:20%;height:8px;background:var(--line);border-radius:99px;overflow:hidden;">'
+      +'<i id="monsterHpBar" style="display:block;height:100%;width:100%;background:linear-gradient(90deg,#FF6B6B,#E03131);"></i></div>';
+  }
+  function monsterHpBar(){
+    var bar=document.getElementById('monsterHpBar');
+    if(bar) bar.style.width=(mon.monsterHp/mon.monsterMax*100)+'%';
+  }
+  function monsterGenQ(){
+    var unlocked=[];
+    (UNITS_BY_SUBJECT.chinese||[]).forEach(function(u){ if(isUnlocked(u)) unlocked.push(u); });
+    if(unlocked.length&&Math.random()<0.7){
+      var u=unlocked[Math.floor(Math.random()*unlocked.length)];
+      return u.makeReviewQ();
+    }
+    var w=EXPLORE_ZH_WORDS[Math.floor(Math.random()*EXPLORE_ZH_WORDS.length)];
+    var dis=EXPLORE_ZH_WORDS.filter(function(x){return x.w!==w.w;});
+    shuffle(dis);
+    return {q:'「'+w.w+'」的拼音是？',opts:shuffle([w.pinyin,dis[0].pinyin,dis[1].pinyin,dis[2].pinyin]),ans:w.pinyin};
+  }
+  function monsterRenderQ(){
+    var box=document.getElementById('monsterQBox');
+    box.innerHTML='<div class="q">'+mon.cur.q+'</div><div class="mine-opts" id="monsterOpts"></div>';
+    var opts=document.getElementById('monsterOpts');
+    mon.cur.opts.forEach(function(v){
+      var b=document.createElement('button'); b.className='mine-opt'; b.textContent=v;
+      if(v===mon.cur.ans) b.dataset.right='1';
+      b.addEventListener('click',function(){
+        if(!mon.on||mon.busy) return;
+        mon.busy=true;
+        if(v===mon.cur.ans){
+          b.classList.add('right'); playCorrect();
+          monsterBeam();
+          setTimeout(function(){
+            var dmg=hasGear('chinese','hand')?2:1;
+            mon.monsterHp-=dmg;
+            var body=document.getElementById('monsterBody');
+            if(body){ body.classList.add('monster-hurt'); setTimeout(function(){ if(body) body.classList.remove('monster-hurt'); },480); }
+            monsterHpBar();
+            tone(660,0,0.08); tone(990,0.09,0.12);
+            if(mon.monsterHp<=0){
+              mon.kills++; mon.score+=10;
+              document.getElementById('monsterScore').textContent='🏆 '+mon.score;
+              scoreJump('monsterScore');
+              var mb=document.getElementById('monsterBody');
+              if(mb) mb.classList.add('monster-dead');
+              fragsAt(mb,['💥','⭐','🏅'],6);
+              tone(523,0,0.1); tone(784,0.1,0.1); tone(1046,0.2,0.18);
+              setTimeout(function(){ if(mon.on){ monsterSpawn(); } },620);
+            }
+            mon.busy=false;
+            if(mon.on){ mon.cur=monsterGenQ(); monsterRenderQ(); }
+          },560);
+        } else {
+          b.classList.add('wrong');
+          mon.hp--; monHpRender();
+          mon.busy=false;
+          tone(196,0,0.25);
+          if(mon.hp<=0){ monsterEnd(); return; }
+          if(mon.on){ mon.cur=monsterGenQ(); monsterRenderQ(); }
+        }
+      });
+      opts.appendChild(b);
+    });
+  }
+  function monsterBeam(){
+    var st=document.getElementById('monsterStage');
+    if(!st) return;
+    st.style.position='relative';
+    var beam=document.createElement('div'); beam.className='beam';
+    st.appendChild(beam);
+    setTimeout(function(){ if(beam.parentNode) beam.parentNode.removeChild(beam); },600);
+  }
+  function monsterEnd(){
+    if(!mon.on) return;
+    mon.on=false;
+    var res=endGameCommon('monster',mon.score);
+    document.getElementById('monsterPlay').style.display='none';
+    var lo=document.getElementById('monsterLobby'); lo.style.display='';
+    lo.innerHTML='<div class="center"><div class="lobby-hero">'+(res.isNew?'🏅':'⚡')+'</div>'
+      +'<div class="big" style="font-size:22px;">击败 '+mon.kills+' 只怪兽 · '+res.score+' 分'+(res.isNew?' · 新纪录！':'（最高 '+res.prev+'）')+'</div>'
+      +'<div class="rule-line">🪙 奥特曼奖励你 '+res.reward+' 枚金币！</div>'
+      +'<div class="btn-row"><button class="btn" id="btnMonsterAgain">⚡ 再战一局</button></div>'
+      +'<div class="btn-row"><button class="btn ghost" id="btnMonsterBack">回游戏中心</button></div></div>';
+    playWin();
+    document.getElementById('btnMonsterAgain').addEventListener('click',function(){
+      if(!useTicket()){ renderMonsterHintBack('奥特曼的能量用完啦，明天再来！'); return; }
+      monsterStart();
+    });
+    document.getElementById('btnMonsterBack').addEventListener('click',openArcade);
+  }
+
+  /* ================= 小游戏3：皮卡丘收服 ================= */
+  var PETS=['🐱','🐶','🐰','🦊','🐻','🐼','🐨','🦁','🐸','🐙','🦋','🐢','🐧','🦉'];
+  var cat={on:false,score:0,combo:0,cur:null,busy:false};
+  function openCatch(){
+    stopTimer();
+    document.getElementById('catchPlay').style.display='none';
+    var lo=document.getElementById('catchLobby'); lo.style.display='';
+    var tk=gameTickets();
+    var hand=hasGear('english','hand'), head=hasGear('english','head');
+    lo.innerHTML='<div class="center"><div class="lobby-hero">⚡🔮</div>'
+      +'<div class="rule-line">· 听发音（可点 🔊 重听），选出正确的单词</div>'
+      +'<div class="rule-line">· 答对扔出精灵球收服小伙伴 +10 分，稀有精灵 +25！</div>'
+      +'<div class="rule-line">· 连续答对触发连击倍数</div>'
+      +(hand?'<div class="rule-line" style="color:#1971C2;font-weight:700;">🔨 雷神之锤生效：收服得分 ×1.5！</div>':'')
+      +(head?'<div class="rule-line" style="color:#1971C2;font-weight:700;">🧢 训练家帽生效：答错不断连击！</div>':'')
+      +'<div class="rule-line">今日剩余门票：'+tk.left+' 局 · 最高分 '+(wallet.games.best.catch||0)+'</div>'
+      +'<div class="btn-row"><button class="btn" id="btnCatchStart">🔮 开始收服</button></div></div>';
+    document.getElementById('btnCatchStart').addEventListener('click',function(){
+      if(!useTicket()){ renderCatchHintBack('皮卡丘的能量用完啦！'); return; }
+      catchStart();
+    });
+    show('screen-catch');
+  }
+  function renderCatchHintBack(msg){
+    document.getElementById('catchLobby').innerHTML='<div class="center"><p class="hint">'+msg+'</p><div class="btn-row"><button class="btn ghost" id="btnCatchBack2">回游戏中心</button></div></div>';
+    document.getElementById('btnCatchBack2').addEventListener('click',openArcade);
+  }
+  function catchStart(){
+    cat.on=true; cat.score=0; cat.combo=0; cat.busy=false;
+    document.getElementById('catchLobby').style.display='none';
+    document.getElementById('catchPlay').style.display='';
+    document.getElementById('catchScore').textContent='🐾 0';
+    document.getElementById('catchCombo').textContent='×1';
+    ensureAudio();
+    catchNextPet();
+    startTimer(60,'catchTimerBar',catchEnd);
+  }
+  function catchGenQ(){
+    var w=EXPLORE_EN_WORDS[Math.floor(Math.random()*EXPLORE_EN_WORDS.length)];
+    var dis=EXPLORE_EN_WORDS.filter(function(x){return x.en!==w.en;});
+    shuffle(dis);
+    return {w:w,q:'Which word is this?',opts:shuffle([w.en,dis[0].en,dis[1].en,dis[2].en]),ans:w.en};
+  }
+  function catchNextPet(){
+    cat.cur=catchGenQ();
+    cat.rare=Math.random()<0.10;
+    var pet=PETS[Math.floor(Math.random()*PETS.length)];
+    var st=document.getElementById('catchStage');
+    st.innerHTML='<div class="stage-wrap" style="height:100%;max-width:none;background:transparent;" id="catchArena">'
+      +'<div id="catchPet" style="font-size:64px;'+(cat.rare?'filter:drop-shadow(0 0 10px #FFD43B);':'')+'">'+pet+'</div>'
+      +(cat.rare?'<div style="position:absolute;bottom:8px;left:0;right:0;text-align:center;font-size:12px;font-weight:800;color:#E8590C;">✨ 稀有精灵 ×25 分！</div>':'')
+      +'</div>';
+    var q=cat.cur;
+    var box=document.getElementById('catchQBox');
+    box.innerHTML='<div class="q"><span style="font-size:34px;">'+q.w.emoji+'</span> <button class="mine-opt" id="catchHear" style="min-width:auto;">🔊 再听一次</button></div>'
+      +'<div class="mine-opts" id="catchOpts"></div>';
+    document.getElementById('catchHear').addEventListener('click',function(){ speak(q.w.en,'en-US'); });
+    speak(q.w.en,'en-US');
+    var opts=document.getElementById('catchOpts');
+    q.opts.forEach(function(v){
+      var b=document.createElement('button'); b.className='mine-opt'; b.textContent=v;
+      if(v===q.ans) b.dataset.right='1';
+      b.addEventListener('click',function(){
+        if(!cat.on||cat.busy) return;
+        cat.busy=true;
+        if(v===q.ans){
+          b.classList.add('right'); playCorrect();
+          cat.combo++;
+          var mult=Math.min(5,1+Math.floor(cat.combo/3));
+          document.getElementById('catchCombo').textContent='×'+mult;
+          catchThrowBall(function(success){
+            var base=cat.rare?25:10;
+            var pts=Math.round(base*mult*(hasGear('english','hand')?1.5:1));
+            cat.score+=pts;
+            document.getElementById('catchScore').textContent='🐾 '+cat.score;
+            scoreJump('catchScore');
+            comboTag('收服成功 +'+pts+'！');
+            cat.busy=false;
+            if(cat.on) setTimeout(catchNextPet,500);
+          });
+        } else {
+          b.classList.add('wrong');
+          if(!hasGear('english','head')){ cat.combo=0; document.getElementById('catchCombo').textContent='×1'; }
+          var p=document.getElementById('catchPet');
+          if(p) p.classList.add('pet-flee');
+          tone(196,0,0.25);
+          cat.busy=false;
+          if(cat.on) setTimeout(catchNextPet,800);
+        }
+      });
+      opts.appendChild(b);
+    });
+  }
+  function catchThrowBall(done){
+    var arena=document.getElementById('catchArena');
+    var pet=document.getElementById('catchPet');
+    var ball=document.createElement('div');
+    ball.className='ball-throw'; ball.textContent='🔴';
+    if(arena) arena.appendChild(ball);
+    tone(392,0,0.1); tone(659,0.35,0.1);
+    setTimeout(function(){
+      if(ball.parentNode) ball.parentNode.removeChild(ball);
+      if(pet){
+        pet.classList.add('pet-caught');
+        fragsAt(pet,['✨','⭐','💫'],5);
+      }
+      setTimeout(done,600);
+    },920);
+  }
+  function catchEnd(){
+    if(!cat.on) return;
+    cat.on=false;
+    var res=endGameCommon('catch',cat.score);
+    document.getElementById('catchPlay').style.display='none';
+    var lo=document.getElementById('catchLobby'); lo.style.display='';
+    lo.innerHTML='<div class="center"><div class="lobby-hero">'+(res.isNew?'🏆':'🔮')+'</div>'
+      +'<div class="big" style="font-size:22px;">收服 '+(cat.score/10).toFixed(0)+' 只 · '+res.score+' 分'+(res.isNew?' · 新纪录！':'（最高 '+res.prev+'）')+'</div>'
+      +'<div class="rule-line">🪙 皮卡丘奖励你 '+res.reward+' 枚金币！</div>'
+      +'<div class="btn-row"><button class="btn" id="btnCatchAgain">🔮 再来一局</button></div>'
+      +'<div class="btn-row"><button class="btn ghost" id="btnCatchBack">回游戏中心</button></div></div>';
+    playWin();
+    document.getElementById('btnCatchAgain').addEventListener('click',function(){
+      if(!useTicket()){ renderCatchHintBack('皮卡丘的能量用完啦，明天再来！'); return; }
+      catchStart();
+    });
+    document.getElementById('btnCatchBack').addEventListener('click',openArcade);
+  }
+
+  /* ================= 金币/商店/游戏 事件绑定 ================= */
+  bind('btnToolShop', openShop);
+  bind('btnDoneShop', openShop);
+  bind('btnShopHome', function(){ renderHome(); show('screen-home'); });
+  bind('btnToolArcade', openArcade);
+  bind('btnDoneArcade', openArcade);
+  bind('btnArcadeHome', function(){ renderHome(); show('screen-home'); });
+  bind('btnMineHome', function(){ stopTimer(); if(mine.on){ mine.on=false; endGameCommon('mine',mine.score); } renderHome(); show('screen-home'); });
+  bind('btnMonsterHome', function(){ stopTimer(); if(mon.on){ mon.on=false; endGameCommon('monster',mon.score); } renderHome(); show('screen-home'); });
+  bind('btnCatchHome', function(){ stopTimer(); if(cat.on){ cat.on=false; endGameCommon('catch',cat.score); } renderHome(); show('screen-home'); });
+
+
   if(!profile){ show('screen-profile'); }
   else { loadState(); refreshProfileTag(); renderHome(); show('screen-home'); }
 })();
