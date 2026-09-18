@@ -423,8 +423,25 @@
   .hero-anim img{width:100%;height:100%;object-fit:contain;display:block;image-rendering:pixelated;
     filter:drop-shadow(0 5px 7px rgba(0,0,0,.5));transform-origin:50% 100%;animation:crtIdle 1.9s ease-in-out infinite;}
   @keyframes crtIdle{0%,100%{transform:translateY(0) scale(1);}50%{transform:translateY(-4px) scale(1.03);}}
-  .hero-anim .pick{position:absolute;z-index:2;right:-13px;bottom:2px;font-size:27px;line-height:1;
-    transform-origin:50% 90%;transform:rotate(-16deg);filter:drop-shadow(0 3px 4px rgba(0,0,0,.55));}
+  .hero-anim .pick{position:absolute;z-index:2;right:-16px;bottom:0;width:30px;height:30px;
+    transform-origin:50% 96%;transform:rotate(-16deg);filter:drop-shadow(0 3px 5px rgba(0,0,0,.6));}
+  .hero-anim .pick svg{display:block;width:100%;height:100%;}
+  .hero-glow{position:absolute;inset:-9px;border-radius:50%;pointer-events:none;z-index:0;
+    background:radial-gradient(circle,rgba(74,237,217,.32),rgba(74,237,217,0) 66%);animation:glowPulse 2.2s ease-in-out infinite;}
+  @keyframes glowPulse{0%,100%{opacity:.5;transform:scale(.9);}50%{opacity:1;transform:scale(1.07);}}
+  .hero-lamp{position:absolute;z-index:3;left:50%;top:-5px;width:46%;height:9px;margin-left:-23%;border-radius:5px 5px 2px 2px;
+    background:linear-gradient(180deg,#FFE066,#F59F00);box-shadow:0 0 10px #FFD43B,0 0 22px rgba(255,212,59,.65);}
+  .hero-lamp:after{content:'';position:absolute;left:50%;top:100%;width:158px;height:118px;margin-left:-79px;pointer-events:none;
+    background:radial-gradient(ellipse at 50% 0,rgba(255,224,102,.3),rgba(255,224,102,0) 68%);}
+  /* 矿洞分层：越深越暗，深处偏岩浆色 */
+  .mine-stage.l1{background:radial-gradient(120% 80% at 50% -8%,#5C5C74,#34343F 55%,#23232C);}
+  .mine-stage.l2{background:radial-gradient(120% 80% at 50% -8%,#4E5470,#2C3040 55%,#1B1D26);}
+  .mine-stage.l3{background:radial-gradient(120% 80% at 50% -8%,#5A4E6E,#332B44 55%,#1E1A28);}
+  .mine-stage.l4{background:radial-gradient(120% 80% at 50% -8%,#6E4A44,#402A26 55%,#241614);}
+  .mine-cell.chest{background:linear-gradient(145deg,#FFD8A8,#F59F00);box-shadow:inset 0 0 0 2px #D9480F;}
+  .layer-pop{position:fixed;left:50%;top:34%;transform:translate(-50%,-50%);z-index:90;pointer-events:none;text-align:center;
+    font-size:26px;font-weight:900;color:#fff;text-shadow:0 3px 0 #F59F00,0 6px 16px rgba(0,0,0,.45);animation:layerPop 1.3s ease forwards;}
+  @keyframes layerPop{0%{transform:translate(-50%,-50%) scale(.4);opacity:0;}22%{transform:translate(-50%,-50%) scale(1.15);opacity:1;}72%{opacity:1;}100%{transform:translate(-50%,-50%) scale(1);opacity:0;}}
   .hero-anim.dig{animation:heroDig2 .56s cubic-bezier(.32,1.1,.45,1);}
   @keyframes heroDig2{
     0%{transform:translateY(0) scale(1,1);}
@@ -442,6 +459,51 @@
     80%{transform:rotate(30deg);}
     100%{transform:rotate(-16deg);}}
   .mine-grid{max-width:368px;margin:0 auto;}
+
+  /* ===== v11：奥特曼递进式战斗（拳击→斯派修姆光线→八分光轮） ===== */
+  .energy-row{display:flex;align-items:center;gap:7px;font-size:11px;font-weight:800;color:var(--muted);margin:3px 0 2px;}
+  .energy-bar{position:relative;flex:1;height:12px;background:var(--line);border-radius:99px;overflow:hidden;display:block;}
+  .energy-bar i{display:block;height:100%;width:0;border-radius:99px;transition:width .25s ease;
+    background:linear-gradient(90deg,#4DABF7,#1971C2);}
+  .energy-row.ready .energy-bar i{background:linear-gradient(90deg,#FFE066,#F59F00);animation:energyPulse .8s ease-in-out infinite;}
+  @keyframes energyPulse{0%,100%{filter:brightness(1);}50%{filter:brightness(1.45) drop-shadow(0 0 8px #FFD43B);}}
+  .energy-row.ring .energy-bar i{background:linear-gradient(90deg,#FFD43B,#F76707);}
+  .hero-punch{animation:heroPunch .46s ease;}
+  @keyframes heroPunch{0%{transform:translateX(0);}28%{transform:translateX(28px) scale(1.07);}52%{transform:translateX(19px) rotate(-7deg);}100%{transform:translateX(0) rotate(0);}}
+  .crt-knock{animation:crtKnock .5s ease;}
+  @keyframes crtKnock{0%{transform:translateX(0);}24%{transform:translateX(26px) rotate(10deg);filter:brightness(2);}58%{transform:translateX(11px) rotate(-5deg);}100%{transform:translateX(0);}}
+  .dmg-big{font-size:30px !important;color:#F59F00;text-shadow:0 2px 0 #fff,0 0 14px #FFD43B;}
+  .dmg-big.ring{color:#F76707;font-size:38px !important;}
+  .ring-boom{position:absolute;z-index:6;left:40%;top:34%;width:18px;height:18px;border-radius:50%;border:5px solid #FFD43B;opacity:0;pointer-events:none;
+    box-shadow:0 0 20px 7px rgba(255,212,59,.85);animation:ringBoom .75s ease-out forwards;}
+  @keyframes ringBoom{0%{transform:scale(.35);opacity:1;}100%{transform:scale(6.5);opacity:0;}}
+  .beam-tag{position:absolute;z-index:8;left:50%;top:7%;transform:translateX(-50%);font-size:15px;font-weight:900;color:#fff;white-space:nowrap;
+    background:linear-gradient(90deg,#F59F00,#F76707);border-radius:10px;padding:3px 12px;letter-spacing:1px;
+    box-shadow:0 3px 10px rgba(247,103,7,.5);animation:tagIn .95s ease forwards;}
+  @keyframes tagIn{0%{transform:translateX(-50%) scale(.5);opacity:0;}20%{transform:translateX(-50%) scale(1.15);opacity:1;}78%{opacity:1;}100%{transform:translateX(-50%) translateY(-16px) scale(1);opacity:0;}}
+  .specium.wide{height:15px;background:linear-gradient(90deg,#FFFFFF,#FFE066 30%,#F59F00 72%,rgba(245,159,0,0));
+    box-shadow:0 0 22px 8px rgba(255,212,59,.95),0 0 48px 20px rgba(245,159,0,.6);}
+  .fighter .hero-img.punch{animation:heroPunch .46s ease;}
+  .monster-hint{font-size:11px;font-weight:800;color:#E8590C;min-height:15px;margin:1px 0 4px;text-align:center;}
+
+  /* ===== v12：宝可梦图鉴 151（关都） ===== */
+  .dex-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;width:100%;max-width:430px;margin:6px auto;
+    max-height:56vh;overflow-y:auto;padding:4px 2px;-webkit-overflow-scrolling:touch;}
+  .dex-card{position:relative;background:var(--card);border:2px solid var(--border);border-radius:12px;padding:3px 2px 2px;text-align:center;cursor:pointer;}
+  .dex-card img{width:100%;height:auto;aspect-ratio:1;object-fit:contain;display:block;}
+  .dex-card.locked img{filter:brightness(0) opacity(.3);}
+  .dex-card.locked .nm{color:var(--muted);}
+  .dex-card.got{border-color:#F59F00;box-shadow:0 0 0 2px rgba(245,159,0,.16);}
+  .dex-card.buddy{border-color:#4DABF7;box-shadow:0 0 0 3px rgba(77,171,247,.3);}
+  .dex-card.buddy:after{content:'出战';position:absolute;top:-7px;left:50%;transform:translateX(-50%);font-size:9px;font-weight:900;color:#fff;background:#4DABF7;border-radius:6px;padding:0 5px;}
+  .dex-card .num{font-size:9px;color:var(--muted);font-weight:800;line-height:1.1;}
+  .dex-card .nm{font-size:10px;font-weight:800;line-height:1.25;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .dex-card .cnt{position:absolute;top:1px;right:2px;font-size:9px;font-weight:900;color:#fff;background:#F59F00;border-radius:6px;padding:0 4px;}
+  .tier-chip{display:inline-block;font-size:10px;font-weight:900;color:#fff;border-radius:6px;padding:0 5px;vertical-align:middle;}
+  .dex-top{display:flex;align-items:center;justify-content:center;gap:10px;margin:2px 0 4px;}
+  .dex-top img{height:52px;width:52px;object-fit:contain;}
+  .dex-bar{width:100%;max-width:430px;height:10px;background:var(--line);border-radius:99px;overflow:hidden;margin:4px auto 2px;}
+  .dex-bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,#F59F00,#F76707);transition:width .3s;}
   .hero-ready{animation:heroReady .5s ease !important;}
   @keyframes heroReady{0%,100%{transform:scale(1);filter:none;}45%{transform:scale(1.12);filter:drop-shadow(0 0 14px #4AEDD9) brightness(1.3);}}
   .mine-cell.dug{animation:cellBreak .42s ease;}
@@ -770,11 +832,18 @@
           <span id="mineCombo">×1</span>
         </div>
         <div class="mine-stage" id="mineStage">
-          <span class="mine-depth" id="mineDepth">⛏️ 苦力怕 · 已挖 0 块</span>
+          <span class="mine-depth" id="mineDepth">⛏️ 第 1 层 · 已挖 0 块</span>
           <div class="mine-hero" id="mineHeroWrap">
             <div class="hero-anim" id="mineHeroAnim">
+              <div class="hero-glow"></div>
               <img id="mineHero" src="" alt="">
-              <span class="pick" id="minePick">⛏️</span>
+              <span class="hero-lamp"></span>
+              <span class="pick" id="minePick"><svg viewBox="0 0 32 32" width="30" height="30" aria-hidden="true">
+                <rect x="14.5" y="11" width="3.2" height="19" rx="1.3" fill="#9C6B3F"/>
+                <rect x="14.5" y="11" width="1.4" height="19" fill="#BE8A55"/>
+                <path d="M4 13.5 C8.5 5, 23.5 5, 28 13.5 L24.4 15.6 C21 9.8, 11 9.8, 7.6 15.6 Z" fill="#4AEDE0"/>
+                <path d="M4 13.5 C8.5 5, 15 4.6, 16 8.6 C12.4 8, 8.6 10, 7.6 15.6 Z" fill="#9BF6EB"/>
+              </svg></span>
             </div>
           </div>
           <div class="mine-grid" id="mineGrid"></div>
@@ -815,6 +884,12 @@
             <i id="monsterHpBar" style="display:block;height:100%;width:100%;background:linear-gradient(90deg,#FF6B6B,#E03131);"></i>
           </span>
         </div>
+        <div class="energy-row" id="monEnergyRow">
+          <span id="monEnergyLabel">⚡ 0/3</span>
+          <span class="energy-bar"><i id="monEnergyBar"></i></span>
+          <span id="monStreakTag">连击 0</span>
+        </div>
+        <div class="monster-hint" id="monSkillHint"></div>
         <div class="loot" id="monsterLoot"></div>
         <div class="mine-q" id="monsterQBox"></div>
       </div>
@@ -825,7 +900,7 @@
   <!-- 小游戏3：皮卡丘收服（英语） -->
   <section id="screen-catch">
     <div class="center" style="flex:1;display:flex;flex-direction:column;justify-content:center;">
-      <div class="big">🔮 皮卡丘收服</div>
+      <div class="big">🔮 宝可梦收服</div>
       <div id="catchLobby" style="width:100%;max-width:430px;"></div>
       <div class="mine-wrap" id="catchPlay" style="display:none;">
         <div class="mine-hud">
@@ -836,19 +911,31 @@
         <div class="battle sky" id="catchBattle">
           <div class="fighter">
             <img class="hero-img" id="catchHero" src="" alt="">
-            <div class="nm">皮卡丘</div>
+            <div class="nm" id="catchHeroName">皮卡丘</div>
           </div>
           <div class="ground"></div>
           <div class="fighter" id="catchSide">
             <div id="catchPet"></div>
             <div class="nm" id="catchPetName">野生宝可梦</div>
           </div>
-          <span class="vs-tag" id="catchDexTag">图鉴 0/10</span>
+          <span class="vs-tag" id="catchDexTag">图鉴 0/151</span>
         </div>
         <div class="dex-strip" id="catchDexStrip"></div>
         <div class="mine-q" id="catchQBox"></div>
       </div>
       <div class="btn-row"><button class="btn ghost" id="btnCatchHome">结束</button></div>
+    </div>
+  </section>
+
+  <!-- 宝可梦图鉴（关都 151） -->
+  <section id="screen-dex">
+    <div class="center" style="flex:1;display:flex;flex-direction:column;justify-content:center;">
+      <div class="big">📕 宝可梦图鉴</div>
+      <div class="dex-top" id="dexTop"></div>
+      <div class="dex-bar"><i id="dexBar"></i></div>
+      <div class="hint" id="dexStat" style="font-weight:800;">已收集 0 / 151</div>
+      <div class="dex-grid" id="dexGrid"></div>
+      <div class="btn-row"><button class="btn ghost" id="btnDexBack">返回</button></div>
     </div>
   </section>
 
@@ -1100,7 +1187,8 @@
     return {coins:0,total:0,streak:0,lastStudy:'',paid:{},owned:[],
       wear:{math:{},chinese:{},english:{}},
       dayLog:{},studyDays:{},
-      games:{date:'',used:0,extra:0,best:{mine:0,monster:0,catch:0},dex:{}}};
+      games:{date:'',used:0,extra:0,best:{mine:0,monster:0,catch:0},dex:{}},
+      buddy:25};
   }
   function loadWallet(){
     var w=null;
@@ -1113,6 +1201,7 @@
     if(!w.games||typeof w.games!=='object') w.games=d.games;
     if(!w.games.best) w.games.best={mine:0,monster:0,catch:0};
     if(!w.games.dex||typeof w.games.dex!=='object') w.games.dex={};
+    if(!w.buddy) w.buddy=BUDDY_DEFAULT;
     if(!w.owned) w.owned=[];
     wallet=w;
     rollDay();
@@ -3723,9 +3812,9 @@
 
   /* ================= 游戏中心 ================= */
   var ARCADE=[
-    {kind:'mine',    subj:'math',    icon:'⛏️', name:'苦力怕挖矿', desc:'答对口算题爆破矿石，战利品清单看收获！', sec:'screen-mine'},
-    {kind:'monster', subj:'chinese', icon:'⚡', name:'奥特曼打怪兽', desc:'斯派修姆光线出击，击败百慕拉、杰顿等 5 只怪兽！', sec:'screen-monster'},
-    {kind:'catch',   subj:'english', icon:'🔮', name:'皮卡丘收服', desc:'听发音选单词，扔精灵球收服宝可梦，集齐 10 只图鉴！', sec:'screen-catch'}
+    {kind:'mine',    subj:'math',    icon:'⛏️', name:'苦力怕挖矿', desc:'戴头灯持钻石镐，越挖越深，宝箱和钻石在深层！', sec:'screen-mine'},
+    {kind:'monster', subj:'chinese', icon:'⚡', name:'奥特曼打怪兽', desc:'答对攒能量 → 斯派修姆光线 → 八分光轮大招！', sec:'screen-monster'},
+    {kind:'catch',   subj:'english', icon:'🔮', name:'宝可梦收服', desc:'听发音选单词扔精灵球，集齐关都 151 只图鉴！', sec:'screen-catch'}
   ];
   function openArcade(){ loadWallet(); renderArcade(); show('screen-arcade'); }
   function renderArcade(){
@@ -3752,6 +3841,16 @@
       });
       list.appendChild(card);
     });
+    /* 图鉴入口（不受门票限制） */
+    var dexCard=document.createElement('div');
+    dexCard.className='arcade-card';
+    var bd=buddyPoke();
+    dexCard.innerHTML='<div class="aicon">📕</div>'
+      +'<div class="ainfo"><div class="aname">宝可梦图鉴 151</div>'
+      +'<div class="adesc">已收集 '+catchDexCount()+'/'+POKE_LIST.length+' 只 · 出战伙伴：'+bd.name+'</div></div>'
+      +'<div style="font-weight:800;color:#1971C2;font-size:13px;">打开</div>';
+    dexCard.addEventListener('click',function(){ openDex('arcade'); });
+    list.appendChild(dexCard);
   }
 
   /* ================= 游戏公共 ================= */
@@ -3820,19 +3919,182 @@
     zetton:  {name:'杰顿', tag:'宇宙恐龙', img:'ip/kaiju/zetton.jpg', card:true}
   };
 
-  /* —— 关都地区宝可梦（官方立绘，按稀有度分档） —— */
-  var POKE = {
-    caterpie:   {name:'绿毛虫',   tag:'普通', pts:10, img:'ip/poke/caterpie.png'},
-    pidgey:     {name:'波波',     tag:'普通', pts:10, img:'ip/poke/pidgey.png'},
-    rattata:    {name:'小拉达',   tag:'普通', pts:10, img:'ip/poke/rattata.png'},
-    jigglypuff: {name:'胖丁',     tag:'普通', pts:10, img:'ip/poke/jigglypuff.png'},
-    meowth:     {name:'喵喵',     tag:'普通', pts:10, img:'ip/poke/meowth.png'},
-    eevee:      {name:'伊布',     tag:'普通', pts:10, img:'ip/poke/eevee.png'},
-    bulbasaur:  {name:'妙蛙种子', tag:'稀有', pts:20, img:'ip/poke/bulbasaur.png'},
-    charmander: {name:'小火龙',   tag:'稀有', pts:20, img:'ip/poke/charmander.png'},
-    squirtle:   {name:'杰尼龟',   tag:'稀有', pts:20, img:'ip/poke/squirtle.png'},
-    mewtwo:     {name:'超梦',     tag:'传说', pts:35, img:'ip/poke/mewtwo.png'}
-  };
+  /* —— 关都地区宝可梦 151（官方立绘 + 官方简中名，按 capture_rate 自动分档） —— */
+  var POKE_LIST=[
+{id:1,name:'妙蛙种子',g:'种子',tier:'普通',pts:10},
+{id:2,name:'妙蛙草',g:'种子',tier:'少见',pts:15},
+{id:3,name:'妙蛙花',g:'种子',tier:'稀有',pts:25},
+{id:4,name:'小火龙',g:'蜥蜴',tier:'普通',pts:10},
+{id:5,name:'火恐龙',g:'火焰',tier:'少见',pts:15},
+{id:6,name:'喷火龙',g:'火焰',tier:'稀有',pts:25},
+{id:7,name:'杰尼龟',g:'小龟',tier:'普通',pts:10},
+{id:8,name:'卡咪龟',g:'龟',tier:'少见',pts:15},
+{id:9,name:'水箭龟',g:'甲壳',tier:'稀有',pts:25},
+{id:10,name:'绿毛虫',g:'虫宝宝',tier:'普通',pts:10},
+{id:11,name:'铁甲蛹',g:'蛹',tier:'普通',pts:10},
+{id:12,name:'巴大蝶',g:'蝴蝶',tier:'少见',pts:15},
+{id:13,name:'独角虫',g:'毛毛虫',tier:'普通',pts:10},
+{id:14,name:'铁壳蛹',g:'蛹',tier:'普通',pts:10},
+{id:15,name:'大针蜂',g:'毒蜂',tier:'少见',pts:15},
+{id:16,name:'波波',g:'小鸟',tier:'普通',pts:10},
+{id:17,name:'比比鸟',g:'鸟',tier:'普通',pts:10},
+{id:18,name:'大比鸟',g:'鸟',tier:'少见',pts:15},
+{id:19,name:'小拉达',g:'鼠',tier:'普通',pts:10},
+{id:20,name:'拉达',g:'鼠',tier:'少见',pts:15},
+{id:21,name:'烈雀',g:'小鸟',tier:'普通',pts:10},
+{id:22,name:'大嘴雀',g:'鸟嘴',tier:'少见',pts:15},
+{id:23,name:'阿柏蛇',g:'蛇',tier:'普通',pts:10},
+{id:24,name:'阿柏怪',g:'眼镜蛇',tier:'少见',pts:15},
+{id:25,name:'皮卡丘',g:'鼠',tier:'普通',pts:10},
+{id:26,name:'雷丘',g:'鼠',tier:'稀有',pts:25},
+{id:27,name:'穿山鼠',g:'鼠',tier:'普通',pts:10},
+{id:28,name:'穿山王',g:'鼠',tier:'少见',pts:15},
+{id:29,name:'尼多兰',g:'毒针',tier:'普通',pts:10},
+{id:30,name:'尼多娜',g:'毒针',tier:'普通',pts:10},
+{id:31,name:'尼多后',g:'钻锥',tier:'稀有',pts:25},
+{id:32,name:'尼多朗',g:'毒针',tier:'普通',pts:10},
+{id:33,name:'尼多力诺',g:'毒针',tier:'普通',pts:10},
+{id:34,name:'尼多王',g:'钻锥',tier:'稀有',pts:25},
+{id:35,name:'皮皮',g:'妖精',tier:'普通',pts:10},
+{id:36,name:'皮可西',g:'妖精',tier:'稀有',pts:25},
+{id:37,name:'六尾',g:'狐狸',tier:'普通',pts:10},
+{id:38,name:'九尾',g:'狐狸',tier:'稀有',pts:25},
+{id:39,name:'胖丁',g:'气球',tier:'普通',pts:10},
+{id:40,name:'胖可丁',g:'气球',tier:'少见',pts:15},
+{id:41,name:'超音蝠',g:'蝙蝠',tier:'普通',pts:10},
+{id:42,name:'大嘴蝠',g:'蝙蝠',tier:'少见',pts:15},
+{id:43,name:'走路草',g:'杂草',tier:'普通',pts:10},
+{id:44,name:'臭臭花',g:'杂草',tier:'少见',pts:15},
+{id:45,name:'霸王花',g:'花',tier:'稀有',pts:25},
+{id:46,name:'派拉斯',g:'蘑菇',tier:'普通',pts:10},
+{id:47,name:'派拉斯特',g:'蘑菇',tier:'少见',pts:15},
+{id:48,name:'毛球',g:'昆虫',tier:'普通',pts:10},
+{id:49,name:'摩鲁蛾',g:'毒蛾',tier:'少见',pts:15},
+{id:50,name:'地鼠',g:'鼹鼠',tier:'普通',pts:10},
+{id:51,name:'三地鼠',g:'鼹鼠',tier:'少见',pts:15},
+{id:52,name:'喵喵',g:'妖怪猫',tier:'普通',pts:10},
+{id:53,name:'猫老大',g:'暹罗猫',tier:'少见',pts:15},
+{id:54,name:'可达鸭',g:'鸭',tier:'普通',pts:10},
+{id:55,name:'哥达鸭',g:'鸭',tier:'稀有',pts:25},
+{id:56,name:'猴怪',g:'猪猴',tier:'普通',pts:10},
+{id:57,name:'火暴猴',g:'猪猴',tier:'少见',pts:15},
+{id:58,name:'卡蒂狗',g:'小狗',tier:'普通',pts:10},
+{id:59,name:'风速狗',g:'传说',tier:'稀有',pts:25},
+{id:60,name:'蚊香蝌蚪',g:'蝌蚪',tier:'普通',pts:10},
+{id:61,name:'蚊香君',g:'蝌蚪',tier:'普通',pts:10},
+{id:62,name:'蚊香泳士',g:'蝌蚪',tier:'稀有',pts:25},
+{id:63,name:'凯西',g:'念力',tier:'普通',pts:10},
+{id:64,name:'勇基拉',g:'念力',tier:'少见',pts:15},
+{id:65,name:'胡地',g:'念力',tier:'稀有',pts:25},
+{id:66,name:'腕力',g:'怪力',tier:'普通',pts:10},
+{id:67,name:'豪力',g:'怪力',tier:'少见',pts:15},
+{id:68,name:'怪力',g:'怪力',tier:'稀有',pts:25},
+{id:69,name:'喇叭芽',g:'花',tier:'普通',pts:10},
+{id:70,name:'口呆花',g:'捕蝇',tier:'少见',pts:15},
+{id:71,name:'大食花',g:'捕蝇',tier:'稀有',pts:25},
+{id:72,name:'玛瑙水母',g:'水母',tier:'普通',pts:10},
+{id:73,name:'毒刺水母',g:'水母',tier:'稀有',pts:25},
+{id:74,name:'小拳石',g:'岩石',tier:'普通',pts:10},
+{id:75,name:'隆隆石',g:'岩石',tier:'少见',pts:15},
+{id:76,name:'隆隆岩',g:'重量级',tier:'稀有',pts:25},
+{id:77,name:'小火马',g:'火马',tier:'少见',pts:15},
+{id:78,name:'烈焰马',g:'火马',tier:'稀有',pts:25},
+{id:79,name:'呆呆兽',g:'憨憨',tier:'普通',pts:10},
+{id:80,name:'呆壳兽',g:'寄居蟹',tier:'稀有',pts:25},
+{id:81,name:'小磁怪',g:'磁铁',tier:'普通',pts:10},
+{id:82,name:'三合一磁怪',g:'磁铁',tier:'少见',pts:15},
+{id:83,name:'大葱鸭',g:'黄嘴鸭',tier:'普通',pts:10},
+{id:84,name:'嘟嘟',g:'两头鸟',tier:'普通',pts:10},
+{id:85,name:'嘟嘟利',g:'三头鸟',tier:'少见',pts:15},
+{id:86,name:'小海狮',g:'海狮',tier:'普通',pts:10},
+{id:87,name:'白海狮',g:'海狮',tier:'少见',pts:15},
+{id:88,name:'臭泥',g:'污泥',tier:'普通',pts:10},
+{id:89,name:'臭臭泥',g:'污泥',tier:'稀有',pts:25},
+{id:90,name:'大舌贝',g:'双壳贝',tier:'普通',pts:10},
+{id:91,name:'刺甲贝',g:'双壳贝',tier:'稀有',pts:25},
+{id:92,name:'鬼斯',g:'气体状',tier:'普通',pts:10},
+{id:93,name:'鬼斯通',g:'气体状',tier:'少见',pts:15},
+{id:94,name:'耿鬼',g:'影子',tier:'稀有',pts:25},
+{id:95,name:'大岩蛇',g:'岩蛇',tier:'普通',pts:10},
+{id:96,name:'催眠貘',g:'催眠',tier:'普通',pts:10},
+{id:97,name:'引梦貘人',g:'催眠',tier:'稀有',pts:25},
+{id:98,name:'大钳蟹',g:'清水蟹',tier:'普通',pts:10},
+{id:99,name:'巨钳蟹',g:'钳子',tier:'少见',pts:15},
+{id:100,name:'霹雳电球',g:'球',tier:'普通',pts:10},
+{id:101,name:'顽皮雷弹',g:'球',tier:'稀有',pts:25},
+{id:102,name:'蛋蛋',g:'蛋',tier:'普通',pts:10},
+{id:103,name:'椰蛋树',g:'椰子',tier:'稀有',pts:25},
+{id:104,name:'卡拉卡拉',g:'孤独',tier:'普通',pts:10},
+{id:105,name:'嘎啦嘎啦',g:'爱骨',tier:'少见',pts:15},
+{id:106,name:'飞腿郎',g:'踢腿',tier:'少见',pts:15},
+{id:107,name:'快拳郎',g:'拳击',tier:'少见',pts:15},
+{id:108,name:'大舌头',g:'舔舔',tier:'普通',pts:10},
+{id:109,name:'瓦斯弹',g:'毒气',tier:'普通',pts:10},
+{id:110,name:'双弹瓦斯',g:'毒气',tier:'稀有',pts:25},
+{id:111,name:'独角犀牛',g:'尖尖',tier:'普通',pts:10},
+{id:112,name:'钻角犀兽',g:'钻锥',tier:'稀有',pts:25},
+{id:113,name:'吉利蛋',g:'蛋',tier:'少见',pts:15},
+{id:114,name:'蔓藤怪',g:'藤蔓状',tier:'少见',pts:15},
+{id:115,name:'袋兽',g:'亲子',tier:'稀有',pts:25},
+{id:116,name:'墨海马',g:'龙',tier:'普通',pts:10},
+{id:117,name:'海刺龙',g:'龙',tier:'少见',pts:15},
+{id:118,name:'角金鱼',g:'金鱼',tier:'普通',pts:10},
+{id:119,name:'金鱼王',g:'金鱼',tier:'少见',pts:15},
+{id:120,name:'海星星',g:'星形',tier:'普通',pts:10},
+{id:121,name:'宝石海星',g:'谜',tier:'稀有',pts:25},
+{id:122,name:'魔墙人偶',g:'屏障',tier:'少见',pts:15},
+{id:123,name:'飞天螳螂',g:'螳螂',tier:'稀有',pts:25},
+{id:124,name:'迷唇姐',g:'人形',tier:'少见',pts:15},
+{id:125,name:'电击兽',g:'电击',tier:'稀有',pts:25},
+{id:126,name:'鸭嘴火兽',g:'吐火',tier:'稀有',pts:25},
+{id:127,name:'凯罗斯',g:'锹形虫',tier:'稀有',pts:25},
+{id:128,name:'肯泰罗',g:'暴牛',tier:'稀有',pts:25},
+{id:129,name:'鲤鱼王',g:'鱼',tier:'普通',pts:10},
+{id:130,name:'暴鲤龙',g:'凶恶',tier:'稀有',pts:25},
+{id:131,name:'拉普拉斯',g:'乘载',tier:'稀有',pts:25},
+{id:132,name:'百变怪',g:'变身',tier:'普通',pts:10},
+{id:133,name:'伊布',g:'进化',tier:'普通',pts:10},
+{id:134,name:'水伊布',g:'吐泡',tier:'稀有',pts:25},
+{id:135,name:'雷伊布',g:'雷',tier:'稀有',pts:25},
+{id:136,name:'火伊布',g:'火',tier:'稀有',pts:25},
+{id:137,name:'多边兽',g:'虚拟',tier:'少见',pts:15},
+{id:138,name:'菊石兽',g:'漩涡',tier:'普通',pts:10},
+{id:139,name:'多刺菊石兽',g:'漩涡',tier:'稀有',pts:25},
+{id:140,name:'化石盔',g:'甲壳',tier:'普通',pts:10},
+{id:141,name:'镰刀盔',g:'甲壳',tier:'稀有',pts:25},
+{id:142,name:'化石翼龙',g:'化石',tier:'稀有',pts:25},
+{id:143,name:'卡比兽',g:'瞌睡',tier:'稀有',pts:25},
+{id:144,name:'急冻鸟',g:'冰冻',tier:'传说',pts:35},
+{id:145,name:'闪电鸟',g:'电击',tier:'传说',pts:35},
+{id:146,name:'火焰鸟',g:'火焰',tier:'传说',pts:35},
+{id:147,name:'迷你龙',g:'龙',tier:'普通',pts:10},
+{id:148,name:'哈克龙',g:'龙',tier:'少见',pts:15},
+{id:149,name:'快龙',g:'龙',tier:'稀有',pts:25},
+{id:150,name:'超梦',g:'基因',tier:'传说',pts:35},
+{id:151,name:'梦幻',g:'新种',tier:'传说',pts:35}
+];
+  var POKE={}, POKE_ORDER=[];
+  POKE_LIST.forEach(function(p){
+    p.img='ip/poke/'+('00'+p.id).slice(-3)+'.png';
+    POKE[p.id]=p; POKE_ORDER.push(p.id);
+  });
+  /* 稀有度权重（越小越难遇到）与配色 */
+  function pokeWeight(p){ return p.tier==='传说'?2:(p.tier==='稀有'?10:(p.tier==='少见'?34:90)); }
+  var POKE_TIER_COLOR={'普通':'#868E96','少见':'#4DABF7','稀有':'#9C36B5','传说':'#F59E0B'};
+  function pokeTierColor(t){ return POKE_TIER_COLOR[t]||'#868E96'; }
+  function pokePick(list){
+    var tot=0,i;
+    for(i=0;i<list.length;i++) tot+=pokeWeight(list[i]);
+    var r=Math.random()*tot;
+    for(i=0;i<list.length;i++){ r-=pokeWeight(list[i]); if(r<=0) return list[i]; }
+    return list[list.length-1];
+  }
+  /* 旧版 10 只英文 key → 图鉴号（老存档迁移） */
+  var POKE_LEGACY={caterpie:10,pidgey:16,rattata:19,jigglypuff:39,meowth:52,eevee:133,bulbasaur:1,charmander:4,squirtle:7,mewtwo:150};
+  /* 伙伴（出战的宝可梦形象），默认皮卡丘 */
+  var BUDDY_DEFAULT=25;
+  function buddyId(){ loadWallet(); return wallet.buddy||BUDDY_DEFAULT; }
+  function buddyPoke(){ return POKE[buddyId()]||POKE[BUDDY_DEFAULT]||POKE_LIST[0]; }
 
   /* —— 矿物（挖矿） —— */
   var ORES={
@@ -3840,13 +4102,64 @@
     coal:   {n:'煤炭', e:'⚫', p:3,  bg:'linear-gradient(145deg,#5A5A62,#33333A)', edge:'#2A2A30'},
     iron:   {n:'铁矿', e:'⚙️', p:6,  bg:'linear-gradient(145deg,#E0C9A6,#C2A279)', edge:'#A98A62'},
     gold:   {n:'黄金', e:'🟡', p:12, bg:'linear-gradient(145deg,#FFE066,#F0B429)', edge:'#D69A16'},
-    diamond:{n:'钻石', e:'💎', p:30, bg:'linear-gradient(145deg,#A5F3F0,#3FC7C4)', edge:'#25A8A5'}
+    diamond:{n:'钻石', e:'💎', p:30, bg:'linear-gradient(145deg,#A5F3F0,#3FC7C4)', edge:'#25A8A5'},
+    chest:  {n:'宝箱', e:'📦', p:50, bg:'linear-gradient(145deg,#FFD8A8,#F59F00)', edge:'#D9480F'}
   };
 
   /* ================= 小游戏1：苦力怕挖矿 ================= */
-  var mine={on:false,score:0,combo:0,blast:false,cells:[],cur:null,total:60,loot:{},mined:0,cap:0};
+  var mine={on:false,score:0,combo:0,blast:false,cells:[],cur:null,total:60,loot:{},mined:0,cap:0,depth:1};
   function mineHasHand(){ return hasGear('math','hand'); }
   function mineHasHead(){ return hasGear('math','head'); }
+  /* 矿层矿石分布：越深越值钱（每层 30 格，每层藏 1 个宝箱） */
+  var MINE_MIX=[
+    [['stone',12],['coal',8],['iron',6],['gold',3],['diamond',1]],
+    [['stone',8],['coal',6],['iron',8],['gold',6],['diamond',2]],
+    [['stone',5],['coal',4],['iron',8],['gold',8],['diamond',5]],
+    [['stone',4],['coal',3],['iron',6],['gold',10],['diamond',7]]
+  ];
+  function mineLayerTypes(lv){
+    var mix=MINE_MIX[Math.min(MINE_MIX.length-1,Math.max(0,lv-1))], t=[];
+    mix.forEach(function(m){ for(var j=0;j<m[1];j++) t.push(m[0]); });
+    return t;
+  }
+  function mineBuildGrid(lv){
+    var grid=document.getElementById('mineGrid'); if(!grid) return;
+    grid.innerHTML=''; mine.cells=[];
+    var types=mineLayerTypes(lv);
+    shuffle(types);
+    types[Math.floor(Math.random()*types.length)]='chest';
+    types.forEach(function(k){
+      var c=document.createElement('div'); c.className='mine-cell'+(k==='chest'?' chest':'');
+      c.dataset.k=k;
+      c.addEventListener('click',function(){ mineTap(c); });
+      grid.appendChild(c); mine.cells.push(c);
+    });
+  }
+  function placeMineHero(){
+    var wrap=document.getElementById('mineHeroWrap');
+    var stage=document.getElementById('mineStage');
+    var c0=mine.cells[0];
+    if(!wrap||!stage||!c0) return;
+    var sr=stage.getBoundingClientRect(), cr=c0.getBoundingClientRect();
+    var x=Math.max(4,cr.left-sr.left+cr.width/2-31);
+    wrap.style.transform='translate('+Math.round(x)+'px,'+Math.round(cr.top-sr.top-60)+'px)';
+  }
+  /* 挖够 8 块下潜一层：矿壁重排、颜色变深、矿石更值钱 */
+  function mineNewLayer(){
+    if(!mine.on) return;
+    mine.depth++;
+    var stage=document.getElementById('mineStage');
+    if(stage) stage.className='mine-stage l'+Math.min(4,mine.depth);
+    var pop=document.createElement('div');
+    pop.className='layer-pop'; pop.textContent='⬇️ 下潜到第 '+mine.depth+' 层';
+    document.body.appendChild(pop);
+    setTimeout(function(){ if(pop.parentNode) pop.parentNode.removeChild(pop); },1400);
+    tone(392,0,0.1); tone(523,0.1,0.14);
+    mineBuildGrid(mine.depth);
+    placeMineHero();
+    var dp=document.getElementById('mineDepth');
+    if(dp) dp.textContent='⛏️ 第 '+mine.depth+' 层 · 已挖 '+mine.mined+' 块';
+  }
   /* —— 通用反馈工具 —— */
   function popAt(el, txt, cls){
     if(!el) return;
@@ -3857,9 +4170,9 @@
     document.body.appendChild(d);
     setTimeout(function(){ if(d.parentNode) d.parentNode.removeChild(d); }, 1050);
   }
-  function dmgPop(box, txt, x, y){
+  function dmgPop(box, txt, x, y, cls){
     if(!box) return;
-    var d=document.createElement('div'); d.className='dmg'; d.textContent=txt;
+    var d=document.createElement('div'); d.className='dmg'+(cls?' '+cls:''); d.textContent=txt;
     d.style.left=(x===undefined?44:x)+'%'; d.style.top=(y===undefined?34:y)+'%';
     box.appendChild(d);
     setTimeout(function(){ if(d.parentNode) d.parentNode.removeChild(d); }, 850);
@@ -3875,7 +4188,7 @@
     setTimeout(function(){ if(el) el.classList.remove(cls); }, ms||600);
   }
   /* 战利品条：实时显示「挖到了什么」 */
-  var MINE_ORDER=['stone','coal','iron','gold','diamond'];
+  var MINE_ORDER=['stone','coal','iron','gold','diamond','chest'];
   function mineLootHTML(loot){
     var h='';
     MINE_ORDER.forEach(function(k){
@@ -3901,7 +4214,8 @@
       +'<span style="font-size:32px;">⛏️</span></div>'
       +'<div class="rule-line">· 每答对一道口算题，苦力怕挥镐爆破一块矿石</div>'
       +'<div class="rule-line">· 🪨石头 1 分 · ⚫煤炭 3 分 · ⚙️铁矿 6 分 · 🟡黄金 12 分 · 💎钻石 30 分</div>'
-      +'<div class="rule-line">· 挖到的矿石都记进战利品清单，一局结束看收获！</div>'
+      +'<div class="rule-line">· 📦 每一层都藏了一个宝箱，挖到直接 +50 分！</div>'
+      +'<div class="rule-line">· 挖够 8 块就下潜一层，越深矿石越值钱（共 4 层）</div>'
       +'<div class="rule-line">· 连续答对触发连击倍数，最高 ×5！</div>'
       +(mineHasHand()?'<div class="rule-line" style="color:#1971C2;font-weight:700;">⚔️ 钻石剑生效：一次爆破十字 5 格！</div>':'')
       +(mineHasHead()?'<div class="rule-line" style="color:#1971C2;font-weight:700;">🪖 头盔生效：本局时间 +10 秒！</div>':'')
@@ -3930,31 +4244,11 @@
     if(hero) hero.src=mPath?new URL(mPath,location.href).href:'';
     mineLootRender();
     var dp=document.getElementById('mineDepth'); if(dp) dp.textContent='⛏️ 苦力怕 · 已挖 0 块';
-    var grid=document.getElementById('mineGrid'); grid.innerHTML='';
-    mine.cells=[];
-    var types=[];
-    var i;
-    for(i=0;i<10;i++) types.push('stone');
-    for(i=0;i<7;i++) types.push('coal');
-    for(i=0;i<6;i++) types.push('iron');
-    for(i=0;i<4;i++) types.push('gold');
-    for(i=0;i<3;i++) types.push('diamond');
-    shuffle(types);
-    types.forEach(function(k){
-      var c=document.createElement('div'); c.className='mine-cell';
-      c.dataset.k=k;
-      c.addEventListener('click',function(){ mineTap(c); });
-      grid.appendChild(c); mine.cells.push(c);
-    });
-    /* 苦力怕初始站在第一行第一格矿石上方 */
-    var wrap0=document.getElementById('mineHeroWrap');
-    var stage0=document.getElementById('mineStage');
-    var c0=mine.cells[0];
-    if(wrap0&&stage0&&c0){
-      var sr0=stage0.getBoundingClientRect(), cr0=c0.getBoundingClientRect();
-      var x0=Math.max(4,cr0.left-sr0.left+cr0.width/2-31);
-      wrap0.style.transform='translate('+Math.round(x0)+'px,'+Math.round(cr0.top-sr0.top-60)+'px)';
-    }
+    mine.depth=1;
+    var st0=document.getElementById('mineStage'); if(st0) st0.className='mine-stage l1';
+    mineBuildGrid(1);
+    placeMineHero();
+    var dp0=document.getElementById('mineDepth'); if(dp0) dp0.textContent='⛏️ 第 1 层 · 已挖 0 块';
     ensureAudio();
     mine.cur=mineGenQ(); mineRenderQ();
     startTimer(mine.total,'mineTimerBar',mineEnd);
@@ -4007,6 +4301,7 @@
   }
   function mineTap(cell){
     if(!mine.on||!mine.blast||!cell||cell.classList.contains('dug')) return;
+    if(mine.cells.indexOf(cell)<0) return;
     mine.blast=false;
     var mult=Math.min(5,1+Math.floor(mine.combo/3));
     var targets=[cell];
@@ -4052,7 +4347,8 @@
       var pts=o.p*mult;
       gained+=pts;
       popAt(t, '+'+pts+' '+o.e+o.n, 'dig-pop');
-      fragsAt(t,[o.e,'✨'],3);
+      fragsAt(t, k==='chest'?['💰','💎','📦','✨']:[o.e,'✨'], k==='chest'?6:3);
+      if(k==='chest') comboTag('📦 挖到宝箱！+'+pts);
     });
     if(gained>0){
       mine.score+=gained;
@@ -4061,9 +4357,11 @@
       tone(880,0,0.1); tone(1174,0.08,0.12);
       mineLootRender();
       targets.forEach(function(t){ if(t.dataset.k) mineChipHit(t.dataset.k); });
-      var dp=document.getElementById('mineDepth'); if(dp) dp.textContent='⛏️ 苦力怕 · 已挖 '+mine.mined+' 块';
+      var dp=document.getElementById('mineDepth'); if(dp) dp.textContent='⛏️ 第 '+mine.depth+' 层 · 已挖 '+mine.mined+' 块';
       if(mine.loot.diamond) comboTag('💎 钻石 ×'+mine.loot.diamond+'！');
     }
+    /* 每挖 8 块下潜一层（矿壁重排、矿石更值钱） */
+    if(mine.on && (1+Math.floor(mine.mined/8))>mine.depth) setTimeout(mineNewLayer,900);
     if(mine.on){ mine.cur=mineGenQ(); mineRenderQ(); }
   }
   function mineEnd(){
@@ -4088,7 +4386,7 @@
       +'<img src="'+(mPath?new URL(mPath,location.href).href:'')+'" style="height:54px;image-rendering:pixelated;" alt="">'
       +'<div class="lobby-hero">'+(res.isNew?'🏆':'⛏️')+'</div></div>'
       +'<div class="big" style="font-size:22px;">本局 '+res.score+' 分'+(res.isNew?' · 新纪录！':'（最高 '+res.prev+'）')+'</div>'
-      +'<div class="hint" style="margin:8px 0 4px;font-weight:800;">🎒 战利品清单 · 一共挖了 '+mine.mined+' 块</div>'
+      +'<div class="hint" style="margin:8px 0 4px;font-weight:800;">🎒 战利品清单 · 一共挖了 '+mine.mined+' 块 · 最深下潜到第 '+mine.depth+' 层</div>'
       +'<div class="loot" style="justify-content:center;">'+lootHTML+'</div>'
       +(rare?'<div class="rule-line" style="text-align:center;color:#E8590C;font-weight:800;">'+rare+'</div>':'')
       +'<div class="rule-line" style="text-align:center;">🪙 苦力怕帮你挖到了 '+res.reward+' 枚金币！</div>'
@@ -4105,7 +4403,9 @@
   }
 
   /* ================= 小游戏2：奥特曼打怪兽 ================= */
-  var mon={on:false,score:0,kills:0,hp:3,cur:null,monsterHp:0,monsterMax:0,busy:false,kaiju:null,killed:[]};
+  var mon={on:false,score:0,kills:0,hp:3,cur:null,monsterHp:0,monsterMax:0,busy:false,kaiju:null,killed:[],energy:0,streak:0,lights:0};
+  /* 光线伤害表：拳击 / 斯派修姆光线 / 八分光轮（连击6）/ 宇宙之光（连击9） */
+  var MON_DMG={punch:3, beam:10, ring:18, ultra:28};
   var KAIJU_ORDER=['bemular','baltan','redking','gomora','zetton'];
   function monsterLootRender(){
     var el=document.getElementById('monsterLoot'); if(!el) return;
@@ -4132,12 +4432,15 @@
       +'<div style="display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:4px;">'
       +'<img class="card" src="'+(mPath?new URL(mPath,location.href).href:'')+'" style="height:66px;image-rendering:pixelated;border-radius:12px;border:3px solid #fff;box-shadow:0 3px 10px rgba(0,0,0,.2);" alt="">'
       +'<span style="font-size:26px;">⚡</span></div>'
-      +'<div class="rule-line">· 答对字词题，奥特曼发射斯派修姆光线！</div>'
-      +'<div class="rule-line">· 击败怪兽 +10 分，怪兽会越打越强</div>'
-      +'<div class="rule-line">· 答错会被怪兽反扑扣 1 颗心，心用完就结束</div>'
+      +'<div class="rule-line">· 答对一次 = 近身拳击 -3 血，同时蓄 1 格能量</div>'
+      +'<div class="rule-line">· 蓄满 3 格能量 → 发射「斯派修姆光线」-10 血</div>'
+      +'<div class="rule-line">· 连续答对 6 题 → 光线升级「八分光轮」-18 血</div>'
+      +'<div class="rule-line">· 连续答对 9 题 → 解锁「奥特曼宇宙之光」-28 血</div>'
+      +'<div class="rule-line">· 怪兽血很厚（16 起），要善用光线 · 击败一只 +15 分</div>'
+      +'<div class="rule-line">· 答错会被反扑扣 1 颗心，蓄好的能量也会被打散</div>'
       +'<div class="rule-line">· 本局会遇到这些老对手：</div>'
       +'<div class="loot">'+roster+'</div>'
-      +(hand?'<div class="rule-line" style="color:#1971C2;font-weight:700;">⚔️ 究极光剑生效：光波伤害 ×2！</div>':'')
+      +(hand?'<div class="rule-line" style="color:#1971C2;font-weight:700;">⚔️ 究极光剑生效：所有攻击伤害 ×1.5！</div>':'')
       +(head?'<div class="rule-line" style="color:#1971C2;font-weight:700;">👑 光之国王冠生效：多 1 颗心！</div>':'')
       +'<div class="rule-line">'+(tk.sandbox?'🧪 测试模式：门票不限次':'今日剩余门票：'+tk.left+' 局')+' · 最高分 '+(wallet.games.best.monster||0)+'</div>'
       +'<div class="btn-row"><button class="btn" id="btnMonsterStart">⚡ 开始战斗</button></div></div>';
@@ -4153,6 +4456,7 @@
   }
   function monsterStart(){
     mon.on=true; mon.score=0; mon.kills=0; mon.busy=false; mon.killed=[];
+    mon.energy=0; mon.streak=0; mon.lights=0;
     mon.hp=hasGear('chinese','head')?4:3;
     document.getElementById('monsterLobby').style.display='none';
     document.getElementById('monsterPlay').style.display='';
@@ -4163,6 +4467,7 @@
     var kt=document.getElementById('monsterKills'); if(kt) kt.textContent='已击败 0 只';
     monsterLootRender();
     monHpRender();
+    monEnergyRender();
     monsterSpawn();
     ensureAudio();
     mon.cur=monsterGenQ(); monsterRenderQ();
@@ -4173,13 +4478,35 @@
     var s=''; for(var i=0;i<mon.hp;i++) s+='❤️';
     document.getElementById('monsterHP').textContent=s||'💔';
   }
+  /* 能量槽 + 连击形态：满 3 格发射斯派修姆光线，连击 6 变八分光轮，连击 9 解锁宇宙之光 */
+  function monEnergyRender(){
+    var e=Math.min(3,mon.energy), s=mon.streak;
+    var ring=s>=6, ultra=s>=9;
+    var row=document.getElementById('monEnergyRow');
+    if(row) row.className='energy-row'+(e>=3?' ready':'')+(ring?' ring':'');
+    var bar=document.getElementById('monEnergyBar');
+    if(bar) bar.style.width=Math.round(e/3*100)+'%';
+    var lb=document.getElementById('monEnergyLabel');
+    if(lb) lb.textContent='⚡ '+e+'/3';
+    var st=document.getElementById('monStreakTag');
+    if(st) st.textContent=(ring?'🔥':'')+' 连击 '+s+(ultra?' ✨':'');
+    var hint=document.getElementById('monSkillHint');
+    if(hint){
+      if(ultra) hint.textContent='✨ 宇宙之光已解锁！光线威力翻倍';
+      else if(ring) hint.textContent='🔥 八分光轮形态！光线伤害大幅提升';
+      else if(e>=3) hint.textContent='🌟 能量已满，下一题发射斯派修姆光线！';
+      else if(e===2) hint.textContent='还差 1 题就能发射光线';
+      else if(e===1) hint.textContent='能量蓄积中…再答对 2 题发射光线';
+      else hint.textContent='答对 3 题蓄满能量，发射斯派修姆光线';
+    }
+  }
   function monsterPickKaiju(){
     var pool=KAIJU_ORDER.slice();
     if(mon.kaiju) pool=pool.filter(function(k){ return k!==mon.kaiju; });
     return pool[Math.floor(Math.random()*pool.length)];
   }
   function monsterSpawn(){
-    mon.monsterMax=Math.min(8,3+Math.floor(mon.kills/2));
+    mon.monsterMax=16+mon.kills*4;   /* 第 1 只 16 血，每多打一只 +4 */
     mon.monsterHp=mon.monsterMax;
     mon.kaiju=monsterPickKaiju();
     var k=KAIJU[mon.kaiju];
@@ -4219,7 +4546,17 @@
         mon.busy=true;
         if(v===mon.cur.ans){
           b.classList.add('right'); playCorrect();
-          monsterAttack();
+          mon.streak++; mon.energy++;
+          if(mon.energy>=3){
+            mon.energy=0;
+            var kind=mon.streak>=9?'ultra':(mon.streak>=6?'ring':'beam');
+            mon.lights++;
+            monEnergyRender();
+            monsterAttack(kind);
+          } else {
+            monEnergyRender();
+            monsterAttack('punch');
+          }
         } else {
           b.classList.add('wrong'); tone(196,0,0.25);
           monsterCounter();
@@ -4228,45 +4565,64 @@
       opts.appendChild(b);
     });
   }
-  /* 奥特曼出招：蓄力 → 双臂十字 → 斯派修姆光线 → 命中判定 */
-  function monsterAttack(){
+  /* 奥特曼出招：拳击（小）/ 斯派修姆光线 / 八分光轮 / 宇宙之光 */
+  function monsterAttack(kind){
     var battle=document.getElementById('monsterBattle');
     var hero=document.getElementById('monsterHero');
-    var heroSide=document.getElementById('monsterHeroSide');
     var body=document.getElementById('monsterBody');
     var k=KAIJU[mon.kaiju]||{name:'怪兽'};
-    fx(hero,'hero-charge',520);
-    tone(523,0,0.12); tone(659,0.1,0.12);
-    if(battle){
-      var cross=document.createElement('div');
-      cross.className='cross'; cross.textContent='✚';
-      battle.appendChild(cross);
-      setTimeout(function(){ if(cross.parentNode) cross.parentNode.removeChild(cross); },520);
-    }
-    setTimeout(function(){
-      fx(hero,'hero-shoot',340);
+    kind=kind||'punch';
+    var big=(kind!=='punch');
+    var dmg=Math.round((MON_DMG[kind]||3)*(hasGear('chinese','hand')?1.5:1));
+
+    if(big){
+      /* 蓄力 → 双臂十字 → 光线 */
+      fx(hero,'hero-charge',520);
+      tone(523,0,0.12); tone(659,0.1,0.12);
       if(battle){
-        var beam=document.createElement('div'); beam.className='specium'; battle.appendChild(beam);
-        setTimeout(function(){ if(beam.parentNode) beam.parentNode.removeChild(beam); },640);
+        var cross=document.createElement('div');
+        cross.className='cross'; cross.textContent='✚';
+        battle.appendChild(cross);
+        setTimeout(function(){ if(cross.parentNode) cross.parentNode.removeChild(cross); },520);
       }
-      tone(1318,0,0.16); tone(1760,0.06,0.2);
-    },360);
+      setTimeout(function(){
+        fx(hero,'hero-shoot',340);
+        if(battle){
+          var beam=document.createElement('div'); beam.className='specium wide'; battle.appendChild(beam);
+          setTimeout(function(){ if(beam.parentNode) beam.parentNode.removeChild(beam); },680);
+          if(kind==='ring'||kind==='ultra'){
+            var rb=document.createElement('div'); rb.className='ring-boom'; battle.appendChild(rb);
+            setTimeout(function(){ if(rb.parentNode) rb.parentNode.removeChild(rb); },820);
+          }
+          var tag=document.createElement('div');
+          tag.className='beam-tag';
+          tag.textContent=(kind==='ultra'?'✨ 奥特曼宇宙之光！':(kind==='ring'?'🔥 八分光轮！':'🌟 斯派修姆光线！'));
+          battle.appendChild(tag);
+          setTimeout(function(){ if(tag.parentNode) tag.parentNode.removeChild(tag); },1000);
+        }
+        tone(1318,0,0.16); tone(1760,0.06,0.2);
+      },360);
+    } else {
+      /* 近身拳击：快速小伤害，攒能量用 */
+      fx(hero,'hero-punch',480);
+      tone(784,0,0.07); tone(988,0.07,0.09);
+    }
+
     setTimeout(function(){
-      var dmg=hasGear('chinese','hand')?2:1;
       mon.monsterHp-=dmg;
-      dmgPop(body, '-'+dmg, 62, 24);
-      fx(body,'crt-hurt',480);
+      dmgPop(body, '-'+dmg, 62, 24, big?('dmg-big'+((kind==='ring'||kind==='ultra')?' ring':'')):'');
+      fx(body, big?'crt-knock':'crt-hurt', 500);
       shakeEl(battle);
       tone(660,0,0.08); tone(990,0.09,0.12);
       monsterHpBar();
       if(mon.monsterHp<=0){
-        mon.kills++; mon.score+=10;
+        mon.kills++; mon.score+=15;
         mon.killed.push(k.name);
         var sc=document.getElementById('monsterScore'); if(sc) sc.textContent='🏆 '+mon.score;
         scoreJump('monsterScore');
         fx(body,'crt-die',760);
         fragsAt(body,['💥','⭐','🏅','✨'],7);
-        comboTag('击败 '+k.name+'！+10');
+        comboTag('击败 '+k.name+'！+15');
         tone(523,0,0.1); tone(784,0.1,0.1); tone(1046,0.2,0.18);
         shakeEl(battle);
         monsterLootRender();
@@ -4281,7 +4637,7 @@
       }
       mon.busy=false;
       if(mon.on){ mon.cur=monsterGenQ(); monsterRenderQ(); }
-    },900);
+    }, big?900:260);
   }
   /* 答错：怪兽反扑，奥特曼受击 + 彩色计时器闪红 */
   function monsterCounter(){
@@ -4290,6 +4646,7 @@
     var heroSide=document.getElementById('monsterHeroSide');
     var body=document.getElementById('monsterBody');
     fx(body,'crt-attack',480);
+    if(mon.energy>0||mon.streak>0){ mon.energy=0; mon.streak=0; monEnergyRender(); comboTag('💔 能量被打散，重新蓄能'); }
     setTimeout(function(){
       mon.hp--; monHpRender();
       fx(hero,'hero-hurt',560);
@@ -4322,6 +4679,7 @@
       +'<img src="'+(mPath?new URL(mPath,location.href).href:'')+'" style="height:54px;image-rendering:pixelated;" alt="">'
       +'<div class="lobby-hero">'+(res.isNew?'🏅':'⚡')+'</div></div>'
       +'<div class="big" style="font-size:22px;">击败 '+mon.kills+' 只怪兽 · '+res.score+' 分'+(res.isNew?' · 新纪录！':'（最高 '+res.prev+'）')+'</div>'
+      +'<div class="rule-line" style="text-align:center;">🌟 本局一共发射了 '+mon.lights+' 次光线</div>'
       +'<div class="hint" style="margin:8px 0 4px;font-weight:800;">🏅 战绩名单</div>'
       +'<div class="loot" style="justify-content:center;">'+listHTML+'</div>'
       +'<div class="rule-line" style="text-align:center;">🪙 奥特曼奖励你 '+res.reward+' 枚金币！</div>'
@@ -4336,29 +4694,50 @@
   }
 
   /* ================= 小游戏3：皮卡丘收服 ================= */
-  var POKE_ORDER=['caterpie','pidgey','rattata','jigglypuff','meowth','eevee','bulbasaur','charmander','squirtle','mewtwo'];
-  var cat={on:false,score:0,combo:0,cur:null,busy:false,petKey:null,caught:[]};
+  var cat={on:false,score:0,combo:0,cur:null,busy:false,petId:null,caught:[],caughtIds:[]};
+  /* 出现规则：55% 从未捕捉的图鉴号里抽（推动收集），45% 全图鉴抽（所以老面孔会重复出现） */
   function catchPickPet(){
-    var r=Math.random(), pool;
-    if(r<0.06) pool=['mewtwo'];
-    else if(r<0.34) pool=['bulbasaur','charmander','squirtle'];
-    else pool=['caterpie','pidgey','rattata','jigglypuff','meowth','eevee'];
-    if(cat.petKey) pool=pool.filter(function(k){ return k!==cat.petKey; });
-    if(!pool.length) pool=['caterpie'];
-    return pool[Math.floor(Math.random()*pool.length)];
+    var d=catchDex();
+    var unowned=[], i;
+    for(i=0;i<POKE_LIST.length;i++) if(!d[POKE_LIST[i].id]) unowned.push(POKE_LIST[i]);
+    var useNew=unowned.length>0&&Math.random()<0.55;
+    var pool=useNew?unowned:POKE_LIST;
+    var p=pokePick(pool);
+    if(cat.petId&&p.id===cat.petId&&pool.length>1) p=pokePick(pool);
+    return p.id;
   }
   /* 图鉴（跨局持久保存：这是真正的收集感） */
-  function catchDex(){ if(!wallet.games.dex) wallet.games.dex={}; return wallet.games.dex; }
-  function catchDexCount(){ var d=catchDex(), n=0; POKE_ORDER.forEach(function(k){ if(d[k]) n++; }); return n; }
+  /* 图鉴读取入口：首次访问时把旧版英文 key 迁移成图鉴号（10 只 → 001~151） */
+  var dexMigrated=false;
+  function catchDex(){
+    if(!wallet.games.dex) wallet.games.dex={};
+    if(!dexMigrated){
+      dexMigrated=true;
+      var d=wallet.games.dex, changed=false, lk;
+      for(lk in POKE_LEGACY){
+        if(d[lk]!==undefined){ d[POKE_LEGACY[lk]]=(d[POKE_LEGACY[lk]]||0)+d[lk]; delete d[lk]; changed=true; }
+      }
+      if(changed) saveWallet();
+    }
+    return wallet.games.dex;
+  }
+  function catchDexCount(){
+    var d=catchDex(), n=0, i;
+    for(i=0;i<POKE_LIST.length;i++) if(d[POKE_LIST[i].id]) n++;
+    return n;
+  }
+  /* 游戏页图鉴条：显示本局刚收到的宝可梦；总进度看 catchDexTag */
   function catchDexRender(){
     var el=document.getElementById('catchDexStrip'); if(!el) return;
-    var d=catchDex(), h='';
-    POKE_ORDER.forEach(function(k){
-      h+='<div class="dex-slot'+(d[k]?' got':'')+'" title="'+POKE[k].name+'">'+crtImg(POKE[k].img)+'</div>';
+    var ids=cat.caughtIds.slice(-12), h='';
+    if(!ids.length) h='<span class="loot-chip zero">本局还没收到宝可梦，答对就能扔球</span>';
+    else ids.forEach(function(id){
+      var p=POKE[id]; if(!p) return;
+      h+='<span class="dex-slot got" title="'+p.name+'">'+crtImg(p.img)+'</span>';
     });
     el.innerHTML=h;
     var tag=document.getElementById('catchDexTag');
-    if(tag) tag.textContent='图鉴 '+catchDexCount()+'/'+POKE_ORDER.length;
+    if(tag) tag.textContent='图鉴 '+catchDexCount()+'/'+POKE_LIST.length;
   }
   function openCatch(){
     stopTimer();
@@ -4366,20 +4745,23 @@
     var lo=document.getElementById('catchLobby'); lo.style.display='';
     var tk=gameTickets();
     var hand=hasGear('english','hand'), head=hasGear('english','head');
-    var mPath=SUBJECTS.english.mascot||'';
-    var dex=catchDex(), slots='';
-    POKE_ORDER.forEach(function(k){
-      slots+='<div class="dex-slot'+(dex[k]?' got':'')+'" title="'+POKE[k].name+'">'+crtImg(POKE[k].img)+'</div>';
-    });
+    var bd=buddyPoke();
+    var dex=catchDex(), slots='', gotIds=[], gi;
+    for(gi=0;gi<POKE_LIST.length;gi++) if(dex[POKE_LIST[gi].id]) gotIds.push(POKE_LIST[gi].id);
+    if(!gotIds.length) slots='<span class="loot-chip zero">图鉴还是空的，快去收服第一只！</span>';
+    else gotIds.slice(-14).forEach(function(k){ slots+='<div class="dex-slot got" title="'+POKE[k].name+'">'+crtImg(POKE[k].img)+'</div>'; });
     lo.innerHTML='<div class="center">'
       +'<div style="display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:4px;">'
-      +'<img src="'+(mPath?new URL(mPath,location.href).href:'')+'" style="height:66px;image-rendering:pixelated;" alt="">'
+      +'<img src="'+new URL(bd.img,location.href).href+'" style="height:66px;object-fit:contain;" alt="">'
       +'<span style="font-size:28px;">🔮</span></div>'
+      +'<div class="rule-line">· 出战伙伴：<b>'+bd.name+'</b>（'+bd.tier+'）· 在图鉴里可以换人</div>'
       +'<div class="rule-line">· 听发音（可点 🔊 重听），选出正确的单词</div>'
-      +'<div class="rule-line">· 答对皮卡丘就扔精灵球：普通 +10 · 稀有 +20 · 传说 +35 分</div>'
-      +'<div class="rule-line">· 收服到的宝可梦会永久记进图鉴，集齐 10 只！</div>'
-      +'<div class="hint" style="margin:8px 0 4px;font-weight:800;">📕 宝可梦图鉴 '+catchDexCount()+'/'+POKE_ORDER.length+'</div>'
+      +'<div class="rule-line">· 答对就扔精灵球：普通 +10 · 少见 +15 · 稀有 +25 · 传说 +35 分</div>'
+      +'<div class="rule-line">· 重复遇到的老面孔分数减半，第一次收服才有 🆕 新图鉴</div>'
+      +'<div class="rule-line">· 关都地区 151 只，收服过的会永久留在图鉴里</div>'
+      +'<div class="hint" style="margin:8px 0 4px;font-weight:800;">📕 宝可梦图鉴 '+catchDexCount()+'/'+POKE_LIST.length+'</div>'
       +'<div class="dex-strip">'+slots+'</div>'
+      +'<div class="btn-row"><button class="btn ghost" id="btnOpenDex">📕 打开完整图鉴</button></div>'
       +(hand?'<div class="rule-line" style="color:#1971C2;font-weight:700;">🔨 雷神之锤生效：收服得分 ×1.5！</div>':'')
       +(head?'<div class="rule-line" style="color:#1971C2;font-weight:700;">🧢 训练家帽生效：答错不断连击！</div>':'')
       +'<div class="rule-line">'+(tk.sandbox?'🧪 测试模式：门票不限次':'今日剩余门票：'+tk.left+' 局')+' · 最高分 '+(wallet.games.best.catch||0)+'</div>'
@@ -4388,6 +4770,8 @@
       if(!useTicket()){ renderCatchHintBack('皮卡丘的能量用完啦！'); return; }
       catchStart();
     });
+    var od=document.getElementById('btnOpenDex');
+    if(od) od.addEventListener('click',function(){ openDex('catch'); });
     show('screen-catch');
   }
   function renderCatchHintBack(msg){
@@ -4395,14 +4779,15 @@
     document.getElementById('btnCatchBack2').addEventListener('click',openArcade);
   }
   function catchStart(){
-    cat.on=true; cat.score=0; cat.combo=0; cat.busy=false; cat.caught=[];
+    cat.on=true; cat.score=0; cat.combo=0; cat.busy=false; cat.caught=[]; cat.caughtIds=[];
     document.getElementById('catchLobby').style.display='none';
     document.getElementById('catchPlay').style.display='';
     document.getElementById('catchScore').textContent='🐾 0';
     document.getElementById('catchCombo').textContent='×1';
-    var mPath=SUBJECTS.english.mascot||'';
+    var bd=buddyPoke();
     var hero=document.getElementById('catchHero');
-    if(hero) hero.src=mPath?new URL(mPath,location.href).href:'';
+    if(hero){ hero.src=new URL(bd.img,location.href).href; hero.className='crt-img'; }
+    var hn=document.getElementById('catchHeroName'); if(hn) hn.textContent=bd.name;
     catchDexRender();
     ensureAudio();
     catchNextPet();
@@ -4416,13 +4801,16 @@
   }
   function catchNextPet(){
     cat.cur=catchGenQ();
-    cat.petKey=catchPickPet();
-    var p=POKE[cat.petKey];
+    cat.petId=catchPickPet();
+    var p=POKE[cat.petId];
+    var owned=!!catchDex()[p.id];
     var el=document.getElementById('catchPet');
-    if(el){ el.className=(p.tag==='传说'?'rare-glow':''); el.innerHTML=crtImg(p.img)+'<div class="sprite-shadow"></div>'; }
+    if(el){ el.className=(p.tier==='传说'?'rare-glow':''); el.innerHTML=crtImg(p.img)+'<div class="sprite-shadow"></div>'; }
     var nm=document.getElementById('catchPetName');
-    if(nm) nm.textContent='野生 '+p.name+'（'+p.tag+' · +'+p.pts+' 分）';
-    catchDexRender();
+    if(nm) nm.innerHTML='野生 '+p.name
+      +' <span class="tier-chip" style="background:'+pokeTierColor(p.tier)+'">'+p.tier+'</span> '
+      +(owned?'<span style="color:#868E96;font-weight:800;">已拥有 · 重复 +'+Math.round(p.pts/2)+' 分</span>'
+             :'<span style="color:#E8590C;font-weight:900;">🆕 新伙伴 +'+p.pts+' 分</span>');
     var q=cat.cur;
     var box=document.getElementById('catchQBox');
     box.innerHTML='<div class="q"><span style="font-size:34px;">'+q.w.emoji+'</span> <button class="mine-opt" id="catchHear" style="min-width:auto;">🔊 再听一次</button></div>'
@@ -4442,20 +4830,23 @@
           var mult=Math.min(5,1+Math.floor(cat.combo/3));
           var cm=document.getElementById('catchCombo'); if(cm) cm.textContent='×'+mult;
           catchThrowBall(function(){
-            var pts=Math.round(p.pts*mult*(hasGear('english','hand')?1.5:1));
-            cat.score+=pts;
             var d=catchDex();
-            var isNew=!d[cat.petKey];
-            d[cat.petKey]=(d[cat.petKey]||0)+1;
+            var isNew=!d[cat.petId];
+            var pts=Math.round(p.pts*mult*(hasGear('english','hand')?1.5:1)*(isNew?1:0.5));
+            cat.score+=pts;
+            d[cat.petId]=(d[cat.petId]||0)+1;
             saveWallet();
             cat.caught.push(p.name);
+            cat.caughtIds.push(p.id);
             var sc=document.getElementById('catchScore'); if(sc) sc.textContent='🐾 '+cat.score;
             scoreJump('catchScore');
-            comboTag('收服 '+p.name+'！'+(isNew?'🆕 新图鉴！':'')+' +'+pts);
+            comboTag((isNew?'🆕 收服 ':'收服 ')+p.name+'！ +'+pts);
             catchDexRender();
             if(isNew){
-              var slot=document.querySelectorAll('#catchDexStrip .dex-slot')[POKE_ORDER.indexOf(cat.petKey)];
-              if(slot){ slot.classList.add('pop'); setTimeout(function(){ slot.classList.remove('pop'); },700); }
+              var slots=document.querySelectorAll('#catchDexStrip .dex-slot');
+              var last=slots[slots.length-1];
+              if(last){ last.classList.add('pop'); setTimeout(function(){ last.classList.remove('pop'); },700); }
+              if(catchDexCount()>=POKE_LIST.length) comboTag('🎉 关都 151 只全部集齐！');
             }
             cat.busy=false;
             if(cat.on) setTimeout(catchNextPet,520);
@@ -4477,7 +4868,7 @@
     var battle=document.getElementById('catchBattle');
     var pet=document.getElementById('catchPet');
     var hero=document.getElementById('catchHero');
-    var p=POKE[cat.petKey]||{name:'宝可梦'};
+    var p=POKE[cat.petId]||{name:'宝可梦'};
     fx(hero,'hero-shoot',340);
     var ball=document.createElement('div');
     ball.className='ball';
@@ -4532,17 +4923,58 @@
       +'<img src="'+(mPath?new URL(mPath,location.href).href:'')+'" style="height:54px;image-rendering:pixelated;" alt="">'
       +'<div class="lobby-hero">'+(res.isNew?'🏆':'🔮')+'</div></div>'
       +'<div class="big" style="font-size:22px;">收服 '+cat.caught.length+' 只 · '+res.score+' 分'+(res.isNew?' · 新纪录！':'（最高 '+res.prev+'）')+'</div>'
-      +'<div class="hint" style="margin:8px 0 4px;font-weight:800;">📕 本局图鉴收获 · 图鉴总数 '+catchDexCount()+'/'+POKE_ORDER.length+'</div>'
+      +'<div class="hint" style="margin:8px 0 4px;font-weight:800;">📕 本局收获 · 图鉴总数 '+catchDexCount()+'/'+POKE_LIST.length+'</div>'
       +'<div class="loot" style="justify-content:center;">'+listHTML+'</div>'
       +'<div class="rule-line" style="text-align:center;">🪙 皮卡丘奖励你 '+res.reward+' 枚金币！</div>'
       +'<div class="btn-row"><button class="btn" id="btnCatchAgain">🔮 再来一局</button></div>'
+      +'<div class="btn-row"><button class="btn ghost" id="btnDexFromEnd">📕 去图鉴换出战伙伴</button></div>'
       +'<div class="btn-row"><button class="btn ghost" id="btnCatchBack">回游戏中心</button></div></div>';
     playWin();
     document.getElementById('btnCatchAgain').addEventListener('click',function(){
       if(!useTicket()){ renderCatchHintBack('皮卡丘的能量用完啦，明天再来！'); return; }
       catchStart();
     });
+    var de=document.getElementById('btnDexFromEnd');
+    if(de) de.addEventListener('click',function(){ openDex('catch'); });
     document.getElementById('btnCatchBack').addEventListener('click',openArcade);
+  }
+
+  /* ================= 宝可梦图鉴页（关都 151） ================= */
+  var dexFrom='arcade';
+  function openDex(from){ dexFrom=from||'arcade'; renderDex(); show('screen-dex'); }
+  function renderDex(){
+    var d=catchDex(), n=catchDexCount(), tot=POKE_LIST.length;
+    var bid=buddyId(), bp=POKE[bid]||POKE[BUDDY_DEFAULT];
+    var top=document.getElementById('dexTop');
+    if(top) top.innerHTML=crtImg(bp.img)+'<div style="text-align:left;font-size:12px;line-height:1.45;">'
+      +'<div style="font-weight:900;font-size:14px;">出战伙伴：'+bp.name+'</div>'
+      +'<div style="color:var(--muted);">点下面已收集的宝可梦，就能换它上场</div></div>';
+    var bar=document.getElementById('dexBar');
+    if(bar) bar.style.width=Math.round(n/tot*100)+'%';
+    var st=document.getElementById('dexStat');
+    if(st) st.textContent='已收集 '+n+' / '+tot+'（'+(n>=tot?'🎉 全部集齐！':'还差 '+(tot-n)+' 只')+'）';
+    var g=document.getElementById('dexGrid');
+    if(!g) return;
+    var h='';
+    POKE_LIST.forEach(function(p){
+      var cnt=d[p.id]||0;
+      h+='<div class="dex-card'+(cnt?' got':' locked')+(p.id===bid?' buddy':'')+'" data-id="'+p.id+'">'
+        +crtImg(p.img)
+        +'<div class="num">#'+('00'+p.id).slice(-3)+'</div>'
+        +'<div class="nm">'+(cnt?p.name:'？？？')+'</div>'
+        +(cnt>1?'<span class="cnt">×'+cnt+'</span>':'')
+        +'</div>';
+    });
+    g.innerHTML=h;
+    Array.prototype.forEach.call(g.querySelectorAll('.dex-card'),function(el){
+      el.addEventListener('click',function(){
+        var id=parseInt(el.getAttribute('data-id'),10);
+        if(!(d[id]>0)){ comboTag('还没有收服过它，先去游戏里找找'); return; }
+        wallet.buddy=id; saveWallet();
+        comboTag('✅ '+POKE[id].name+' 上场！');
+        renderDex();
+      });
+    });
   }
 
   /* ================= 金币/商店/游戏 事件绑定 ================= */
@@ -4555,6 +4987,7 @@
   bind('btnMineHome', function(){ stopTimer(); if(mine.on){ mine.on=false; endGameCommon('mine',mine.score); } renderHome(); show('screen-home'); });
   bind('btnMonsterHome', function(){ stopTimer(); if(mon.on){ mon.on=false; endGameCommon('monster',mon.score); } renderHome(); show('screen-home'); });
   bind('btnCatchHome', function(){ stopTimer(); if(cat.on){ cat.on=false; endGameCommon('catch',cat.score); } renderHome(); show('screen-home'); });
+  bind('btnDexBack', function(){ if(dexFrom==='catch') openCatch(); else openArcade(); });
 
 
   if(!profile){ show('screen-profile'); }
