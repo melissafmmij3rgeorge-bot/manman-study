@@ -3005,6 +3005,18 @@
     "桥":["横","竖","撇","点","撇","横","撇","捺","撇","竖"],"跳":["竖","横折","横","竖","横","竖","提","撇","点","提","竖弯钩","撇","点"],"法":["点","点","提","横","竖","横","撇折","点"],"熊":["撇折","点","竖","横折钩","横","横","撇","竖弯钩","撇","竖弯钩","点","点","点","点"]
   };
 
+  /* 拼音选题（双向随机）：读拼音选字 / 看字选拼音。
+     拼音一律取自各单元 intro/听写库中按教材核对过的读音，杜绝「看 emoji 猜字」这种无依据题。 */
+  function zhPinyinQ(ws){
+    var ans=ws[rnd(0,ws.length-1)];
+    var dis=ws.filter(function(w){return w.w!==ans.w;});
+    shuffle(dis);
+    if(Math.random()<0.5){
+      return {q:'读「'+ans.p+'」的是哪个字？',opts:shuffle([ans.w,dis[0].w,dis[1].w,dis[2].w]),ans:ans.w};
+    }
+    return {q:'「'+ans.w+'」的读音是？',opts:shuffle([ans.p,dis[0].p,dis[1].p,dis[2].p]),ans:ans.p};
+  }
+
   var CHINESE_UNITS=[
     /* ---------- U1 阅读·自然现象（W0 学校已学完）---------- */
     {id:'yu_u1_xianxiang',name:'自然现象（小蝌蚪/我是什么/植物妈妈）',emoji:'🐸',category:'zh_word',unlockWeek:0,
@@ -3014,13 +3026,13 @@
         {title:'第 2 步：听音选字',speak:'点喇叭，听这个字的读音，然后选出是哪个字。',render:function(st){stageHTML(st,'<div class="word-card highlight speaker-zh" data-han="变" style="max-width:140px;margin:0 auto;\u003cspan class="emoji">💧</span\u003e<div class="han">🔊</div></div>');},interact:{prompt:'🔊 点喇叭听，选出你听到的字',kind:'pick',opts:['变','两','跳','海'],answer:'变'}},
         {title:'第 3 步：笔顺 — 「毛」「娃」',speak:'今天我们学写「毛」和「娃」。「毛」有 4 笔：撇、横、横、竖弯钩。「娃」有 9 笔。',render:function(st){stageHTML(st,'<div class="bs-card"><div class="bs-han">毛</div><div class="bs-strokes">'+STROKE_DATA['毛'].map(function(s,i){return '<span class="bs-step">'+(i+1)+'.'+s+'</span>';}).join('<span class="bs-arrow">→</span>')+'</div></div><div class="bs-card" style="margin-top:10px;"><div class="bs-han">娃</div><div class="bs-strokes">女+圭(6+3=9 笔)</div></div><div class="hint" style="margin-top:10px;">在田字格里：先写撇，再写两横，最后一笔是竖弯钩。</div>');},interact:{prompt:'「毛」的第二笔是什么？',kind:'pick',opts:['横','撇','竖','点'],answer:'横'}}
       ],
-      practice:{title:'阅读 U1 · 看图选字',render:function(st){var words=[{w:'跳',e:'🤸'},{w:'海',e:'🌊'},{w:'变',e:'💧'},{w:'娃',e:'🧒'},{w:'法',e:'💡'},{w:'毛',e:'🌱'},{w:'两',e:'🐸'},{w:'哪',e:'❓'}];stageHTML(st,'<div class="hint">阅读 U1 · 看图选字</div><div class="word-grid">'+words.map(function(w){return '<div class="word-card speaker-zh" data-han="'+w.w+'"><span class="emoji">'+w.e+'</span><div class="han">🔊</div></div>';}).join('')+'</div>');st.querySelectorAll('.speaker-zh').forEach(function(c){c.addEventListener('click',function(){speak(c.dataset.han,'zh-CN');});});},
+      practice:{title:'阅读 U1 · 听音认字',render:function(st){var words=[{w:'跳',e:'🤸'},{w:'海',e:'🌊'},{w:'变',e:'💧'},{w:'娃',e:'🧒'},{w:'法',e:'💡'},{w:'毛',e:'🌱'},{w:'两',e:'🐸'},{w:'哪',e:'❓'}];stageHTML(st,'<div class="hint">阅读 U1 · 听音认字</div><div class="word-grid">'+words.map(function(w){return '<div class="word-card speaker-zh" data-han="'+w.w+'"><span class="emoji">'+w.e+'</span><div class="han">🔊</div></div>';}).join('')+'</div>');st.querySelectorAll('.speaker-zh').forEach(function(c){c.addEventListener('click',function(){speak(c.dataset.han,'zh-CN');});});},
         questions:[
-          {q:'🤸 是哪个字？',opts:['跳','变','两','海'],ans:'跳'},
-          {q:'🌊 是哪个字？',opts:['海','河','湖','江'],ans:'海'},
+          {q:'读「tiào」的是哪个字？',opts:['跳','变','两','海'],ans:'跳'},
+          {q:'「海」的读音是？',opts:['hǎi','hé','hú','jiāng'],ans:'hǎi'},
           {q:'💧水变成☁️云，这里的「变」意思是？',opts:['改变了样子','一直没变','变少了','变坏了'],ans:'改变了样子'}
         ]},
-      makeReviewQ:function(){var ws=[{w:'两',e:'🐸'},{w:'哪',e:'❓'},{w:'跳',e:'🤸'},{w:'变',e:'💧'},{w:'海',e:'🌊'},{w:'法',e:'💡'},{w:'娃',e:'🧒'},{w:'毛',e:'🌱'}];var ans=ws[rnd(0,ws.length-1)];var dis=ws.filter(function(w){return w.w!==ans.w;});shuffle(dis);return{q:ans.e+' 是哪个字？',opts:shuffle([ans.w,dis[0].w,dis[1].w,dis[2].w]),ans:ans.w};},
+      makeReviewQ:function(){return zhPinyinQ([{w:'两',p:'liǎng'},{w:'哪',p:'nǎ'},{w:'跳',p:'tiào'},{w:'变',p:'biàn'},{w:'海',p:'hǎi'},{w:'法',p:'fǎ'},{w:'娃',p:'wá'},{w:'毛',p:'máo'}]);},
       help:'两 liǎng、哪 nǎ、跳 tiào、变 biàn、海 hǎi、法 fǎ、娃 wá、毛 máo。',
       exploreHint:'点字卡，听生字怎么读'
     },
@@ -3032,13 +3044,13 @@
         {title:'第 2 步：认 4 个字',speak:'先学 4 个生字 —— 园、桥、队、铜。',render:function(st){var ws=[{w:'园',e:'🌷',p:'yuán'},{w:'桥',e:'🌉',p:'qiáo'},{w:'队',e:'🚩',p:'duì'},{w:'铜',e:'🎺',p:'tóng'}];stageHTML(st,'<div class="word-grid">'+ws.map(function(w){return '<div class="word-card speaker-zh" data-han="'+w.w+'"><span class="emoji">'+w.e+'</span><div class="han">🔊</div><div class="pin">'+w.p+'</div></div>';}).join('')+'</div>');st.querySelectorAll('.speaker-zh').forEach(function(c){c.addEventListener('click',function(){speak(c.dataset.han,'zh-CN');});});},interact:{prompt:'🌉 是什么？',kind:'pick',opts:['桥','园','队','铜'],answer:'桥'}},
         {title:'第 3 步：笔顺 — 「队」「桥」',speak:'「队」是左耳旁 + 人，左边是「阝」，3 笔。右边是「人」，2 笔。「桥」是木字旁 + 乔。',render:function(st){stageHTML(st,'<div class="bs-card"><div class="bs-han">队</div><div class="bs-strokes">阝(横折折折钩/竖) + 人(撇/捺) = 4 笔</div></div><div class="bs-card" style="margin-top:10px;"><div class="bs-han">桥</div><div class="bs-strokes">木(横/竖/撇/点) + 乔 = 10 笔</div></div><div class="hint" style="margin-top:10px;">「队」字在田字格里：左窄右宽，「阝」的横折钩要稳。</div>');},interact:{prompt:'「队」的左半边是什么？',kind:'pick',opts:['阝','木','氵','口'],answer:'阝'}}
       ],
-      practice:{title:'场景歌 · 看图选字',render:function(st){var words=[{w:'园',e:'🌷'},{w:'桥',e:'🌉'},{w:'队',e:'🚩'},{w:'旗',e:'🇨🇳'},{w:'铜',e:'🎺'},{w:'领',e:'🔴'},{w:'巾',e:'🧣'},{w:'号',e:'📯'}];stageHTML(st,'<div class="hint">场景歌 · 看图选字</div><div class="word-grid">'+words.map(function(w){return '<div class="word-card speaker-zh" data-han="'+w.w+'"><span class="emoji">'+w.e+'</span><div class="han">🔊</div></div>';}).join('')+'</div>');st.querySelectorAll('.speaker-zh').forEach(function(c){c.addEventListener('click',function(){speak(c.dataset.han,'zh-CN');});});},
+      practice:{title:'场景歌 · 听音认字',render:function(st){var words=[{w:'园',e:'🌷'},{w:'桥',e:'🌉'},{w:'队',e:'🚩'},{w:'旗',e:'🇨🇳'},{w:'铜',e:'🎺'},{w:'领',e:'🔴'},{w:'巾',e:'🧣'},{w:'号',e:'📯'}];stageHTML(st,'<div class="hint">场景歌 · 听音认字</div><div class="word-grid">'+words.map(function(w){return '<div class="word-card speaker-zh" data-han="'+w.w+'"><span class="emoji">'+w.e+'</span><div class="han">🔊</div></div>';}).join('')+'</div>');st.querySelectorAll('.speaker-zh').forEach(function(c){c.addEventListener('click',function(){speak(c.dataset.han,'zh-CN');});});},
         questions:[
           {q:'🌉 是什么字？',opts:['桥','园','旗','铜'],ans:'桥'},
           {q:'🇨🇳 是什么字？',opts:['旗','队','园','号'],ans:'旗'},
           {q:'量词填空：一（  ）海鸥',opts:['只','条','艘','片'],ans:'只'}
         ]},
-      makeReviewQ:function(){var ws=[{w:'园',e:'🌷'},{w:'孔',e:'🦚'},{w:'桥',e:'🌉'},{w:'群',e:'🐦'},{w:'队',e:'🚩'},{w:'旗',e:'🇨🇳'},{w:'铜',e:'🎺'},{w:'号',e:'📯'},{w:'领',e:'🔴'},{w:'巾',e:'🧣'}];var ans=ws[rnd(0,ws.length-1)];var dis=ws.filter(function(w){return w.w!==ans.w;});shuffle(dis);return{q:ans.e+' 是哪个字？',opts:shuffle([ans.w,dis[0].w,dis[1].w,dis[2].w]),ans:ans.w};},
+      makeReviewQ:function(){return zhPinyinQ([{w:'园',p:'yuán'},{w:'孔',p:'kǒng'},{w:'桥',p:'qiáo'},{w:'群',p:'qún'},{w:'队',p:'duì'},{w:'旗',p:'qí'},{w:'铜',p:'tóng'},{w:'号',p:'hào'},{w:'领',p:'lǐng'},{w:'巾',p:'jīn'}]);},
       help:'园 yuán、孔 kǒng、桥 qiáo、群 qún、队 duì、旗 qí、铜 tóng、号 hào、领 lǐng、巾 jīn。',
       exploreHint:'点字卡，听生字怎么读'
     },
@@ -3050,13 +3062,13 @@
         {title:'第 2 步：认 4 个字',speak:'先学 4 个生字 —— 杨、枫、松、化。',render:function(st){var ws=[{w:'杨',e:'🌳',p:'yáng'},{w:'枫',e:'🍁',p:'fēng'},{w:'松',e:'🌲',p:'sōng'},{w:'化',e:'🦴',p:'huà'}];stageHTML(st,'<div class="word-grid">'+ws.map(function(w){return '<div class="word-card speaker-zh" data-han="'+w.w+'"><span class="emoji">'+w.e+'</span><div class="han">🔊</div><div class="pin">'+w.p+'</div></div>';}).join('')+'</div>');st.querySelectorAll('.speaker-zh').forEach(function(c){c.addEventListener('click',function(){speak(c.dataset.han,'zh-CN');});});},interact:{prompt:'🍁 是什么树？',kind:'pick',opts:['枫','杨','松','化'],answer:'枫'}},
         {title:'第 3 步：笔顺 — 「松」「柏」',speak:'「松」是木字旁 + 公。木字旁的「捺」要变成「点」。「柏」是木字旁 + 白。',render:function(st){stageHTML(st,'<div class="bs-card"><div class="bs-han">松</div><div class="bs-strokes">木(横/竖/撇/点) + 公(撇/捺/撇折/点) = 8 笔</div></div><div class="bs-card" style="margin-top:10px;"><div class="bs-han">柏</div><div class="bs-strokes">木(横/竖/撇/点) + 白(撇/竖/横折/横/横) = 9 笔</div></div><div class="hint" style="margin-top:10px;">注意：木字旁在左时，捺都要变成点。</div>');},interact:{prompt:'「松」字右半边是什么？',kind:'pick',opts:['公','白','木','八'],answer:'公'}}
       ],
-      practice:{title:'树之歌 · 看图选字',render:function(st){var words=[{w:'杨',e:'🌳'},{w:'枫',e:'🍁'},{w:'松',e:'🌲'},{w:'棉',e:'☁️'},{w:'杉',e:'🌲'},{w:'桂',e:'🌼'},{w:'壮',e:'💪'},{w:'化',e:'🦴'}];stageHTML(st,'<div class="hint">树之歌 · 看图选字</div><div class="word-grid">'+words.map(function(w){return '<div class="word-card speaker-zh" data-han="'+w.w+'"><span class="emoji">'+w.e+'</span><div class="han">🔊</div></div>';}).join('')+'</div>');st.querySelectorAll('.speaker-zh').forEach(function(c){c.addEventListener('click',function(){speak(c.dataset.han,'zh-CN');});});},
+      practice:{title:'树之歌 · 听音认字',render:function(st){var words=[{w:'杨',e:'🌳'},{w:'枫',e:'🍁'},{w:'松',e:'🌲'},{w:'棉',e:'☁️'},{w:'杉',e:'🌲'},{w:'桂',e:'🌼'},{w:'壮',e:'💪'},{w:'化',e:'🦴'}];stageHTML(st,'<div class="hint">树之歌 · 听音认字</div><div class="word-grid">'+words.map(function(w){return '<div class="word-card speaker-zh" data-han="'+w.w+'"><span class="emoji">'+w.e+'</span><div class="han">🔊</div></div>';}).join('')+'</div>');st.querySelectorAll('.speaker-zh').forEach(function(c){c.addEventListener('click',function(){speak(c.dataset.han,'zh-CN');});});},
         questions:[
           {q:'🍁 是什么字？',opts:['枫','杨','松','柏'],ans:'枫'},
           {q:'🌳 是什么字？',opts:['杨','枫','松','桂'],ans:'杨'},
           {q:'下面哪个字是「木」字旁？',opts:['松','化','石','两'],ans:'松'}
         ]},
-      makeReviewQ:function(){var ws=[{w:'杨',e:'🌳'},{w:'桐',e:'🌳'},{w:'枫',e:'🍁'},{w:'松',e:'🌲'},{w:'柏',e:'🌲'},{w:'棉',e:'☁️'},{w:'杉',e:'🌲'},{w:'桂',e:'🌼'},{w:'壮',e:'💪'},{w:'化',e:'🦴'}];var ans=ws[rnd(0,ws.length-1)];var dis=ws.filter(function(w){return w.w!==ans.w;});shuffle(dis);return{q:ans.e+' 是哪个字？',opts:shuffle([ans.w,dis[0].w,dis[1].w,dis[2].w]),ans:ans.w};},
+      makeReviewQ:function(){return zhPinyinQ([{w:'杨',p:'yáng'},{w:'桐',p:'tóng'},{w:'枫',p:'fēng'},{w:'松',p:'sōng'},{w:'柏',p:'bǎi'},{w:'棉',p:'mián'},{w:'杉',p:'shān'},{w:'桂',p:'guì'},{w:'壮',p:'zhuàng'},{w:'化',p:'huà'}]);},
       help:'杨 yáng、壮 zhuàng、桐 tóng、枫 fēng、松 sōng、柏 bǎi、棉 mián、杉 shān、化 huà、桂 guì。',
       exploreHint:'点字卡，听树木字怎么读'
     },
@@ -3068,13 +3080,13 @@
         {title:'第 2 步：认 4 个字',speak:'先学 4 个生字 —— 歌、熊、猫、朋。',render:function(st){var ws=[{w:'歌',e:'🎵',p:'gē'},{w:'熊',e:'🐼',p:'xióng'},{w:'猫',e:'🐱',p:'māo'},{w:'朋',e:'🧑‍🤝‍🧑',p:'péng'}];stageHTML(st,'<div class="word-grid">'+ws.map(function(w){return '<div class="word-card speaker-zh" data-han="'+w.w+'"><span class="emoji">'+w.e+'</span><div class="han">🔊</div><div class="pin">'+w.p+'</div></div>';}).join('')+'</div>');st.querySelectorAll('.speaker-zh').forEach(function(c){c.addEventListener('click',function(){speak(c.dataset.han,'zh-CN');});});},interact:{prompt:'🐼 是什么动物？',kind:'pick',opts:['熊','猫','狗','兔'],answer:'熊'}},
         {title:'第 3 步：笔顺 — 「歌」「猫」',speak:'「歌」是「哥」+「欠」，共 14 笔。「猫」是「犭」+「苗」，共 11 笔。',render:function(st){stageHTML(st,'<div class="bs-card"><div class="bs-han">歌</div><div class="bs-strokes">哥(10笔) + 欠(4笔: 撇/横钩/撇/捺) = 14 笔</div></div><div class="bs-card" style="margin-top:10px;"><div class="bs-han">猫</div><div class="bs-strokes">犭(3笔: 撇/弯钩/撇) + 苗(8笔) = 11 笔</div></div><div class="hint" style="margin-top:10px;">「歌」字右边是「欠」，捺笔要舒展。</div>');},interact:{prompt:'「猫」字的左半边是什么偏旁？',kind:'pick',opts:['犭','木','氵','口'],answer:'犭'}}
       ],
-      practice:{title:'拍手歌 · 看图选字',render:function(st){var words=[{w:'歌',e:'🎵'},{w:'熊',e:'🐼'},{w:'猫',e:'🐱'},{w:'九',e:'9'},{w:'六',e:'6'},{w:'深',e:'🌲'},{w:'丛',e:'🌳'},{w:'友',e:'🤝'}];stageHTML(st,'<div class="hint">拍手歌 · 看图选字</div><div class="word-grid">'+words.map(function(w){return '<div class="word-card speaker-zh" data-han="'+w.w+'"><span class="emoji">'+w.e+'</span><div class="han">🔊</div></div>';}).join('')+'</div>');st.querySelectorAll('.speaker-zh').forEach(function(c){c.addEventListener('click',function(){speak(c.dataset.han,'zh-CN');});});},
+      practice:{title:'拍手歌 · 听音认字',render:function(st){var words=[{w:'歌',e:'🎵'},{w:'熊',e:'🐼'},{w:'猫',e:'🐱'},{w:'九',e:'9'},{w:'六',e:'6'},{w:'深',e:'🌲'},{w:'丛',e:'🌳'},{w:'友',e:'🤝'}];stageHTML(st,'<div class="hint">拍手歌 · 听音认字</div><div class="word-grid">'+words.map(function(w){return '<div class="word-card speaker-zh" data-han="'+w.w+'"><span class="emoji">'+w.e+'</span><div class="han">🔊</div></div>';}).join('')+'</div>');st.querySelectorAll('.speaker-zh').forEach(function(c){c.addEventListener('click',function(){speak(c.dataset.han,'zh-CN');});});},
         questions:[
-          {q:'🐼 是哪个字？',opts:['熊','猫','狗','兔'],ans:'熊'},
+          {q:'读「xióng」的是哪个字？',opts:['熊','猫','狗','兔'],ans:'熊'},
           {q:'🎵 是什么字？',opts:['歌','唱','曲','音'],ans:'歌'},
           {q:'「朋友」的「朋」指的是？',opts:['一起玩的人','一个人','很多树','一只猫'],ans:'一起玩的人'}
         ]},
-      makeReviewQ:function(){var ws=[{w:'歌',e:'🎵'},{w:'熊',e:'🐼'},{w:'猫',e:'🐱'},{w:'九',e:'9'},{w:'六',e:'6'},{w:'丛',e:'🌳'},{w:'深',e:'🌲'},{w:'处',e:'📍'},{w:'朋',e:'🧑‍🤝‍🧑'},{w:'友',e:'🤝'}];var ans=ws[rnd(0,ws.length-1)];var dis=ws.filter(function(w){return w.w!==ans.w;});shuffle(dis);return{q:ans.e+' 是哪个字？',opts:shuffle([ans.w,dis[0].w,dis[1].w,dis[2].w]),ans:ans.w};},
+      makeReviewQ:function(){return zhPinyinQ([{w:'歌',p:'gē'},{w:'熊',p:'xióng'},{w:'猫',p:'māo'},{w:'九',p:'jiǔ'},{w:'六',p:'liù'},{w:'丛',p:'cóng'},{w:'深',p:'shēn'},{w:'处',p:'chù'},{w:'朋',p:'péng'},{w:'友',p:'yǒu'}]);},
       help:'歌 gē、丛 cóng、深 shēn、处 chù、六 liù、熊 xióng、猫 māo、九 jiǔ、朋 péng、友 yǒu。',
       exploreHint:'点字卡，听动物字怎么读'
     },
@@ -3086,13 +3098,13 @@
         {title:'第 2 步：认 4 个字',speak:'先学 4 个生字 —— 季、农、忙、年。',render:function(st){var ws=[{w:'季',e:'🌸',p:'jì'},{w:'农',e:'👨‍🌾',p:'nóng'},{w:'忙',e:'💦',p:'máng'},{w:'年',e:'📅',p:'nián'}];stageHTML(st,'<div class="word-grid">'+ws.map(function(w){return '<div class="word-card speaker-zh" data-han="'+w.w+'"><span class="emoji">'+w.e+'</span><div class="han">🔊</div><div class="pin">'+w.p+'</div></div>';}).join('')+'</div>');st.querySelectorAll('.speaker-zh').forEach(function(c){c.addEventListener('click',function(){speak(c.dataset.han,'zh-CN');});});},interact:{prompt:'👨‍🌾 是什么人？',kind:'pick',opts:['农','工','商','学'],answer:'农'}},
         {title:'第 3 步：笔顺 — 「季」「年」',speak:'「季」是「禾」+「子」，禾字在上。「年」是「干」上「夕」下。',render:function(st){stageHTML(st,'<div class="bs-card"><div class="bs-han">季</div><div class="bs-strokes">禾(5笔) + 子(3笔) = 8 笔</div></div><div class="bs-card" style="margin-top:10px;"><div class="bs-han">年</div><div class="bs-strokes">撇/横/横/竖/横/竖 = 6 笔</div></div><div class="hint" style="margin-top:10px;">「季」上半部分是「禾」，下半部分是「子」。</div>');},interact:{prompt:'「季」字上半部分是什么？',kind:'pick',opts:['禾','子','年','田'],answer:'禾'}}
       ],
-      practice:{title:'田家四季歌 · 看图选字',render:function(st){var words=[{w:'季',e:'🌸'},{w:'农',e:'👨‍🌾'},{w:'忙',e:'💦'},{w:'年',e:'📅'},{w:'吹',e:'💨'},{w:'肥',e:'🧪'},{w:'归',e:'🏠'},{w:'辛',e:'😓'}];stageHTML(st,'<div class="hint">田家四季歌 · 看图选字</div><div class="word-grid">'+words.map(function(w){return '<div class="word-card speaker-zh" data-han="'+w.w+'"><span class="emoji">'+w.e+'</span><div class="han">🔊</div></div>';}).join('')+'</div>');st.querySelectorAll('.speaker-zh').forEach(function(c){c.addEventListener('click',function(){speak(c.dataset.han,'zh-CN');});});},
+      practice:{title:'田家四季歌 · 听音认字',render:function(st){var words=[{w:'季',e:'🌸'},{w:'农',e:'👨‍🌾'},{w:'忙',e:'💦'},{w:'年',e:'📅'},{w:'吹',e:'💨'},{w:'肥',e:'🧪'},{w:'归',e:'🏠'},{w:'辛',e:'😓'}];stageHTML(st,'<div class="hint">田家四季歌 · 听音认字</div><div class="word-grid">'+words.map(function(w){return '<div class="word-card speaker-zh" data-han="'+w.w+'"><span class="emoji">'+w.e+'</span><div class="han">🔊</div></div>';}).join('')+'</div>');st.querySelectorAll('.speaker-zh').forEach(function(c){c.addEventListener('click',function(){speak(c.dataset.han,'zh-CN');});});},
         questions:[
           {q:'👨‍🌾 是什么字？',opts:['农','工','商','学'],ans:'农'},
           {q:'📅 是什么字？',opts:['年','月','日','时'],ans:'年'},
           {q:'「辛苦」里哪个字读「kǔ」？',opts:['苦','辛','年','农'],ans:'苦'}
         ]},
-      makeReviewQ:function(){var ws=[{w:'季',e:'🌸'},{w:'吹',e:'💨'},{w:'肥',e:'🧪'},{w:'农',e:'👨‍🌾'},{w:'忙',e:'💦'},{w:'归',e:'🏠'},{w:'戴',e:'🎩'},{w:'辛',e:'😓'},{w:'苦',e:'🥵'},{w:'年',e:'📅'}];var ans=ws[rnd(0,ws.length-1)];var dis=ws.filter(function(w){return w.w!==ans.w;});shuffle(dis);return{q:ans.e+' 是哪个字？',opts:shuffle([ans.w,dis[0].w,dis[1].w,dis[2].w]),ans:ans.w};},
+      makeReviewQ:function(){return zhPinyinQ([{w:'季',p:'jì'},{w:'吹',p:'chuī'},{w:'肥',p:'féi'},{w:'农',p:'nóng'},{w:'忙',p:'máng'},{w:'归',p:'guī'},{w:'戴',p:'dài'},{w:'辛',p:'xīn'},{w:'苦',p:'kǔ'},{w:'年',p:'nián'}]);},
       help:'季 jì、吹 chuī、肥 féi、农 nóng、忙 máng、归 guī、戴 dài、辛 xīn、苦 kǔ、年 nián。',
       exploreHint:'点字卡，听农事字怎么读'
     },
