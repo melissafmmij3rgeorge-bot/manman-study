@@ -969,7 +969,6 @@
       games:{date:'',used:0,extra:0,best:{mine:0,monster:0,catch:0}}};
   }
   function loadWallet(){
-    if(isTest()){ wallet=blankWallet(); return; }
     var w=null;
     try{ w=JSON.parse(localStorage.getItem(walletKey())||'null'); }catch(e){ w=null; }
     var d=blankWallet();
@@ -983,7 +982,7 @@
     wallet=w;
     rollDay();
   }
-  function saveWallet(){ if(isTest()) return; try{ localStorage.setItem(walletKey(), JSON.stringify(wallet)); }catch(e){} }
+  function saveWallet(){ try{ localStorage.setItem(walletKey(), JSON.stringify(wallet)); }catch(e){} }
   function rollDay(){
     var t=today();
     if(!wallet.dayLog[t]) wallet.dayLog[t]={coins:0,learn:0,review:0};
@@ -1000,7 +999,6 @@
   function studiedToday(){ rollDay(); return !!wallet.studyDays[today()]; }
   /* 发币：kind 'new'|'review'，unitId 防重复（同天同单元只发一次） */
   function awardCoins(kind, unitId){
-    if(isTest()) return null;
     var t=today();
     if(unitId){ if(wallet.paid[unitId]===t) return null; wallet.paid[unitId]=t; }
     bumpStreak();
@@ -1019,9 +1017,10 @@
     saveWallet();
     return {total:total,base:base,bonus:bonus,streakBonus:sb,lucky:lucky,streak:wallet.streak};
   }
-  /* 小游戏门票：今天学过才有 1 局，全对加 1 局，最多 2 局 */
+  /* 小游戏门票：今天学过才有 1 局，全对加 1 局，最多 2 局；测试身份不限次 */
   function gameTickets(){
     rollDay();
+    if(isTest()) return {studied:true, left:99, max:99, sandbox:true};
     var studied=studiedToday();
     var max=studied?(1+wallet.games.extra):0;
     return {studied:studied, left:Math.max(0,max-wallet.games.used), max:max};
@@ -1147,11 +1146,9 @@
   function timesKey(){ return 'manman_v6_times_'+currentSubject+'_'+(profile||'manman'); }
   var state={};
   function loadState(){
-    if(isTest()){ state={}; return; }
     try{ state=JSON.parse(localStorage.getItem(stateKey())||'{}'); }catch(e){ state={}; }
   }
   function saveState(){
-    if(isTest()) return;
     try{ localStorage.setItem(stateKey(), JSON.stringify(state)); }catch(e){}
   }
   function getSt(id){ return state[id]; }
@@ -1160,7 +1157,6 @@
     var c=0; for(var i=0;i<units.length;i++){ var s=state[units[i].id]; if(s&&s.lv>=4) c++; } return c;
   }
   function markLearned(id,ok){
-    if(isTest()) return;
     var st=getSt(id), lv=(st&&st.lv?st.lv:0);
     if(ok){ lv=lv+1; if(lv>5) lv=5; }
     else { lv=1; }
@@ -1168,7 +1164,6 @@
     saveState();
   }
   function logTime(unitId, phase, ms){
-    if(isTest()) return;
     try{
       var all=JSON.parse(localStorage.getItem(timesKey())||'{}');
       if(!all[unitId]) all[unitId]=[];
@@ -1197,25 +1192,23 @@
     loadState();
     var units=UNITS_BY_SUBJECT[currentSubject]||[];
     todayDue=[];
-    if(!isTest()){
-      var t=today();
-      var dueList=[];
-      for(var i=0;i<units.length;i++){ var u=units[i]; var st=getSt(u.id);
-        if(!isUnlocked(u)) continue;
-        if(st && st.lv>=1 && cmpDate(st.due,t)<=0) dueList.push({u:u, due:st.due}); }
-      dueList.sort(function(a,b){ return cmpDate(a.due, b.due); });
-      if(dueList.length>MAX_DUE_PER_DAY){
-        var tomorrow=addDays(t, 1);
-        for(var j=MAX_DUE_PER_DAY;j<dueList.length;j++){
-          var st2=getSt(dueList[j].u.id);
-          if(st2) st2.due=tomorrow;
-        }
-        dueList=dueList.slice(0, MAX_DUE_PER_DAY);
+    var t=today();
+    var dueList=[];
+    for(var i=0;i<units.length;i++){ var u=units[i]; var st=getSt(u.id);
+      if(!isUnlocked(u)) continue;
+      if(st && st.lv>=1 && cmpDate(st.due,t)<=0) dueList.push({u:u, due:st.due}); }
+    dueList.sort(function(a,b){ return cmpDate(a.due, b.due); });
+    if(dueList.length>MAX_DUE_PER_DAY){
+      var tomorrow=addDays(t, 1);
+      for(var j=MAX_DUE_PER_DAY;j<dueList.length;j++){
+        var st2=getSt(dueList[j].u.id);
+        if(st2) st2.due=tomorrow;
       }
-      for(var k=0;k<dueList.length;k++) todayDue.push(dueList[k].u);
+      dueList=dueList.slice(0, MAX_DUE_PER_DAY);
     }
+    for(var k=0;k<dueList.length;k++) todayDue.push(dueList[k].u);
     todayNew=nextNewUnit();
-    if(!isTest()) saveState();
+    saveState();
   }
   function nextNewUnit(){
     var units=UNITS_BY_SUBJECT[currentSubject]||[];
@@ -1236,8 +1229,8 @@
   function refreshProg(){
     var p=document.getElementById('prog');
     var units=UNITS_BY_SUBJECT[currentSubject]||[];
-    p.textContent=isTest()? '🧪 测试': '✓ '+masteredCount()+'/'+units.length;
-    p.style.color=isTest()? 'var(--amber)':'var(--teal)';
+    p.textContent='✓ '+masteredCount()+'/'+units.length;
+    p.style.color='var(--teal)';
   }
   function refreshProfileTag(){
     var tag=document.getElementById('profileTag');
@@ -2183,7 +2176,6 @@
   bind('btnWinExplore', function(){ startExplore(); });
   bind('btnWinNext', function(){
     if(browseMode){ showUnits(); }
-    else if(isTest()){ finishDay(); }
     else { afterTrackA(); }
   });
   bind('btnPracticeHelp', function(){ showHelp('practice'); });
@@ -3013,7 +3005,6 @@
   function loadWrong(){ try{ return JSON.parse(localStorage.getItem(wrongKey())||'{}'); }catch(e){ return {}; } }
   function saveWrongBook(w){ try{ localStorage.setItem(wrongKey(), JSON.stringify(w)); }catch(e){} }
   function addWrong(item){
-    if(isTest()) return;
     sessionWrong++;
     var w=loadWrong(); if(!w.items) w.items={};
     var it=w.items[item.id];
@@ -3022,7 +3013,6 @@
     saveWrongBook(w);
   }
   function resolveWrong(id){
-    if(isTest()) return;
     var w=loadWrong(); if(!w.items||!w.items[id]) return;
     var it=w.items[id]; it.lv=(it.lv||1)-1;
     if(it.lv<=0) delete w.items[id];
@@ -3142,14 +3132,12 @@
     var s=dictSession;
     var wrongs=[];
     s.words.forEach(function(w,i){ if(s.marks[i]===false) wrongs.push(w); });
-    if(!isTest()){
-      var d=loadDict(); if(!d.words) d.words={};
-      wrongs.forEach(function(w){ d.words[w]=(d.words[w]||0)+1; });
-      s.words.forEach(function(w,i){ if(s.marks[i]===true && d.words[w]){ d.words[w]--; if(d.words[w]<=0) delete d.words[w]; } });
-      if(!d.hist) d.hist=[];
-      d.hist.push({at:Date.now(), total:s.words.length, wrong:wrongs.length});
-      saveDictStore(d);
-    }
+    var d=loadDict(); if(!d.words) d.words={};
+    wrongs.forEach(function(w){ d.words[w]=(d.words[w]||0)+1; });
+    s.words.forEach(function(w,i){ if(s.marks[i]===true && d.words[w]){ d.words[w]--; if(d.words[w]<=0) delete d.words[w]; } });
+    if(!d.hist) d.hist=[];
+    d.hist.push({at:Date.now(), total:s.words.length, wrong:wrongs.length});
+    saveDictStore(d);
     var st=document.getElementById('dictStage');
     var h='<div class="hero-emoji">'+(wrongs.length?'💪':'🏆')+'</div>'+
       '<div class="big">'+(wrongs.length?('错了 '+wrongs.length+' 个字'):('全对！'+s.words.length+' 个字'))+'</div>';
@@ -3245,7 +3233,7 @@
     sprint=null;
     var best=loadSprint(); if(!best.best) best.best={};
     var isNew=false;
-    if(!isTest() && score>0 && score>(best.best[lv.id]||0)){ best.best[lv.id]=score; isNew=true; saveSprintBest(best); }
+    if(score>0 && score>(best.best[lv.id]||0)){ best.best[lv.id]=score; isNew=true; saveSprintBest(best); }
     var st=document.getElementById('sprintStage');
     var h='<div class="hero-emoji">'+(score>=20?'🏆':(score>=10?'🎉':'💪'))+'</div>'+
       '<div class="big">时间到！</div>'+
@@ -3571,6 +3559,31 @@
       row.appendChild(wrap);
       list.appendChild(row);
     });
+    if(isTest()) renderTestPanel(list);
+  }
+  /* 测试身份专用工具：只在「爸爸测试」下出现，数据键独立（*_daddy_test），绝不影响满满 */
+  function renderTestPanel(list){
+    var tip=document.createElement('div');
+    tip.className='shop-item';
+    tip.innerHTML='<div class="thumb" style="font-size:26px;">🧪</div>'
+      +'<div class="info"><div class="name">测试工具</div>'
+      +'<div class="desc">只在测试身份下出现 · 数据独立存放，不碰满满的记录</div></div>';
+    var box=document.createElement('div'); box.className='buy';
+    box.style.display='flex'; box.style.flexDirection='column'; box.style.gap='6px';
+    var b1=document.createElement('button'); b1.className='btn buy'; b1.textContent='+100 金币';
+    b1.addEventListener('click',function(){ loadWallet(); wallet.coins+=100; wallet.total+=100; saveWallet(); renderShop(); });
+    var b2=document.createElement('button'); b2.className='btn ghost'; b2.textContent='重置测试数据';
+    b2.addEventListener('click',function(){
+      try{
+        var ks=[];
+        for(var i=0;i<localStorage.length;i++){ var k=localStorage.key(i); if(k && /_daddy_test$/.test(k)) ks.push(k); }
+        for(var j=0;j<ks.length;j++){ localStorage.removeItem(ks[j]); }
+      }catch(e){}
+      loadWallet(); loadState(); renderShop();
+    });
+    box.appendChild(b1); box.appendChild(b2);
+    tip.appendChild(box);
+    list.appendChild(tip);
   }
 
   /* ================= 游戏中心 ================= */
@@ -3585,7 +3598,8 @@
     var tr=document.getElementById('ticketRow'); tr.innerHTML='';
     for(var i=0;i<2;i++){ var t=document.createElement('div'); t.className='ticket'+(i<tk.left?' on':''); tr.appendChild(t); }
     var hint=document.getElementById('arcadeHint');
-    if(!tk.studied) hint.textContent='今天还没学习哦——先去闯关，赚 1 张游戏门票！';
+    if(tk.sandbox) hint.textContent='🧪 测试模式：门票不限次，随便玩（正式身份仍是每天 1-2 局）';
+    else if(!tk.studied) hint.textContent='今天还没学习哦——先去闯关，赚 1 张游戏门票！';
     else if(tk.left>0) hint.textContent='今日还有 '+tk.left+' 局机会'+(tk.max>1?'（全对奖励多 1 局）':'')+'，加油！';
     else hint.textContent='苦力怕、奥特曼和皮卡丘的能量都用完啦，明天再来！';
     var list=document.getElementById('arcadeList'); list.innerHTML='';
@@ -3646,7 +3660,7 @@
     var best=wallet.games.best;
     var prev=best[kind]||0, isNew=score>prev;
     if(isNew) best[kind]=score;
-    var reward=Math.min(15,Math.floor(score/10));
+    var reward=score>0?Math.min(15,Math.max(1,Math.round(score/10))):0;
     wallet.coins+=reward; wallet.total+=reward; dayLog().coins+=reward;
     saveWallet();
     return {score:score,reward:reward,isNew:isNew,prev:prev};
@@ -3673,7 +3687,7 @@
       +'<div class="rule-line">· 连续答对触发连击倍数，最高 ×5！</div>'
       +(mineHasHand()?'<div class="rule-line" style="color:#1971C2;font-weight:700;">⚔️ 钻石剑生效：一次爆破十字 5 格！</div>':'')
       +(mineHasHead()?'<div class="rule-line" style="color:#1971C2;font-weight:700;">🪖 头盔生效：本局时间 +10 秒！</div>':'')
-      +'<div class="rule-line">今日剩余门票：'+tk.left+' 局 · 最高分 '+(wallet.games.best.mine||0)+'</div>'
+      +'<div class="rule-line">'+(tk.sandbox?'🧪 测试模式：门票不限次':'今日剩余门票：'+tk.left+' 局')+' · 最高分 '+(wallet.games.best.mine||0)+'</div>'
       +'<div class="btn-row"><button class="btn" id="btnMineStart">⛏️ 开始挖矿</button></div></div>';
     document.getElementById('btnMineStart').addEventListener('click',function(){
       if(!useTicket()){ renderArcadeHintBack('苦力怕的能量用完啦！'); return; }
@@ -3822,7 +3836,7 @@
       +'<div class="rule-line">· 答错会被怪兽反击扣 1 颗心，心用完就结束</div>'
       +(hand?'<div class="rule-line" style="color:#1971C2;font-weight:700;">⚔️ 究极光剑生效：光波伤害 ×2！</div>':'')
       +(head?'<div class="rule-line" style="color:#1971C2;font-weight:700;">👑 光之国王冠生效：多 1 颗心！</div>':'')
-      +'<div class="rule-line">今日剩余门票：'+tk.left+' 局 · 最高分 '+(wallet.games.best.monster||0)+'</div>'
+      +'<div class="rule-line">'+(tk.sandbox?'🧪 测试模式：门票不限次':'今日剩余门票：'+tk.left+' 局')+' · 最高分 '+(wallet.games.best.monster||0)+'</div>'
       +'<div class="btn-row"><button class="btn" id="btnMonsterStart">⚡ 开始战斗</button></div></div>';
     document.getElementById('btnMonsterStart').addEventListener('click',function(){
       if(!useTicket()){ renderMonsterHintBack('奥特曼的能量用完啦！'); return; }
@@ -3963,7 +3977,7 @@
       +'<div class="rule-line">· 连续答对触发连击倍数</div>'
       +(hand?'<div class="rule-line" style="color:#1971C2;font-weight:700;">🔨 雷神之锤生效：收服得分 ×1.5！</div>':'')
       +(head?'<div class="rule-line" style="color:#1971C2;font-weight:700;">🧢 训练家帽生效：答错不断连击！</div>':'')
-      +'<div class="rule-line">今日剩余门票：'+tk.left+' 局 · 最高分 '+(wallet.games.best.catch||0)+'</div>'
+      +'<div class="rule-line">'+(tk.sandbox?'🧪 测试模式：门票不限次':'今日剩余门票：'+tk.left+' 局')+' · 最高分 '+(wallet.games.best.catch||0)+'</div>'
       +'<div class="btn-row"><button class="btn" id="btnCatchStart">🔮 开始收服</button></div></div>';
     document.getElementById('btnCatchStart').addEventListener('click',function(){
       if(!useTicket()){ renderCatchHintBack('皮卡丘的能量用完啦！'); return; }
